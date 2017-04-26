@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:http/http.dart' as http;
+import 'dart:async';
 import 'dart:convert';
 import 'cards/job.dart';
 import 'drawer.dart';
@@ -38,7 +39,8 @@ class AgendaPageState extends State<AgendaPage> {
     );
   }
 
-  Map<String, Map<String, Map<String, dynamic>>> getAgendaData(){
+  Future<Map<String, Map<String, Map<String, dynamic>>>> getAgendaData() async {
+    print("getAgendaData()");
     // Map<DateString, Map<JobId, Map<Key, Value>>>
     Map<String, Map<String, Map<String, dynamic>>> agendaData = new Map();
     DateTime today = new DateTime.now();
@@ -50,10 +52,10 @@ class AgendaPageState extends State<AgendaPage> {
     }
     Map<String, Map<String, dynamic>> resData;
     // TODO Multi-line string!
-    http.get('https://cybertronix-b188e.firebaseio.com/jobs.json?orderBy="datetime"&startAt="${today.toIso8601String().substring(0,10)}"&endAt="${twoweeks.toIso8601String().substring(0, 10)}"')
-      .then((response) {
-        resData = JSON.decode(response.body);
-      });
+    print('Getting jobs.');
+    http.Response response = await http.get('https://cybertronix-b188e.firebaseio.com/jobs.json?orderBy="datetime"&startAt="${today.toIso8601String().substring(0,10)}"&endAt="${twoweeks.toIso8601String().substring(0, 10)}"');
+    print('Got jobs: ${response.body}');
+    resData = JSON.decode(response.body);
     resData.forEach((id, job) {
       String jDate = job["datetime"].substring(0, 10);
       agendaData[jDate][id] = job;
@@ -62,39 +64,66 @@ class AgendaPageState extends State<AgendaPage> {
   }
 
   void buildAgenda() {
-    /*http.get('http://cybertronix.us/api/agenda')
-        .then((response){
-          agendaData = JSON.decode(response.body);
-    });*/
-    Map<String, Map<String, Map<String, dynamic>>> agendaData = getAgendaData();
+    print("buildAgenda()");
     agenda = [];
-    agendaData.forEach((day, jobs) {
-      DateTime date = DateTime.parse(day);
-      DateFormat formatter = new DateFormat('EEEE, MMMM d');
-      String txt = formatter.format(date);
-      agenda.add(new ListTile(
-        title: new Text(txt)
-      ));
-      if (jobs.length == 0) {
-        agenda.add(new ListTile(
-          title: new Text('No jobs scheduled.')
-        ));
-      } else {
-        jobs.forEach((id, job) {
-          DateTime jdt = DateTime.parse(job["datetime"]);
-          DateFormat hour = new DateFormat.j();
-          DateFormat time = new DateFormat.jm();
-          Map<String, dynamic> location = getLocation(job['location']);
+    agenda.add(new ListTile(
+      title: new Text("Your Agenda")
+    ));
+    Future<Map<String, Map<String, Map<String, dynamic>>>> agendaData = getAgendaData();
+    agendaData.then((value) {
+      print("agendaData.then()");
+      value.forEach((day, jobs) {
+        print("value.forEach()");
+        DateTime date = DateTime.parse(day);
+        DateFormat formatter = new DateFormat('EEEE, MMMM d');
+        String txt = formatter.format(date);
+        setState((){
+          print('setState() 1');
           agenda.add(new ListTile(
-            // TODO: Consider that ISO is 24 hour clock.
-            leading: new CircleAvatar(child: new Text(hour.format(jdt))),
-            title: new Text('${time.format(jdt)}, ${job["description"]}'),
-            subtitle: new Text('${location["name"]}\n${location["city"]}, ${location["state"]}'),
-            isThreeLine: true,
-            onTap: () {popupJobCard(context, id, job);}
+            title: new Text(txt),
+            onTap: (){
+              print('date onTap()');
+            }
           ));
         });
-      }
+        if (jobs.length == 0) {
+          print("No jobs.");
+          setState((){
+            print('setState() 0');
+            agenda.add(new ListTile(
+              title: new Text('No jobs scheduled.'),
+              onTap: (){
+                print('No jobs onTap()');
+              }
+              //dense: true // TODO: Verify this
+            ));
+          });
+        } else {
+          jobs.forEach((id, job) {
+            print("jobs.forEach()");
+            DateTime jdt = DateTime.parse(job["datetime"]);
+            DateFormat hour = new DateFormat.j();
+            DateFormat time = new DateFormat.jm();
+            getLocation(job['location']).then((location) {
+              print("getLocation.then()");
+              setState((){
+                print("setState() 2");
+                agenda.add(new ListTile(
+                  // TODO: Consider that ISO is 24 hour clock.
+                  leading: new CircleAvatar(child: new Text(hour.format(jdt))),
+                  title: new Text('${time.format(jdt)}, ${job["description"]}'),
+                  subtitle: new Text('${location["name"]}\n${location["city"]}, ${location["state"]}'),
+                  isThreeLine: true,
+                  onTap: () {
+                    print('job onTap');
+                    //popupJobCard(context, id, job);
+                  }
+                ));
+              });
+            });
+          });
+        }
+      });
     }); 
   }
 
@@ -102,10 +131,19 @@ class AgendaPageState extends State<AgendaPage> {
   void initState(){
     super.initState();
     buildAgenda();
+    print("initState() finished");
   }
+
+  int builds = 0;
 
   @override
   Widget build(BuildContext context) {
+    builds++;
+    print("build() $builds");
+    print("agenda.length: ${agenda.length}");
+    if (agenda.length > 0) {
+      print('${agenda[0].runtimeType}');
+    }
     return new Scaffold(
       key: _scaffoldKey,
       appBar: buildAppBar(),
