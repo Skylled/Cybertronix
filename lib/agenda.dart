@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:http/http.dart' as http;
 import 'dart:async';
-import 'dart:convert';
 import 'cards/job.dart';
 import 'drawer.dart';
 import 'firebase.dart';
@@ -17,6 +15,7 @@ class AgendaPage extends StatefulWidget {
 class AgendaPageState extends State<AgendaPage> {
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
   List<Widget> agenda;
+  Future<Map<String, Map<String, Map<String, dynamic>>>> agendaData = getAgendaData();
 
   Widget buildAppBar(){
     return new AppBar(
@@ -39,37 +38,9 @@ class AgendaPageState extends State<AgendaPage> {
     );
   }
 
-  Future<Map<String, Map<String, Map<String, dynamic>>>> getAgendaData() async {
-    print("getAgendaData()");
-    // Map<DateString, Map<JobId, Map<Key, Value>>>
-    Map<String, Map<String, Map<String, dynamic>>> agendaData = new Map();
-    DateTime today = new DateTime.now();
-    DateTime twoweeks;
-    for (int i = 0; i < 14; i++) {
-      DateTime newDate = new DateTime(today.year, today.month, today.day + i);
-      agendaData[newDate.toIso8601String().substring(0, 10)] = new Map();
-      twoweeks = newDate; // Last iteration is what matters.
-    }
-    Map<String, Map<String, dynamic>> resData;
-    // TODO Multi-line string!
-    print('Getting jobs.');
-    http.Response response = await http.get('https://cybertronix-b188e.firebaseio.com/jobs.json?orderBy="datetime"&startAt="${today.toIso8601String().substring(0,10)}"&endAt="${twoweeks.toIso8601String().substring(0, 10)}"');
-    print('Got jobs: ${response.body}');
-    resData = JSON.decode(response.body);
-    resData.forEach((id, job) {
-      String jDate = job["datetime"].substring(0, 10);
-      agendaData[jDate][id] = job;
-    });
-    return agendaData;
-  }
-
   void buildAgenda() {
     print("buildAgenda()");
     agenda = [];
-    agenda.add(new ListTile(
-      title: new Text("Your Agenda")
-    ));
-    Future<Map<String, Map<String, Map<String, dynamic>>>> agendaData = getAgendaData();
     agendaData.then((value) {
       print("agendaData.then()");
       value.forEach((day, jobs) {
@@ -94,8 +65,8 @@ class AgendaPageState extends State<AgendaPage> {
               title: new Text('No jobs scheduled.'),
               onTap: (){
                 print('No jobs onTap()');
-              }
-              //dense: true // TODO: Verify this
+              },
+              dense: true // TODO: Verify this
             ));
           });
         } else {
@@ -104,22 +75,19 @@ class AgendaPageState extends State<AgendaPage> {
             DateTime jdt = DateTime.parse(job["datetime"]);
             DateFormat hour = new DateFormat.j();
             DateFormat time = new DateFormat.jm();
-            getLocation(job['location']).then((location) {
-              print("getLocation.then()");
-              setState((){
-                print("setState() 2");
-                agenda.add(new ListTile(
-                  // TODO: Consider that ISO is 24 hour clock.
-                  leading: new CircleAvatar(child: new Text(hour.format(jdt))),
-                  title: new Text('${time.format(jdt)}, ${job["description"]}'),
-                  subtitle: new Text('${location["name"]}\n${location["city"]}, ${location["state"]}'),
-                  isThreeLine: true,
-                  onTap: () {
-                    print('job onTap');
-                    //popupJobCard(context, id, job);
-                  }
-                ));
-              });
+            setState((){
+              print("setState() 2");
+              agenda.add(new ListTile(
+                // TODO: Consider that ISO is 24 hour clock.
+                leading: new CircleAvatar(child: new Text(hour.format(jdt))),
+                title: new Text('${time.format(jdt)}, ${job["description"]}'),
+                subtitle: new Text('${job["locationData"]["name"]}\n${job["locationData"]["city"]}, ${job["locationData"]["state"]}'),
+                isThreeLine: true,
+                onTap: () {
+                  print('job onTap');
+                  //popupJobCard(context, id, job);
+                }
+              ));
             });
           });
         }
