@@ -144,6 +144,7 @@ class AgendaPageState extends State<AgendaPage> {
     if (agenda.length > 0) {
       print('${agenda[0].runtimeType}');
     }
+    List newList = new List.from(agenda);
     return new Scaffold(
       key: _scaffoldKey,
       appBar: buildAppBar(),
@@ -151,7 +152,7 @@ class AgendaPageState extends State<AgendaPage> {
       drawer: buildDrawer(context, 'agenda'),
       body: new Center(
         child: new ListView(
-          children: agenda
+          children: newList
         ),
       ),
     );
