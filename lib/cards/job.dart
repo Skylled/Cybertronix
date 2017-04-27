@@ -27,6 +27,8 @@ class JobCardState extends State<JobCard> {
     /*new Image( // TODO: Text over image, maybe from Contacts demo
       image: new AssetImage('assets/face-bradon.jpg')
     ),*/
+    print('jobData["datetime"]: ${jobData["datetime"]}');
+    print('parsed: ${DateTime.parse(jobData["datetime"])}');
     cardLines.add(
       new ListTile(
         leading: new Icon(Icons.access_time),
