@@ -71,17 +71,6 @@ class AgendaPageState extends State<AgendaPage> {
                   print("job onTap");
                 }
               ));
-              /*agenda.add(new ListTile(
-                // TODO: Consider that ISO is 24 hour clock.
-                leading: new CircleAvatar(child: new Text(hour.format(jdt))),
-                title: new Text('${time.format(jdt)}, ${job["description"]}'),
-                subtitle: new Text('${job["locationData"]["name"]}\n${job["locationData"]["city"]}, ${job["locationData"]["state"]}'),
-                isThreeLine: true,
-                onTap: () {
-                  print('job onTap');
-                  //popupJobCard(context, id, job);
-                }
-              ));*/
             });
           });
         }

@@ -12,12 +12,10 @@ class CreatorPage extends StatefulWidget {
 
 class CreatorPageState extends State<CreatorPage> with SingleTickerProviderStateMixin {
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
-  TabController _controller;
 
   @override
   void initState() {
     super.initState();
-    _controller = new TabController(vsync: this, length: 7);
   }
 
   Widget buildAppBar(){
