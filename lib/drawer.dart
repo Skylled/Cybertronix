@@ -23,7 +23,7 @@ Drawer buildDrawer(BuildContext context, String currentPage) {
         new DrawerHeader(
           decoration: new BoxDecoration(
             shape: BoxShape.rectangle,
-            backgroundColor: Theme.of(context).primaryColor,
+            color: Theme.of(context).primaryColor,
           ),
           child: new Center(
             child: new Text('TO-DO')

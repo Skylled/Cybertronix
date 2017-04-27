@@ -34,7 +34,7 @@ class AgendaPageState extends State<AgendaPage> {
   void popupJobCard(BuildContext context, String jobId, Map<String, dynamic> jobData){
     showDialog(
       context: context,
-      child: buildJobCard(jobId, jobData)
+      child: new JobCard(jobId, jobData)
     );
   }
 
@@ -61,14 +61,13 @@ class AgendaPageState extends State<AgendaPage> {
           jobs.forEach((id, job) {
             print("jobs.forEach()");
             DateTime jdt = DateTime.parse(job["datetime"]);
-            DateFormat hour = new DateFormat.j();
             DateFormat time = new DateFormat.jm();
             setState((){
               print("setState() 2");
               subJobs.add(new TwoLevelListItem(
                 title: new Text('${time.format(jdt)}, ${job["description"]}'),
                 onTap: () {
-                  print("job onTap");
+                  popupJobCard(context, id, job);
                 }
               ));
             });
