@@ -48,25 +48,13 @@ class AgendaPageState extends State<AgendaPage> {
         DateTime date = DateTime.parse(day);
         DateFormat formatter = new DateFormat('EEEE, MMMM d');
         String txt = formatter.format(date);
-        setState((){
-          print('setState() 1');
-          agenda.add(new ListTile(
-            title: new Text(txt),
-            onTap: (){
-              print('date onTap()');
-            }
-          ));
-        });
+        List subJobs = [];
         if (jobs.length == 0) {
           print("No jobs.");
           setState((){
             print('setState() 0');
-            agenda.add(new ListTile(
-              title: new Text('No jobs scheduled.'),
-              onTap: (){
-                print('No jobs onTap()');
-              },
-              dense: true // TODO: Verify this
+            subJobs.add(new TwoLevelListItem(
+              title: new Text("No jobs scheduled.")
             ));
           });
         } else {
@@ -77,7 +65,13 @@ class AgendaPageState extends State<AgendaPage> {
             DateFormat time = new DateFormat.jm();
             setState((){
               print("setState() 2");
-              agenda.add(new ListTile(
+              subJobs.add(new TwoLevelListItem(
+                title: new Text('${time.format(jdt)}, ${job["description"]}'),
+                onTap: () {
+                  print("job onTap");
+                }
+              ));
+              /*agenda.add(new ListTile(
                 // TODO: Consider that ISO is 24 hour clock.
                 leading: new CircleAvatar(child: new Text(hour.format(jdt))),
                 title: new Text('${time.format(jdt)}, ${job["description"]}'),
@@ -87,10 +81,18 @@ class AgendaPageState extends State<AgendaPage> {
                   print('job onTap');
                   //popupJobCard(context, id, job);
                 }
-              ));
+              ));*/
             });
           });
         }
+        setState((){
+          print('setState() 1');
+          agenda.add(new TwoLevelSublist(
+            title: new Text(txt),
+            leading: new CircleAvatar(child: new Text(jobs.length.toString())),
+            children: subJobs
+          ));
+        });
       });
     }); 
   }
@@ -119,7 +121,8 @@ class AgendaPageState extends State<AgendaPage> {
       floatingActionButton: buildFloatingActionButton(),
       drawer: buildDrawer(context, 'agenda'),
       body: new Center(
-        child: new ListView(
+        child: new TwoLevelList(
+          type: MaterialListType.oneLineWithAvatar,
           children: newList
         ),
       ),
