@@ -22,7 +22,7 @@ class JobCardState extends State<JobCard> {
   List cardLines = [];
 
   void populateLines (){
-    DateFormat formatter = new DateFormat('jm EEEE, MMMM d');
+    DateFormat formatter = new DateFormat("h:mm a, EEEE, MMMM d");
     String address = '${jobData["locationData"]["address"]}, ${jobData["locationData"]["city"]}, ${jobData["locationData"]["state"]}';
     /*new Image( // TODO: Text over image, maybe from Contacts demo
       image: new AssetImage('assets/face-bradon.jpg')
