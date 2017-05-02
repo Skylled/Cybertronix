@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'drawer.dart';
+import 'cards/creatorCards.dart';
 
 
 
@@ -10,7 +11,7 @@ class CreatorPage extends StatefulWidget {
   CreatorPageState createState() => new CreatorPageState();
 }
 
-class CreatorPageState extends State<CreatorPage> with SingleTickerProviderStateMixin {
+class CreatorPageState extends State<CreatorPage>{
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
 
   @override
@@ -24,11 +25,24 @@ class CreatorPageState extends State<CreatorPage> with SingleTickerProviderState
     );
   }
 
+  Widget buildFAB(){
+    return new FloatingActionButton(
+      child: new Icon(Icons.add),
+      onPressed: () {
+        showDialog(
+          context: context,
+          child: new CreatorCard("job")
+        );
+      }
+    );
+  }
+
   Widget build(BuildContext context) {
     return new Scaffold(
       key: _scaffoldKey,
       appBar: buildAppBar(),
       drawer: buildDrawer(context, 'creator'),
+      floatingActionButton: buildFAB(),
       body: new Center()
     );
   }
