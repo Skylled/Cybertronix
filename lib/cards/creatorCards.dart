@@ -324,6 +324,11 @@ class _CreatorCardState extends State<CreatorCard> {
           );
         }
       )
+      // TODO: location String (plus set locationData)
+      // TODO: Package Row<Radio> ("Add new" option)
+      // TODO: Contacts
+      // TODO: Billing [po, billed?]
+      // TODO: Notes
     ];
   }
 

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'agenda.dart';
-import 'creator.dart';
+import 'browser.dart';
 
 class CybertronixApp extends StatefulWidget {
   @override
@@ -34,7 +34,7 @@ class CybertronixAppState extends State<CybertronixApp>{
       ),
       routes: <String, WidgetBuilder>{
         '/':       (BuildContext context) => new AgendaPage(), // Agenda
-        '/creator': (BuildContext context) => new CreatorPage()
+        '/browser': (BuildContext context) => new BrowserPage()
         /*  '/reports': (BuildContext context) => new ReportsPage(),
             '/search': (BuildContext context) => new SearchPage(), // Maybe have a search menu in the AppBar
         */

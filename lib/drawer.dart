@@ -10,10 +10,10 @@ Drawer buildDrawer(BuildContext context, String currentPage) {
   }
 
   void goCreator(){
-    if (currentPage == "creator"){
+    if (currentPage == "browser"){
       Navigator.pop(context);
     } else {
-      Navigator.popAndPushNamed(context, '/creator');
+      Navigator.popAndPushNamed(context, '/browser');
     }
   }
 
@@ -36,9 +36,9 @@ Drawer buildDrawer(BuildContext context, String currentPage) {
           onTap: goAgenda,
         ),
         new ListTile(
-          leading: new Icon(Icons.add_a_photo), // TODO: Verify this icon
-          selected: (currentPage == "creator"),
-          title: new Text("Creator"),
+          leading: new Icon(Icons.widgets), // TODO: Verify this icon
+          selected: (currentPage == "browser"),
+          title: new Text("Data Browser"),
           onTap: goCreator
         )
       ],

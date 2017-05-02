@@ -2,16 +2,16 @@ import 'package:flutter/material.dart';
 import 'drawer.dart';
 import 'cards/creatorCards.dart';
 
+// TODO: This page will be contain a Grid of categories
 
-
-class CreatorPage extends StatefulWidget {
-  const CreatorPage();
+class BrowserPage extends StatefulWidget {
+  const BrowserPage();
 
   @override
-  CreatorPageState createState() => new CreatorPageState();
+  BrowserPageState createState() => new BrowserPageState();
 }
 
-class CreatorPageState extends State<CreatorPage>{
+class BrowserPageState extends State<BrowserPage>{
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
 
   @override
@@ -21,7 +21,7 @@ class CreatorPageState extends State<CreatorPage>{
 
   Widget buildAppBar(){
     return new AppBar(
-      title: new Text("Creator")
+      title: new Text("Browser")
     );
   }
 
@@ -41,7 +41,7 @@ class CreatorPageState extends State<CreatorPage>{
     return new Scaffold(
       key: _scaffoldKey,
       appBar: buildAppBar(),
-      drawer: buildDrawer(context, 'creator'),
+      drawer: buildDrawer(context, 'browser'),
       floatingActionButton: buildFAB(),
       body: new Center()
     );
