@@ -185,6 +185,8 @@ class CreatorItem<T> {
   }
 }
 
+// TODO: I have no idea how to load data back!
+
 // TODO: Keep in mind! Data is sometimes loaded instead of IDs
 // Look for ID strings that might be maps instead
 class CreatorCard extends StatefulWidget {
@@ -221,7 +223,7 @@ class _CreatorCardState extends State<CreatorCard> {
     return <CreatorItem<dynamic>>[
       new CreatorItem<String>( // Description
         name: "Title",
-        value: '', // TODO: Data here
+        value: data != null ? data['description'] : '',
         hint: "(i.e. Pump test at CVS Amite)",
         valueToString: (String value) => value,
         builder: (CreatorItem<String> item){
@@ -257,8 +259,8 @@ class _CreatorCardState extends State<CreatorCard> {
       ),
       new CreatorItem<DateTime>(
         name: "Date & time",
-        value: new DateTime.now(), // TODO: Fill data here
-        hint: "What time is the job?",
+        value: data != null ? DateTime.parse(data["datetime"]) : new DateTime.now(), // What if it's already a DateTime?
+        hint: "When is the job?",
         valueToString: (DateTime dt) => fullfmt.format(dt),
         builder: (CreatorItem<DateTime> item) {
           void close() {
