@@ -1,5 +1,7 @@
+
 import 'package:intl/intl.dart';
 import 'package:flutter/material.dart';
+import '../firebase.dart';
 
 // Internal: Most of this code borrowed from expansion_panels_demo.dart
 
@@ -21,6 +23,14 @@ DateTime replaceDate(DateTime original, DateTime newdt){
     original.hour,
     original.minute
   );
+}
+
+Map mapFromID(String id){
+  Map newMap = {"location": id};
+  getObject("locations", id).then((Map locationData){
+     newMap["locationData"] = locationData;
+  });
+  return newMap;
 }
 
 typedef Widget CreatorItemBodyBuilder<T>(CreatorItem<T> item);
@@ -323,9 +333,60 @@ class _CreatorCardState extends State<CreatorCard> {
             ),
           );
         }
+      ),
+      new CreatorItem<Map>(
+        name: "Location",
+        value: data != null ? {"location": data["location"], "locationData": data["locationData"]} 
+                            : {"location": "", "locationData": {"name": "Select a location"}},
+        hint: "Where is the job?",
+        valueToString: (Map loc) => loc["locationData"]["name"],
+        builder: (CreatorItem<Map> item) {
+          void close() {
+            setState((){
+              item.isExpanded = false;
+            });
+          }
+
+          return new Form(
+            child: new Builder(
+              builder: (BuildContext context) {
+                return new CollapsibleBody(
+                  onSave: () { Form.of(context).save(); close(); },
+                  onCancel: () { Form.of(context).reset(); close(); },
+                  child: new FormField<Map>(
+                    initialValue: item.value,
+                    onSaved: (Map value) { item.value = value; },
+                    builder: (FormFieldState<Map> field){
+                      return new Column(
+                        mainAxisSize: MainAxisSize.min,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: <Widget>[
+                          new ListTile(
+                            title: new Text(field.value["locationData"]["name"]),
+                            trailing: new Icon(Icons.create),
+                            onTap: () {
+                              // TODO: Popup a location selector.
+                              // Use showDatePicker as an example.
+                              /*
+                              final String chosen = await pickLocation(
+                                context: context,
+                                initialLocation: field.value["location"],
+                              );
+                              if (chosen != null && chosen != field.value["location"]){
+                                field.onChanged(mapFromID(chosen));
+                              }*/
+                            }
+                          )
+                        ]
+                      );
+                    }
+                  ),
+                );
+              },
+            ),
+          );
+        }
       )
-      // TODO: location String (plus set locationData)
-      // TODO: Package Row<Radio> ("Add new" option)
       // TODO: Contacts
       // TODO: Billing [po, billed?]
       // TODO: Notes
