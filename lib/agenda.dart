@@ -102,7 +102,6 @@ class AgendaPageState extends State<AgendaPage> {
     if (agenda.length > 0) {
       print('${agenda[0].runtimeType}');
     }
-    List newList = new List.from(agenda);
     return new Scaffold(
       key: _scaffoldKey,
       appBar: buildAppBar(),
@@ -111,7 +110,7 @@ class AgendaPageState extends State<AgendaPage> {
       body: new Center(
         child: new TwoLevelList(
           type: MaterialListType.oneLineWithAvatar,
-          children: newList
+          children: new List.from(agenda)
         ),
       ),
     );

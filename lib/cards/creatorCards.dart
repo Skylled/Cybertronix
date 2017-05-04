@@ -1,7 +1,9 @@
 
+import 'dart:async';
 import 'package:intl/intl.dart';
 import 'package:flutter/material.dart';
 import '../firebase.dart';
+import '../selectors/location.dart';
 
 // Internal: Most of this code borrowed from expansion_panels_demo.dart
 
@@ -31,6 +33,18 @@ Map mapFromID(String id){
      newMap["locationData"] = locationData;
   });
   return newMap;
+}
+
+Future<String> pickLocation({
+  BuildContext context,
+  String initialLocation
+}) async {
+  return await showDialog(
+    context: context,
+    child: new LocationSelector(
+      initialLocation: initialLocation
+    )
+  );
 }
 
 typedef Widget CreatorItemBodyBuilder<T>(CreatorItem<T> item);
@@ -364,17 +378,14 @@ class _CreatorCardState extends State<CreatorCard> {
                           new ListTile(
                             title: new Text(field.value["locationData"]["name"]),
                             trailing: new Icon(Icons.create),
-                            onTap: () {
-                              // TODO: Popup a location selector.
-                              // Use showDatePicker as an example.
-                              /*
+                            onTap: () async {
                               final String chosen = await pickLocation(
                                 context: context,
                                 initialLocation: field.value["location"],
                               );
                               if (chosen != null && chosen != field.value["location"]){
                                 field.onChanged(mapFromID(chosen));
-                              }*/
+                              }
                             }
                           )
                         ]
