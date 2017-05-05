@@ -2,8 +2,8 @@
 import 'package:flutter/material.dart';
 import '../firebase.dart';
 
-class LocationSelector extends StatefulWidget {
-  const LocationSelector({
+class SelectorDialog extends StatefulWidget {
+  const SelectorDialog({
     Key key,
     this.initialLocation,
   }) : super(key: key);
@@ -11,19 +11,18 @@ class LocationSelector extends StatefulWidget {
   final String initialLocation;
 
   @override
-  _LocationSelectorState createState() => new _LocationSelectorState();
+  _SelectorDialogState createState() => new _SelectorDialogState();
 }
 
-class _LocationSelectorState extends State<LocationSelector> {
+class _SelectorDialogState extends State<SelectorDialog> {
   String _selectedLocation;
-  List<ListTile> locationList;
-  final GlobalKey _selectorKey = new GlobalKey();
+  List<ListTile> locationList = [];
 
   @override
   void initState(){
     super.initState();
     _selectedLocation = widget.initialLocation;
-    getCategory("location").then((locations){
+    getCategory("locations").then((locations){
       locations.forEach((String id, Map data){
         setState((){
           locationList.add(new ListTile(
@@ -68,7 +67,7 @@ class _LocationSelectorState extends State<LocationSelector> {
           padding: const EdgeInsets.all(8.0),
           child: new Column(
             children: <Widget>[
-              new ListView(
+              new Column(
                 children: new List.from(locationList)
               ),
               actions

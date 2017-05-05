@@ -3,7 +3,7 @@ import 'dart:async';
 import 'package:intl/intl.dart';
 import 'package:flutter/material.dart';
 import '../firebase.dart';
-import '../selectors/location.dart';
+import '../dialogs/selector.dart';
 
 // Internal: Most of this code borrowed from expansion_panels_demo.dart
 
@@ -27,12 +27,12 @@ DateTime replaceDate(DateTime original, DateTime newdt){
   );
 }
 
-Map mapFromID(String id){
-  Map newMap = {"location": id};
-  getObject("locations", id).then((Map locationData){
-     newMap["locationData"] = locationData;
+Map mapFromID(String type, String id){
+  Map objMap = {"id": id};
+  getObject(type, id).then((Map data){
+     objMap["data"] = data;
   });
-  return newMap;
+  return objMap;
 }
 
 Future<String> pickLocation({
@@ -41,7 +41,7 @@ Future<String> pickLocation({
 }) async {
   return await showDialog(
     context: context,
-    child: new LocationSelector(
+    child: new SelectorDialog(
       initialLocation: initialLocation
     )
   );
@@ -209,7 +209,7 @@ class CreatorItem<T> {
   }
 }
 
-// TODO: I have no idea how to load data back!
+// TODO: I have no idea how to read data from these forms!
 
 // TODO: Keep in mind! Data is sometimes loaded instead of IDs
 // Look for ID strings that might be maps instead
@@ -348,7 +348,7 @@ class _CreatorCardState extends State<CreatorCard> {
           );
         }
       ),
-      new CreatorItem<Map>(
+      new CreatorItem<Map<String, dynamic>>( // Location
         name: "Location",
         value: data != null ? {"location": data["location"], "locationData": data["locationData"]} 
                             : {"location": "", "locationData": {"name": "Select a location"}},
@@ -376,15 +376,15 @@ class _CreatorCardState extends State<CreatorCard> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: <Widget>[
                           new ListTile(
-                            title: new Text(field.value["locationData"]["name"]),
+                            title: new Text(field.value["data"]["name"]),
                             trailing: new Icon(Icons.create),
                             onTap: () async {
                               final String chosen = await pickLocation(
                                 context: context,
-                                initialLocation: field.value["location"],
+                                initialLocation: field.value["id"],
                               );
-                              if (chosen != null && chosen != field.value["location"]){
-                                field.onChanged(mapFromID(chosen));
+                              if (chosen != null && chosen != field.value["id"]){
+                                field.onChanged(mapFromID("locations", chosen));
                               }
                             }
                           )
