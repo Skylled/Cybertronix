@@ -42,7 +42,7 @@ Future<String> pickLocation({
   return await showDialog(
     context: context,
     child: new SelectorDialog(
-      initialLocation: initialLocation
+      initialObject: initialLocation
     )
   );
 }
@@ -238,7 +238,7 @@ class _CreatorCardState extends State<CreatorCard> {
   void initState(){
     super.initState();
     switch (type) {
-      case 'job':
+      case 'jobs':
         _items = getJobItems();
     }
   }

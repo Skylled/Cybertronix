@@ -58,7 +58,7 @@ class AgendaPageState extends State<AgendaPage> {
             DateFormat time = new DateFormat.jm();
             setState((){
               subJobs.add(new TwoLevelListItem(
-                title: new Text('${time.format(jdt)}, ${job["description"]}'),
+                title: new Text('${time.format(jdt)}, ${job["name"]}'),
                 onTap: () {
                   popupJobCard(context, id, job);
                 }

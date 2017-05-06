@@ -25,15 +25,32 @@ class BrowserPageState extends State<BrowserPage>{
     );
   }
 
-  Widget buildFAB(){
-    return new FloatingActionButton(
-      child: new Icon(Icons.add),
-      onPressed: () {
-        showDialog(
-          context: context,
-          child: new CreatorCard("job")
-        );
-      }
+  GridTile buildIconTile(String category, IconData icon){
+    return new GridTile(
+      child: new Column( 
+        children: <Widget>[
+          new IconButton(
+            icon: new Icon(icon),
+            onPressed: () {
+              Navigator.pushNamed(context, '/browse/${category.toLowerCase()}');
+            }
+          ),
+          new Text(category)
+        ]
+      ),
+    );
+  }
+
+  Widget buildBody(){
+    return new GridView.count(
+      crossAxisCount: 2,
+      mainAxisSpacing: 4.0,
+      crossAxisSpacing: 4.0,
+      padding: const EdgeInsets.all(4.0),
+      children: <GridTile>[
+        buildIconTile("Jobs", Icons.work),
+        buildIconTile("Locations", Icons.place)
+      ]
     );
   }
 
@@ -41,9 +58,8 @@ class BrowserPageState extends State<BrowserPage>{
     return new Scaffold(
       key: _scaffoldKey,
       appBar: buildAppBar(),
-      drawer: buildDrawer(context, 'browser'),
-      floatingActionButton: buildFAB(),
-      body: new Center()
+      drawer: buildDrawer(context, 'browse'),
+      body: buildBody()
     );
   }
 }

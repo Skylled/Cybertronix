@@ -5,32 +5,32 @@ import '../firebase.dart';
 class SelectorDialog extends StatefulWidget {
   const SelectorDialog({
     Key key,
-    this.initialLocation,
+    this.initialObject,
   }) : super(key: key);
 
-  final String initialLocation;
+  final String initialObject;
 
   @override
   _SelectorDialogState createState() => new _SelectorDialogState();
 }
 
 class _SelectorDialogState extends State<SelectorDialog> {
-  String _selectedLocation;
-  List<ListTile> locationList = [];
+  String _selectedID;
+  List<ListTile> objectList = [];
 
   @override
   void initState(){
     super.initState();
-    _selectedLocation = widget.initialLocation;
+    _selectedID = widget.initialObject;
     getCategory("locations").then((locations){
       locations.forEach((String id, Map data){
         setState((){
-          locationList.add(new ListTile(
+          objectList.add(new ListTile(
             title: new Text(data["name"]),
             onTap: (){
               Navigator.pop(context, id);
             },
-            selected: (id == _selectedLocation)
+            selected: (id == _selectedID)
           ));
         });
       });
@@ -68,7 +68,7 @@ class _SelectorDialogState extends State<SelectorDialog> {
           child: new Column(
             children: <Widget>[
               new Column(
-                children: new List.from(locationList)
+                children: new List.from(objectList)
               ),
               actions
             ]

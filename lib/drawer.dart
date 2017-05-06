@@ -10,10 +10,10 @@ Drawer buildDrawer(BuildContext context, String currentPage) {
   }
 
   void goCreator(){
-    if (currentPage == "browser"){
+    if (currentPage == "browse"){
       Navigator.pop(context);
     } else {
-      Navigator.popAndPushNamed(context, '/browser');
+      Navigator.popAndPushNamed(context, '/browse');
     }
   }
 
@@ -37,7 +37,7 @@ Drawer buildDrawer(BuildContext context, String currentPage) {
         ),
         new ListTile(
           leading: new Icon(Icons.widgets), // TODO: Verify this icon
-          selected: (currentPage == "browser"),
+          selected: (currentPage == "browse"),
           title: new Text("Data Browser"),
           onTap: goCreator
         )

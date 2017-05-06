@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'agenda.dart';
 import 'browser.dart';
+import 'category.dart';
 
 class CybertronixApp extends StatefulWidget {
   @override
@@ -15,6 +16,12 @@ class CybertronixAppState extends State<CybertronixApp>{
     final List<String> path = settings.name.split('/');
     if (path[0] != '')
       return null;
+    if (path[1] == "browse"){
+      return new MaterialPageRoute<Null>(
+        settings: settings,
+        builder: (BuildContext context) => new CategoryPage(path[2])
+      );
+    }
     if (_classes.contains(path[1])){
       /*return new MaterialPageRoute<Null>(
         settings: settings,
@@ -34,7 +41,7 @@ class CybertronixAppState extends State<CybertronixApp>{
       ),
       routes: <String, WidgetBuilder>{
         '/':       (BuildContext context) => new AgendaPage(), // Agenda
-        '/browser': (BuildContext context) => new BrowserPage()
+        '/browse': (BuildContext context) => new BrowserPage()
         /*  '/reports': (BuildContext context) => new ReportsPage(),
             '/search': (BuildContext context) => new SearchPage(), // Maybe have a search menu in the AppBar
         */
