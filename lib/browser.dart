@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'drawer.dart';
-import 'cards/creatorCards.dart';
 
 // TODO: This page will be contain a Grid of categories
 
@@ -49,7 +48,11 @@ class BrowserPageState extends State<BrowserPage>{
       padding: const EdgeInsets.all(4.0),
       children: <GridTile>[
         buildIconTile("Jobs", Icons.work),
-        buildIconTile("Locations", Icons.place)
+        buildIconTile("Locations", Icons.place),
+        buildIconTile("Customers", Icons.assignment),
+        buildIconTile("Contacts", Icons.contacts),
+        buildIconTile("Annuals", Icons.event),
+        buildIconTile("Monthlies", Icons.calendar_today)
       ]
     );
   }
