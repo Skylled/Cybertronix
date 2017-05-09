@@ -24,6 +24,24 @@ class JobCardState extends State<JobCard> {
   void populateLines (){
     DateFormat formatter = new DateFormat("h:mm a, EEEE, MMMM d");
     String address = '${jobData["locationData"]["address"]}, ${jobData["locationData"]["city"]}, ${jobData["locationData"]["state"]}';
+    cardLines.add(
+      new Container(
+        height: 200.0,
+        child: new Stack(
+          children: <Widget>[
+            new Positioned.fill(
+              child: new Image(
+                image: new AssetImage('assets/placeholder.jpg')
+              )
+            ),
+            new Positioned(
+              bottom: 16.0,
+              child: new Text(jobData["name"])
+            )
+          ]
+        )
+      )
+    );
     /*new Image( // TODO: Text over image, maybe from Contacts demo
       image: new AssetImage('assets/face-bradon.jpg')
     ),*/
