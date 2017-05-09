@@ -32,7 +32,8 @@ class BrowserPageState extends State<BrowserPage>{
             icon: new Icon(icon),
             onPressed: () {
               Navigator.pushNamed(context, '/browse/${category.toLowerCase()}');
-            }
+            },
+            iconSize: 48.0
           ),
           new Text(category)
         ]
