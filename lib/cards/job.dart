@@ -36,7 +36,12 @@ class JobCardState extends State<JobCard> {
             ),
             new Positioned(
               bottom: 16.0,
-              child: new Text(jobData["name"])
+              child: new Text(
+                jobData["name"],
+                style: new TextStyle(
+                  color: Colors.white,
+                  fontSize: 18.0,
+                ))
             )
           ]
         )
