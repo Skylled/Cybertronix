@@ -40,16 +40,14 @@ class JobCardState extends State<JobCard> {
                 jobData["name"],
                 style: new TextStyle(
                   color: Colors.white,
-                  fontSize: 18.0,
+                  fontSize: 24.0,
+                  fontWeight: FontWeight.bold
                 ))
             )
           ]
         )
       )
     );
-    /*new Image( // TODO: Text over image, maybe from Contacts demo
-      image: new AssetImage('assets/face-bradon.jpg')
-    ),*/
     print('jobData["datetime"]: ${jobData["datetime"]}');
     print('parsed: ${DateTime.parse(jobData["datetime"])}');
     cardLines.add(

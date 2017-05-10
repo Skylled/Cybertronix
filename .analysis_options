@@ -8,7 +8,7 @@ linter:
   rules:
     - always_declare_return_types
     - always_specify_types
-    - annotate_overrides
+    # - annotate_overrides
     - avoid_as
     - avoid_empty_else
     - avoid_init_to_null
@@ -54,7 +54,7 @@ linter:
     - throw_in_finally
     - type_annotate_public_apis
     - type_init_formals
-    - unawaited_futures
+    # - unawaited_futures
     - unnecessary_brace_in_string_interp
     - unnecessary_getters_setters
     - unrelated_type_equality_checks

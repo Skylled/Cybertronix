@@ -42,12 +42,12 @@ class _CategoryPageState extends State<CategoryPage>{
 
   Widget buildAppBar(){
     return new AppBar(
-      title: new Text(widget.category), // TODO: Capitalize.
+      title: new Text(widget.category.substring(0, 1).toUpperCase() + widget.category.substring(1)),
       actions: <Widget>[
         new IconButton(
           icon: new Icon(Icons.search),
           onPressed: (){
-            // TODO:
+            // TODO: How the hell do I search?
           }
         )
       ]
