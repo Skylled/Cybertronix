@@ -36,7 +36,7 @@ Drawer buildDrawer(BuildContext context, String currentPage) {
           onTap: goAgenda,
         ),
         new ListTile(
-          leading: new Icon(Icons.widgets), // TODO: Verify this icon
+          leading: new Icon(Icons.widgets),
           selected: (currentPage == "browse"),
           title: new Text("Data Browser"),
           onTap: goCreator

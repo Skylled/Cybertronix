@@ -39,13 +39,13 @@ class AgendaPageState extends State<AgendaPage> {
   }
 
   void buildAgenda() {
-    agenda = [];
-    agendaData.then((value) {
-      value.forEach((day, jobs) {
+    agenda = <Widget>[];
+    agendaData.then((Map<String, Map<String, Map<String, dynamic>>> value) {
+      value.forEach((String day, Map<String, Map<String, dynamic>> jobs) {
         DateTime date = DateTime.parse(day);
         DateFormat formatter = new DateFormat('EEEE, MMMM d');
         String txt = formatter.format(date);
-        List subJobs = [];
+        List<Widget> subJobs = <Widget>[];
         if (jobs.length == 0) {
           setState((){
             subJobs.add(new ListTile(
@@ -53,7 +53,7 @@ class AgendaPageState extends State<AgendaPage> {
             ));
           });
         } else {
-          jobs.forEach((id, job) {
+          jobs.forEach((String id, Map<String, dynamic> job) {
             DateTime jdt = DateTime.parse(job["datetime"]);
             DateFormat time = new DateFormat.jm();
             setState((){
@@ -95,7 +95,7 @@ class AgendaPageState extends State<AgendaPage> {
       drawer: buildDrawer(context, 'agenda'),
       body: new Center(
         child: new ListView(
-          children: new List.from(agenda)
+          children: new List<Widget>.from(agenda)
         ),
       ),
     );

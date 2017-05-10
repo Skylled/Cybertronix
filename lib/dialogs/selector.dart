@@ -16,14 +16,14 @@ class SelectorDialog extends StatefulWidget {
 
 class _SelectorDialogState extends State<SelectorDialog> {
   String _selectedID;
-  List<ListTile> objectList = [];
+  List<ListTile> objectList = <ListTile>[];
 
   @override
   void initState(){
     super.initState();
     _selectedID = widget.initialObject;
-    getCategory("locations").then((locations){
-      locations.forEach((String id, Map data){
+    getCategory("locations").then((Map<String, Map<String, dynamic>> locations){
+      locations.forEach((String id, Map<String, dynamic> data){
         setState((){
           objectList.add(new ListTile(
             title: new Text(data["name"]),
@@ -68,7 +68,7 @@ class _SelectorDialogState extends State<SelectorDialog> {
           child: new Column(
             children: <Widget>[
               new Column(
-                children: new List.from(objectList)
+                children: new List<Widget>.from(objectList)
               ),
               actions
             ]

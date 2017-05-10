@@ -27,9 +27,9 @@ DateTime replaceDate(DateTime original, DateTime newdt){
   );
 }
 
-Map mapFromID(String type, String id){
-  Map objMap = {"id": id};
-  getObject(type, id).then((Map data){
+Map<String, dynamic> mapFromID(String type, String id){
+  Map<String, dynamic> objMap = <String, dynamic>{"id": id};
+  getObject(type, id).then((Map<String, dynamic> data){
      objMap["data"] = data;
   });
   return objMap;
@@ -215,9 +215,9 @@ class CreatorItem<T> {
 // Look for ID strings that might be maps instead
 class CreatorCard extends StatefulWidget {
   final String type;
-  final Map data;
+  final Map<String, dynamic> data;
 
-  CreatorCard(String type, {Map data: null}):
+  CreatorCard(String type, {Map<String, dynamic> data: null}):
     this.type = type,
     this.data = data;
 
@@ -228,7 +228,7 @@ class CreatorCard extends StatefulWidget {
 class _CreatorCardState extends State<CreatorCard> {
   _CreatorCardState(this.type, this.data);
   String type;
-  Map data;
+  Map<String, dynamic> data;
   List<CreatorItem<dynamic>> _items;
 
   DateFormat datefmt = new DateFormat("EEEE, MMMM d");
@@ -350,11 +350,11 @@ class _CreatorCardState extends State<CreatorCard> {
       ),
       new CreatorItem<Map<String, dynamic>>( // Location
         name: "Location",
-        value: data != null ? {"location": data["location"], "locationData": data["locationData"]} 
-                            : {"location": "", "locationData": {"name": "Select a location"}},
+        value: data != null ? <String, dynamic>{"location": data["location"], "locationData": data["locationData"]} 
+                            : <String, dynamic>{"location": "", "locationData": <String, dynamic>{"name": "Select a location"}},
         hint: "Where is the job?",
-        valueToString: (Map loc) => loc["locationData"]["name"],
-        builder: (CreatorItem<Map> item) {
+        valueToString: (Map<String, dynamic> loc) => loc["locationData"]["name"],
+        builder: (CreatorItem<Map<String, dynamic>> item) {
           void close() {
             setState((){
               item.isExpanded = false;
@@ -367,10 +367,10 @@ class _CreatorCardState extends State<CreatorCard> {
                 return new CollapsibleBody(
                   onSave: () { Form.of(context).save(); close(); },
                   onCancel: () { Form.of(context).reset(); close(); },
-                  child: new FormField<Map>(
+                  child: new FormField<Map<String, dynamic>>(
                     initialValue: item.value,
-                    onSaved: (Map value) { item.value = value; },
-                    builder: (FormFieldState<Map> field){
+                    onSaved: (Map<String, dynamic> value) { item.value = value; },
+                    builder: (FormFieldState<Map<String, dynamic>> field){
                       return new Column(
                         mainAxisSize: MainAxisSize.min,
                         crossAxisAlignment: CrossAxisAlignment.start,

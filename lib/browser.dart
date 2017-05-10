@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'drawer.dart';
 
-// TODO: This page will be contain a Grid of categories
-
 class BrowserPage extends StatefulWidget {
   const BrowserPage();
 

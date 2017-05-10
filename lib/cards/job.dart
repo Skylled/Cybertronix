@@ -5,7 +5,7 @@ import '../firebase.dart';
 
 class JobCard extends StatefulWidget {
   final String jobID;
-  final Map jobData;
+  final Map<String, dynamic> jobData;
 
   JobCard(this.jobID, this.jobData);
   
@@ -19,7 +19,7 @@ class JobCardState extends State<JobCard> {
   final Map<String, dynamic> jobData;
   JobCardState(this.jobID, this.jobData);
 
-  List cardLines = [];
+  List<Widget> cardLines = <Widget>[];
 
   void populateLines (){
     DateFormat formatter = new DateFormat("h:mm a, EEEE, MMMM d");
@@ -70,9 +70,9 @@ class JobCardState extends State<JobCard> {
       )
     );
     cardLines.add(new Divider());
-    jobData["contacts"].forEach((contactId) {
+    jobData["contacts"].forEach((String contactId) {
       Map<String, dynamic> contactData;
-      getObject("contacts", contactId).then((con) async {
+      getObject("contacts", contactId).then((Map<String, dynamic> con) async {
         contactData = con;
         setState((){
           // Insert because Async.
@@ -117,7 +117,7 @@ class JobCardState extends State<JobCard> {
       padding: const EdgeInsets.fromLTRB(8.0, 28.0, 8.0, 12.0),
       child: new Card(
         child: new ListView(
-          children: new List.from(cardLines)
+          children: new List<Widget>.from(cardLines)
         )
       )
     );

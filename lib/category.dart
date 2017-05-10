@@ -17,17 +17,17 @@ class _CategoryPageState extends State<CategoryPage>{
   _CategoryPageState();
 
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
-  List objectList = [];
+  List<Widget> objectList = <Widget>[];
 
   @override
   void initState() {
     super.initState();
     generateList();
   }
-
+  
   void generateList(){
-    getCategory(widget.category).then((objects){
-      objects.forEach((String id, Map data){
+    getCategory(widget.category).then((Map<String, Map<String, dynamic>> objects){
+      objects.forEach((String id, Map<String, dynamic> data){
         setState((){
           objectList.add(new ListTile(
             title: new Text(data["name"]),

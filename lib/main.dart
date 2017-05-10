@@ -9,7 +9,7 @@ class CybertronixApp extends StatefulWidget {
 }
 
 class CybertronixAppState extends State<CybertronixApp>{
-  List _classes = ['annuals', 'contacts', 'customers', 'jobs',
+  final List<String> _classes = <String>['annuals', 'contacts', 'customers', 'jobs',
   'locations', 'monthlies', 'packages'];
 
   Route<Null> _getRoute(RouteSettings settings) {
