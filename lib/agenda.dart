@@ -48,7 +48,7 @@ class AgendaPageState extends State<AgendaPage> {
         List subJobs = [];
         if (jobs.length == 0) {
           setState((){
-            subJobs.add(new TwoLevelListItem(
+            subJobs.add(new ListTile(
               title: new Text("No jobs scheduled.")
             ));
           });
@@ -57,7 +57,7 @@ class AgendaPageState extends State<AgendaPage> {
             DateTime jdt = DateTime.parse(job["datetime"]);
             DateFormat time = new DateFormat.jm();
             setState((){
-              subJobs.add(new TwoLevelListItem(
+              subJobs.add(new ListTile(
                 title: new Text('${time.format(jdt)}, ${job["name"]}'),
                 onTap: () {
                   popupJobCard(context, id, job);
@@ -67,7 +67,7 @@ class AgendaPageState extends State<AgendaPage> {
           });
         }
         setState((){
-          agenda.add(new TwoLevelSublist(
+          agenda.add(new ExpansionTile(
             title: new Text(txt),
             leading: new CircleAvatar(child: new Text(jobs.length.toString())),
             children: subJobs
@@ -94,8 +94,7 @@ class AgendaPageState extends State<AgendaPage> {
       floatingActionButton: buildFloatingActionButton(),
       drawer: buildDrawer(context, 'agenda'),
       body: new Center(
-        child: new TwoLevelList(
-          type: MaterialListType.oneLineWithAvatar,
+        child: new ListView(
           children: new List.from(agenda)
         ),
       ),
