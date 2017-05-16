@@ -388,6 +388,7 @@ class _CreatorCardState extends State<CreatorCard> {
           );
         }
       ),
+      // TODO: Refactor this to remove locationdata
       new CreatorItem<Map<String, dynamic>>( // Location
         name: "Location",
         value: widget.data != null ? <String, dynamic>{"id": widget.data["location"],
@@ -451,8 +452,58 @@ class _CreatorCardState extends State<CreatorCard> {
         hint: "Who is this job for?",
         valueToString: (String customerID) {
           if (customerID != null){
-            
+            Map<String, dynamic> customerData = getObject("customers", customerID);
+            return customerData["name"];
+          } else {
+            return "Select a customer";
           }
+        },
+        builder: (CreatorItem<String> item) {
+          void close() {
+            setState((){
+              item.isExpanded = false;
+            });
+          }
+
+          return new Form(
+            child: new Builder(
+              builder: (BuildContext context) {
+                return new CollapsibleBody(
+                  onSave: () { Form.of(context).save(); close(); },
+                  onCancel: () { Form.of(context).reset(); close(); },
+                  child: new FormField<String>(
+                    initialValue: item.value,
+                    onSaved: (String value){
+                      item.value = value;
+                      currentData["customer"] = value;
+                    },
+                    builder: (FormFieldState<String> field){
+                      return new Column(
+                        mainAxisSize: MainAxisSize.min,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: <Widget>[
+                          new ListTile(
+                            title: new Text(item.valueToString(item.value)),
+                            trailing: new Icon(Icons.create),
+                            onTap: () async {
+                              final String chosen = await pickFromCategory(
+                                context: context,
+                                category: "customers",
+                                initialObject: field.value,
+                              );
+                              if (chosen != null && chosen != field.value){
+                                field.onChanged(chosen);
+                              }
+                            }
+                          )
+                        ]
+                      );
+                    }
+                  ),
+                );
+              }
+            )
+          );
         }
       ),
       new CreatorItem<List<String>>( // Contacts
@@ -497,7 +548,7 @@ class _CreatorCardState extends State<CreatorCard> {
                         children: field.value.map((String contactID){
                           Map<String, dynamic> conData = getObject("contacts", contactID);
                           return new Chip(
-                            label: conData["name"],
+                            label: new Text(conData["name"]),
                             onDeleted: () {
                               field.onChanged(removeContact(field.value, contactID));
                             }

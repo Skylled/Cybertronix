@@ -3,7 +3,6 @@ import 'agenda.dart';
 import 'browser.dart';
 import 'category.dart';
 import 'firebase.dart' as firebase;
-import 'dart:async';
 
 class CybertronixApp extends StatefulWidget {
   @override
@@ -15,10 +14,11 @@ class CybertronixAppState extends State<CybertronixApp>{
   'locations', 'monthlies', 'packages'];
 
   @override
-  Future<Null> initState() async {
+  void initState() {
     super.initState();
-    await firebase.getTempFolder();
-    firebase.refreshCache();
+    firebase.getTempFolder().then((Null x){
+      firebase.refreshCache();
+    });
   }
 
   Route<Null> _getRoute(RouteSettings settings) {
