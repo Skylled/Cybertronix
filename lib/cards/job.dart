@@ -2,6 +2,7 @@ import 'package:intl/intl.dart';
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart' as url_launcher;
 import '../firebase.dart';
+import 'creatorCards.dart';
 
 class JobCard extends StatefulWidget {
   final String jobID;
@@ -15,11 +16,19 @@ class JobCard extends StatefulWidget {
 }
 
 class JobCardState extends State<JobCard> {
+  // TODO: Change to widget.jobID and widget.jobData
   final String jobID;
   final Map<String, dynamic> jobData;
   JobCardState(this.jobID, this.jobData);
 
   List<Widget> cardLines = <Widget>[];
+
+  void goEdit(BuildContext context){
+    showDialog(
+      context: context,
+      child: new CreatorCard("jobs", data: jobData),
+    );
+  }
 
   void populateLines (){
     DateFormat formatter = new DateFormat("h:mm a, EEEE, MMMM d");
@@ -64,7 +73,10 @@ class JobCardState extends State<JobCard> {
           onPressed: () {
             url_launcher.launch('google.navigation:q=$address');
           }
-        )
+        ),
+        onTap: (){
+          // TODO: Popup a Location preview
+        }
       )
     );
     cardLines.add(new Divider());
@@ -91,11 +103,13 @@ class JobCardState extends State<JobCard> {
       child: new ButtonBar(
         children: <Widget>[
           new FlatButton(
-            child: new Text('Reports'),
-            onPressed: () {}
+            child: new Text('Edit info'),
+            onPressed: () {
+              goEdit(context);
+            }
           ),
           new FlatButton(
-            child: new Text('More info'),
+            child: new Text('Reports'),
             onPressed: () {}
           ),
         ]

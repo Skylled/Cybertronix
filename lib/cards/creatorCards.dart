@@ -27,22 +27,55 @@ DateTime replaceDate(DateTime original, DateTime newdt){
   );
 }
 
-Map<String, dynamic> mapFromID(String type, String id){
+Future<Map<String, dynamic>> mapFromID(String category, String id) async {
   Map<String, dynamic> objMap = <String, dynamic>{"id": id};
-  getObject(type, id).then((Map<String, dynamic> data){
-     objMap["data"] = data;
-  });
+  Map<String, dynamic> data = await getObject(category, id);
+  objMap["data"] = data;
   return objMap;
 }
 
-Future<String> pickLocation({
+class AsyncContactChip extends StatefulWidget {
+  final Future<Map<String, dynamic>> contactData;
+  final VoidCallback onDeleted;
+
+  AsyncContactChip(this.contactData, this.onDeleted);
+
+  @override
+  _AsyncContactChipState createState() => new _AsyncContactChipState();
+}
+
+class _AsyncContactChipState extends State<AsyncContactChip>{
+  String label;
+  @override
+  void initState() {
+    super.initState();
+    label = "Loading...";
+    widget.contactData.then((Map<String, dynamic> data){
+      setState((){
+        label = data["name"];
+      });
+    });
+  }
+
+  @override
+  Widget build(BuildContext context){
+    return new Chip(
+      label: new Text(label),
+      onDeleted: widget.onDeleted
+    );
+  }
+}
+
+Future<String> pickFromCategory({
   BuildContext context,
-  String initialLocation
+  String category,
+  String initialObject: null,
 }) async {
   return await showDialog(
     context: context,
     child: new SelectorDialog(
-      initialObject: initialLocation
+      category: category,
+      initialObject: initialObject
     )
   );
 }
@@ -209,27 +242,26 @@ class CreatorItem<T> {
   }
 }
 
-// TODO: I have no idea how to read data from these forms!
+// TODO: Save object using currentData
 
 // TODO: Keep in mind! Data is sometimes loaded instead of IDs
 // Look for ID strings that might be maps instead
 class CreatorCard extends StatefulWidget {
-  final String type;
+  final String category;
   final Map<String, dynamic> data;
 
-  CreatorCard(String type, {Map<String, dynamic> data: null}):
-    this.type = type,
+  CreatorCard(String category, {Map<String, dynamic> data: null}):
+    this.category = category,
     this.data = data;
 
   @override
-  _CreatorCardState createState() => new _CreatorCardState(type, data);
+  _CreatorCardState createState() => new _CreatorCardState();
 }
 
 class _CreatorCardState extends State<CreatorCard> {
-  _CreatorCardState(this.type, this.data);
-  String type;
-  Map<String, dynamic> data;
   List<CreatorItem<dynamic>> _items;
+  Map<String, dynamic> currentData;
+  List<String> contactList;
 
   DateFormat datefmt = new DateFormat("EEEE, MMMM d");
   DateFormat timefmt = new DateFormat("h:mm a");
@@ -237,7 +269,8 @@ class _CreatorCardState extends State<CreatorCard> {
 
   void initState(){
     super.initState();
-    switch (type) {
+    currentData = widget.data != null ? new Map<String, dynamic>.from(widget.data) : <String, dynamic>{};
+    switch (widget.category) {
       case 'jobs':
         _items = getJobItems();
     }
@@ -245,9 +278,9 @@ class _CreatorCardState extends State<CreatorCard> {
 
   List<CreatorItem<dynamic>> getJobItems() {
     return <CreatorItem<dynamic>>[
-      new CreatorItem<String>( // Description
+      new CreatorItem<String>( // Name
         name: "Title",
-        value: data != null ? data['description'] : '',
+        value: widget.data != null ? widget.data['name'] : '',
         hint: "(i.e. Pump test at CVS Amite)",
         valueToString: (String value) => value,
         builder: (CreatorItem<String> item){
@@ -272,7 +305,10 @@ class _CreatorCardState extends State<CreatorCard> {
                         hintText: item.hint,
                         labelText: item.name,
                       ),
-                      onSaved: (String value) { item.value = value; }
+                      onSaved: (String value) {
+                        item.value = value;
+                        currentData['name'] = value;
+                      }
                     ),
                   ),
                 );
@@ -281,9 +317,10 @@ class _CreatorCardState extends State<CreatorCard> {
           );
         },
       ),
-      new CreatorItem<DateTime>(
+      new CreatorItem<DateTime>( // When
+        // TODO: Bug! If you pick the time after the date, the date resets back.
         name: "Date & time",
-        value: data != null ? DateTime.parse(data["datetime"]) : new DateTime.now(), // What if it's already a DateTime?
+        value: widget.data != null ? DateTime.parse(widget.data["datetime"]) : new DateTime.now(),
         hint: "When is the job?",
         valueToString: (DateTime dt) => fullfmt.format(dt),
         builder: (CreatorItem<DateTime> item) {
@@ -301,7 +338,10 @@ class _CreatorCardState extends State<CreatorCard> {
                   onCancel: () { Form.of(context).reset(); close(); },
                   child: new FormField<DateTime>(
                     initialValue: item.value,
-                    onSaved: (DateTime value) { item.value = value; },
+                    onSaved: (DateTime value) {
+                      item.value = value;
+                      currentData["datetime"] = value.toIso8601String();
+                    },
                     builder: (FormFieldState<DateTime> field){
                       return new Column(
                         mainAxisSize: MainAxisSize.min,
@@ -329,11 +369,11 @@ class _CreatorCardState extends State<CreatorCard> {
                             onTap: () async {
                               final TimeOfDay chosen = await showTimePicker(
                                 context: context,
-                                initialTime: new TimeOfDay.fromDateTime(item.value)
+                                initialTime: new TimeOfDay.fromDateTime(field.value)
                               );
                               if (chosen != null) {
                                 setState((){
-                                  field.onChanged(replaceTimeOfDay(item.value, chosen));
+                                  field.onChanged(replaceTimeOfDay(field.value, chosen));
                                 });
                               }
                             }
@@ -350,10 +390,12 @@ class _CreatorCardState extends State<CreatorCard> {
       ),
       new CreatorItem<Map<String, dynamic>>( // Location
         name: "Location",
-        value: data != null ? <String, dynamic>{"location": data["location"], "locationData": data["locationData"]} 
-                            : <String, dynamic>{"location": "", "locationData": <String, dynamic>{"name": "Select a location"}},
+        value: widget.data != null ? <String, dynamic>{"id": widget.data["location"],
+                                                       "data": widget.data["locationData"]} 
+                                   : <String, dynamic>{"id": "",
+                                                       "data": <String, dynamic>{"name": "Select a location"}},
         hint: "Where is the job?",
-        valueToString: (Map<String, dynamic> loc) => loc["locationData"]["name"],
+        valueToString: (Map<String, dynamic> loc) => loc["data"]["name"],
         builder: (CreatorItem<Map<String, dynamic>> item) {
           void close() {
             setState((){
@@ -369,7 +411,11 @@ class _CreatorCardState extends State<CreatorCard> {
                   onCancel: () { Form.of(context).reset(); close(); },
                   child: new FormField<Map<String, dynamic>>(
                     initialValue: item.value,
-                    onSaved: (Map<String, dynamic> value) { item.value = value; },
+                    onSaved: (Map<String, dynamic> value) {
+                      item.value = value;
+                      currentData["location"] = value["id"];
+                      currentData["locationData"] = value["data"];
+                    },
                     builder: (FormFieldState<Map<String, dynamic>> field){
                       return new Column(
                         mainAxisSize: MainAxisSize.min,
@@ -379,12 +425,13 @@ class _CreatorCardState extends State<CreatorCard> {
                             title: new Text(field.value["data"]["name"]),
                             trailing: new Icon(Icons.create),
                             onTap: () async {
-                              final String chosen = await pickLocation(
+                              final String chosen = await pickFromCategory(
                                 context: context,
-                                initialLocation: field.value["id"],
+                                category: "locations",
+                                initialObject: field.value["id"],
                               );
                               if (chosen != null && chosen != field.value["id"]){
-                                field.onChanged(mapFromID("locations", chosen));
+                                field.onChanged(await mapFromID("locations", chosen));
                               }
                             }
                           )
@@ -397,8 +444,77 @@ class _CreatorCardState extends State<CreatorCard> {
             ),
           );
         }
+      ),
+      // TODO: Customer
+      new CreatorItem<List<String>>( // Contacts
+        name: "Contacts",
+        value: widget.data != null ? widget.data['contacts'] : <String>[],
+        hint: "Who is involved with this job?",
+        valueToString: (List<String> value) => value.length.toString(),
+        builder: (CreatorItem<List<String>> item){
+          void close() {
+            setState((){
+              item.isExpanded = false;
+            });
+          }
+          List<String> removeContact(List<String> conList, String contactID){
+            List<String> updated = new List<String>.from(conList);
+            updated.remove(contactID);
+            return updated;
+          }
+          
+          List<String> addContact(List<String> conList, String contactID){
+            List<String> updated = new List<String>.from(conList);
+            updated.add(contactID);
+            return updated;
+          }
+          
+          return new Form(
+            child: new Builder(
+              builder: (BuildContext context) {
+                return new CollapsibleBody(
+                  onSave: () { Form.of(context).save(); close(); },
+                  onCancel: () { Form.of(context).reset(); close(); },
+                  child: new FormField<List<String>>(
+                    initialValue: item.value,
+                    onSaved: (List<String> value) {
+                      item.value = value;
+                      currentData["contacts"] = value;
+                    },
+                    builder: (FormFieldState<List<String>> field){
+                      Column x =  new Column(
+                        mainAxisSize: MainAxisSize.min,
+                        crossAxisAlignment: CrossAxisAlignment.end,
+                        children: field.value.map((String contactID){
+                          return new AsyncContactChip(
+                            getObject("contacts", contactID),
+                            (){
+                              field.onChanged(removeContact(field.value, contactID));
+                            });
+                        }).toList()
+                      );
+                      x.children.insert(0, new ListTile(
+                        title: new Text("Add a contact"),
+                        trailing: new Icon(Icons.add),
+                        onTap: () async {
+                          final String chosen = await pickFromCategory(
+                            context: context,
+                            category: "contacts",
+                          );
+                          if (chosen != null && !field.value.contains(chosen)){
+                            field.onChanged(addContact(field.value, chosen));
+                          }
+                        }
+                      ));
+                      return x;
+                    }
+                  ),
+                );
+              }
+            ),
+          );
+        }
       )
-      // TODO: Contacts
       // TODO: Billing [po, billed?]
       // TODO: Notes
     ];
@@ -408,23 +524,39 @@ class _CreatorCardState extends State<CreatorCard> {
     return(new Container(
       padding: const EdgeInsets.fromLTRB(8.0, 28.0, 8.0, 12.0),
       child: new Card(
-        child: new SingleChildScrollView(
-          child: new Container(
-            child: new ExpansionPanelList(
-              expansionCallback: (int index, bool isExpanded) {
-                setState((){
-                  _items[index].isExpanded = !isExpanded;
-                });
-              },
-              children: _items.map((CreatorItem<dynamic> item){
-                return new ExpansionPanel(
-                  isExpanded: item.isExpanded,
-                  headerBuilder: item.headerBuilder,
-                  body: item.builder(item)
-                );
-              }).toList()
+        child: new Column(
+          children: <Widget>[
+            new SingleChildScrollView(
+              child: new ExpansionPanelList(
+                expansionCallback: (int index, bool isExpanded) {
+                  setState((){
+                    _items[index].isExpanded = !isExpanded;
+                  });
+                },
+                children: _items.map((CreatorItem<dynamic> item){
+                  return new ExpansionPanel(
+                    isExpanded: item.isExpanded,
+                    headerBuilder: item.headerBuilder,
+                    body: item.builder(item)
+                  );
+                }).toList()
+              )
+            ),
+            new ButtonBar(
+              children: <Widget>[
+                new FlatButton(
+                  child: new Text("Save"),
+                  onPressed: (){} // TODO: Pass currentData to Firebase.
+                ),
+                new FlatButton(
+                  child: new Text("Cancel"),
+                  onPressed: (){
+                    Navigator.pop(context);
+                  }
+                )
+              ]
             )
-          )
+          ]
         )
       )
     ));

@@ -1,13 +1,16 @@
 
 import 'package:flutter/material.dart';
 import '../firebase.dart';
+import '../cards/creatorCards.dart';
 
 class SelectorDialog extends StatefulWidget {
   const SelectorDialog({
     Key key,
+    this.category,
     this.initialObject,
   }) : super(key: key);
 
+  final String category;
   final String initialObject;
 
   @override
@@ -22,8 +25,8 @@ class _SelectorDialogState extends State<SelectorDialog> {
   void initState(){
     super.initState();
     _selectedID = widget.initialObject;
-    getCategory("locations").then((Map<String, Map<String, dynamic>> locations){
-      locations.forEach((String id, Map<String, dynamic> data){
+    getCategory(widget.category).then((Map<String, Map<String, dynamic>> objects){
+      objects.forEach((String id, Map<String, dynamic> data){
         setState((){
           objectList.add(new ListTile(
             title: new Text(data["name"]),
@@ -38,7 +41,10 @@ class _SelectorDialogState extends State<SelectorDialog> {
   }
 
   void _onAdd(){
-    // TODO:
+    showDialog(
+      context: context,
+      child: new CreatorCard(widget.category)
+    );
   }
 
   void _onCancel(){

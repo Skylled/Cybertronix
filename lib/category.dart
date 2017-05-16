@@ -73,7 +73,7 @@ class _CategoryPageState extends State<CategoryPage>{
       drawer: buildDrawer(context, 'browse'),
       floatingActionButton: buildFAB(),
       body: new ListView(
-
+        children: new List<Widget>.from(objectList)
       )
     );
   }
