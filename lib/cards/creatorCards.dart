@@ -2,7 +2,7 @@
 import 'dart:async';
 import 'package:intl/intl.dart';
 import 'package:flutter/material.dart';
-import '../firebase.dart';
+import '../firebase.dart' as firebase;
 import '../dialogs/selector.dart';
 
 // Internal: Most of this code borrowed from expansion_panels_demo.dart
@@ -29,7 +29,7 @@ DateTime replaceDate(DateTime original, DateTime newdt){
 
 Map<String, dynamic> mapFromID(String category, String id) {
   Map<String, dynamic> objMap = <String, dynamic>{"id": id};
-  Map<String, dynamic> data = getObject(category, id);
+  Map<String, dynamic> data = firebase.getObject(category, id);
   objMap["data"] = data;
   return objMap;
 }
@@ -246,10 +246,12 @@ class CreatorItem<T> {
 class CreatorCard extends StatefulWidget {
   final String category;
   final Map<String, dynamic> data;
+  final String objID;
 
-  CreatorCard(String category, {Map<String, dynamic> data: null}):
+  CreatorCard(String category, {Map<String, dynamic> data: null, String objID: null}):
     this.category = category,
-    this.data = data;
+    this.data = data,
+    this.objID = objID;
 
   @override
   _CreatorCardState createState() => new _CreatorCardState();
@@ -391,7 +393,7 @@ class _CreatorCardState extends State<CreatorCard> {
         hint: "Where is the job?",
         valueToString: (String locationID){
           if (locationID != null){
-            return getObject("locations", locationID)["name"];
+            return firebase.getObject("locations", locationID)["name"];
           } else {
             return "Select a location";
           }
@@ -450,7 +452,7 @@ class _CreatorCardState extends State<CreatorCard> {
         hint: "Who is this job for?",
         valueToString: (String customerID) {
           if (customerID != null){
-            Map<String, dynamic> customerData = getObject("customers", customerID);
+            Map<String, dynamic> customerData = firebase.getObject("customers", customerID);
             return customerData["name"];
           } else {
             return "Select a customer";
@@ -544,7 +546,7 @@ class _CreatorCardState extends State<CreatorCard> {
                         mainAxisSize: MainAxisSize.min,
                         crossAxisAlignment: CrossAxisAlignment.end,
                         children: field.value.map((String contactID){
-                          Map<String, dynamic> conData = getObject("contacts", contactID);
+                          Map<String, dynamic> conData = firebase.getObject("contacts", contactID);
                           return new Chip(
                             label: new Text(conData["name"]),
                             onDeleted: () {
@@ -609,7 +611,9 @@ class _CreatorCardState extends State<CreatorCard> {
                 new FlatButton(
                   child: new Text("Save & Finish"),
                   textColor: Theme.of(context).accentColor,
-                  onPressed: (){}  // TODO: Pass currentData to Firebase.
+                  onPressed: (){
+                     firebase.sendObject(widget.category, currentData, objID: widget.objID);
+                  }
                 )
               ]
             )
