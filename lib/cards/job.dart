@@ -1,7 +1,7 @@
 import 'package:intl/intl.dart';
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart' as url_launcher;
-import '../firebase.dart';
+import '../firebase.dart' as firebase;
 import 'creatorCards.dart';
 
 class JobCard extends StatefulWidget {
@@ -80,24 +80,18 @@ class JobCardState extends State<JobCard> {
       )
     );
     cardLines.add(new Divider());
-    jobData["contacts"].forEach((String contactId) {
-      Map<String, dynamic> contactData;
-      getObject("contacts", contactId).then((Map<String, dynamic> con) async {
-        contactData = con;
-        setState((){
-          // Insert because Async.
-          cardLines.insert((cardLines.length - 1), new ListTile(
-            title: new Text(contactData["name"]),
-            trailing: new IconButton(
-              icon: new Icon(Icons.phone),
-              onPressed: (){
-                url_launcher.launch('tel:${contactData["phone"]}');
-              }
-            ),
-            onTap: () {} // TODO: Launch a contact details card.
-          ));
-        });
-      });
+    jobData["contacts"].forEach((String contactID) {
+      Map<String, dynamic> contactData = firebase.getObject("contacts", contactID);
+      cardLines.add(new ListTile(
+        title: new Text(contactData["name"]),
+        trailing: new IconButton(
+          icon: new Icon(Icons.phone),
+          onPressed: (){
+            url_launcher.launch('tel:${contactData["phone"]}');
+          }
+        ),
+        onTap: () {} // TODO: Launch a contact details card.
+      ));
     });
     cardLines.add(new ButtonTheme.bar(
       child: new ButtonBar(

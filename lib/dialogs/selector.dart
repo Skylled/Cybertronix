@@ -1,6 +1,6 @@
 
 import 'package:flutter/material.dart';
-import '../firebase.dart';
+import '../firebase.dart' as firebase;
 import '../cards/creatorCards.dart';
 
 class SelectorDialog extends StatefulWidget {
@@ -25,17 +25,16 @@ class _SelectorDialogState extends State<SelectorDialog> {
   void initState(){
     super.initState();
     _selectedID = widget.initialObject;
-    getCategory(widget.category).then((Map<String, Map<String, dynamic>> objects){
-      objects.forEach((String id, Map<String, dynamic> data){
-        setState((){
-          objectList.add(new ListTile(
-            title: new Text(data["name"]),
-            onTap: (){
-              Navigator.pop(context, id);
-            },
-            selected: (id == _selectedID)
-          ));
-        });
+    Map<String, Map<String, dynamic>> objects = firebase.getCategory(widget.category);
+    objects.forEach((String id, Map<String, dynamic> data){
+      setState((){
+        objectList.add(new ListTile(
+          title: new Text(data["name"]),
+          onTap: (){
+            Navigator.pop(context, id);
+          },
+          selected: (id == _selectedID)
+        ));
       });
     });
   }

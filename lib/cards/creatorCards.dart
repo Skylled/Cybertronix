@@ -27,9 +27,9 @@ DateTime replaceDate(DateTime original, DateTime newdt){
   );
 }
 
-Future<Map<String, dynamic>> mapFromID(String category, String id) async {
+Map<String, dynamic> mapFromID(String category, String id) {
   Map<String, dynamic> objMap = <String, dynamic>{"id": id};
-  Map<String, dynamic> data = await getObject(category, id);
+  Map<String, dynamic> data = getObject(category, id);
   objMap["data"] = data;
   return objMap;
 }
@@ -431,7 +431,7 @@ class _CreatorCardState extends State<CreatorCard> {
                                 initialObject: field.value["id"],
                               );
                               if (chosen != null && chosen != field.value["id"]){
-                                field.onChanged(await mapFromID("locations", chosen));
+                                field.onChanged(mapFromID("locations", chosen));
                               }
                             }
                           )
@@ -445,7 +445,16 @@ class _CreatorCardState extends State<CreatorCard> {
           );
         }
       ),
-      // TODO: Customer
+      new CreatorItem<String>( // TODO: Customer
+        name: "Customer",
+        value: widget.data != null ? widget.data["customer"] : null,
+        hint: "Who is this job for?",
+        valueToString: (String customerID) {
+          if (customerID != null){
+            
+          }
+        }
+      ),
       new CreatorItem<List<String>>( // Contacts
         name: "Contacts",
         value: widget.data != null ? widget.data['contacts'] : <String>[],
@@ -486,11 +495,13 @@ class _CreatorCardState extends State<CreatorCard> {
                         mainAxisSize: MainAxisSize.min,
                         crossAxisAlignment: CrossAxisAlignment.end,
                         children: field.value.map((String contactID){
-                          return new AsyncContactChip(
-                            getObject("contacts", contactID),
-                            (){
+                          Map<String, dynamic> conData = getObject("contacts", contactID);
+                          return new Chip(
+                            label: conData["name"],
+                            onDeleted: () {
                               field.onChanged(removeContact(field.value, contactID));
-                            });
+                            }
+                          );
                         }).toList()
                       );
                       x.children.insert(0, new ListTile(

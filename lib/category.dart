@@ -26,16 +26,15 @@ class _CategoryPageState extends State<CategoryPage>{
   }
   
   void generateList(){
-    getCategory(widget.category).then((Map<String, Map<String, dynamic>> objects){
-      objects.forEach((String id, Map<String, dynamic> data){
-        setState((){
-          objectList.add(new ListTile(
-            title: new Text(data["name"]),
-            onTap: (){
-              showCategoryCard(context, widget.category, id, data: data);
-            }
-          ));
-        });
+    Map<String, Map<String, dynamic>> objects = getCategory(widget.category);
+    objects.forEach((String id, Map<String, dynamic> data){
+      setState((){
+        objectList.add(new ListTile(
+          title: new Text(data["name"]),
+          onTap: (){
+            showCategoryCard(context, widget.category, id, data: data);
+          }
+        ));
       });
     });
   }
