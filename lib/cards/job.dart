@@ -12,27 +12,24 @@ class JobCard extends StatefulWidget {
   
   
   @override
-  JobCardState createState() => new JobCardState(jobID, jobData);
+  JobCardState createState() => new JobCardState();
 }
 
 class JobCardState extends State<JobCard> {
-  // TODO: Change to widget.jobID and widget.jobData
-  final String jobID;
-  final Map<String, dynamic> jobData;
-  JobCardState(this.jobID, this.jobData);
 
   List<Widget> cardLines = <Widget>[];
 
   void goEdit(BuildContext context){
     showDialog(
       context: context,
-      child: new CreatorCard("jobs", data: jobData),
+      child: new CreatorCard("jobs", data: widget.jobData),
     );
   }
 
   void populateLines (){
     DateFormat formatter = new DateFormat("h:mm a, EEEE, MMMM d");
-    String address = '${jobData["locationData"]["address"]}, ${jobData["locationData"]["city"]}, ${jobData["locationData"]["state"]}';
+    Map<String, dynamic> locationData = firebase.getObject("locations", widget.jobData["location"]);
+    String address = '${locationData["address"]}, ${locationData["city"]}, ${locationData["state"]}';
     cardLines.add(
       new Container(
         height: 200.0,
@@ -44,9 +41,10 @@ class JobCardState extends State<JobCard> {
               )
             ),
             new Positioned(
+              left: 8.0,
               bottom: 16.0,
               child: new Text(
-                jobData["name"],
+                widget.jobData["name"],
                 style: new TextStyle(
                   color: Colors.white,
                   fontSize: 24.0,
@@ -57,12 +55,10 @@ class JobCardState extends State<JobCard> {
         )
       )
     );
-    print('jobData["datetime"]: ${jobData["datetime"]}');
-    print('parsed: ${DateTime.parse(jobData["datetime"])}');
     cardLines.add(
       new ListTile(
         leading: new Icon(Icons.access_time),
-        title: new Text(formatter.format(DateTime.parse(jobData["datetime"])))
+        title: new Text(formatter.format(DateTime.parse(widget.jobData["datetime"])))
       )
     );
     cardLines.add(
@@ -80,7 +76,7 @@ class JobCardState extends State<JobCard> {
       )
     );
     cardLines.add(new Divider());
-    jobData["contacts"].forEach((String contactID) {
+    widget.jobData["contacts"].forEach((String contactID) {
       Map<String, dynamic> contactData = firebase.getObject("contacts", contactID);
       cardLines.add(new ListTile(
         title: new Text(contactData["name"]),

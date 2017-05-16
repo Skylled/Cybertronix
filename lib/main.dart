@@ -46,7 +46,7 @@ class CybertronixAppState extends State<CybertronixApp>{
       title: 'Cybertronix',
       theme: new ThemeData(
         brightness: Brightness.light,
-        primarySwatch: Colors.red
+        primarySwatch: Colors.deepOrange,
       ),
       routes: <String, WidgetBuilder>{
         '/':       (BuildContext context) => new AgendaPage(), // Agenda

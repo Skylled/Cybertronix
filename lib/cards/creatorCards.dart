@@ -243,9 +243,6 @@ class CreatorItem<T> {
 }
 
 // TODO: Save object using currentData
-
-// TODO: Keep in mind! Data is sometimes loaded instead of IDs
-// Look for ID strings that might be maps instead
 class CreatorCard extends StatefulWidget {
   final String category;
   final Map<String, dynamic> data;
@@ -388,16 +385,18 @@ class _CreatorCardState extends State<CreatorCard> {
           );
         }
       ),
-      // TODO: Refactor this to remove locationdata
-      new CreatorItem<Map<String, dynamic>>( // Location
+      new CreatorItem<String>( // Location
         name: "Location",
-        value: widget.data != null ? <String, dynamic>{"id": widget.data["location"],
-                                                       "data": widget.data["locationData"]} 
-                                   : <String, dynamic>{"id": "",
-                                                       "data": <String, dynamic>{"name": "Select a location"}},
+        value: widget.data != null ? widget.data["location"] : null,
         hint: "Where is the job?",
-        valueToString: (Map<String, dynamic> loc) => loc["data"]["name"],
-        builder: (CreatorItem<Map<String, dynamic>> item) {
+        valueToString: (String locationID){
+          if (locationID != null){
+            return getObject("locations", locationID)["name"];
+          } else {
+            return "Select a location";
+          }
+        },
+        builder: (CreatorItem<String> item) {
           void close() {
             setState((){
               item.isExpanded = false;
@@ -410,29 +409,28 @@ class _CreatorCardState extends State<CreatorCard> {
                 return new CollapsibleBody(
                   onSave: () { Form.of(context).save(); close(); },
                   onCancel: () { Form.of(context).reset(); close(); },
-                  child: new FormField<Map<String, dynamic>>(
+                  child: new FormField<String>(
                     initialValue: item.value,
-                    onSaved: (Map<String, dynamic> value) {
+                    onSaved: (String value) {
                       item.value = value;
-                      currentData["location"] = value["id"];
-                      currentData["locationData"] = value["data"];
+                      currentData["location"] = value;
                     },
-                    builder: (FormFieldState<Map<String, dynamic>> field){
+                    builder: (FormFieldState<String> field){
                       return new Column(
                         mainAxisSize: MainAxisSize.min,
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: <Widget>[
                           new ListTile(
-                            title: new Text(field.value["data"]["name"]),
+                            title: new Text(item.valueToString(field.value)),
                             trailing: new Icon(Icons.create),
                             onTap: () async {
                               final String chosen = await pickFromCategory(
                                 context: context,
                                 category: "locations",
-                                initialObject: field.value["id"],
+                                initialObject: field.value,
                               );
-                              if (chosen != null && chosen != field.value["id"]){
-                                field.onChanged(mapFromID("locations", chosen));
+                              if (chosen != null && chosen != field.value){
+                                field.onChanged(chosen);
                               }
                             }
                           )
@@ -446,7 +444,7 @@ class _CreatorCardState extends State<CreatorCard> {
           );
         }
       ),
-      new CreatorItem<String>( // TODO: Customer
+      new CreatorItem<String>(
         name: "Customer",
         value: widget.data != null ? widget.data["customer"] : null,
         hint: "Who is this job for?",
@@ -586,35 +584,32 @@ class _CreatorCardState extends State<CreatorCard> {
     return(new Container(
       padding: const EdgeInsets.fromLTRB(8.0, 28.0, 8.0, 12.0),
       child: new Card(
-        child: new Column(
+        child: new ListView(
           children: <Widget>[
-            new SingleChildScrollView(
-              child: new ExpansionPanelList(
-                expansionCallback: (int index, bool isExpanded) {
-                  setState((){
-                    _items[index].isExpanded = !isExpanded;
-                  });
-                },
-                children: _items.map((CreatorItem<dynamic> item){
-                  return new ExpansionPanel(
-                    isExpanded: item.isExpanded,
-                    headerBuilder: item.headerBuilder,
-                    body: item.builder(item)
-                  );
-                }).toList()
-              )
+            new ExpansionPanelList(
+              expansionCallback: (int index, bool isExpanded) {
+                setState((){
+                  _items[index].isExpanded = !isExpanded;
+                });
+              },
+              children: _items.map((CreatorItem<dynamic> item){
+                return new ExpansionPanel(
+                  isExpanded: item.isExpanded,
+                  headerBuilder: item.headerBuilder,
+                  body: item.builder(item)
+                );
+              }).toList()
             ),
             new ButtonBar(
               children: <Widget>[
                 new FlatButton(
-                  child: new Text("Save"),
-                  onPressed: (){} // TODO: Pass currentData to Firebase.
+                  child: new Text("Cancel"),
+                  onPressed: (){ Navigator.pop(context); }
                 ),
                 new FlatButton(
-                  child: new Text("Cancel"),
-                  onPressed: (){
-                    Navigator.pop(context);
-                  }
+                  child: new Text("Save & Finish"),
+                  textColor: Theme.of(context).accentColor,
+                  onPressed: (){}  // TODO: Pass currentData to Firebase.
                 )
               ]
             )
