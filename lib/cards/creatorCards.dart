@@ -242,7 +242,6 @@ class CreatorItem<T> {
   }
 }
 
-// TODO: Save object using currentData
 class CreatorCard extends StatefulWidget {
   final String category;
   final Map<String, dynamic> data;
@@ -611,8 +610,8 @@ class _CreatorCardState extends State<CreatorCard> {
                 new FlatButton(
                   child: new Text("Save & Finish"),
                   textColor: Theme.of(context).accentColor,
-                  onPressed: (){
-                     firebase.sendObject(widget.category, currentData, objID: widget.objID);
+                  onPressed: () async {
+                     await firebase.sendObject(widget.category, currentData, objID: widget.objID);
                   }
                 )
               ]

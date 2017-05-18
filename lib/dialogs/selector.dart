@@ -1,7 +1,8 @@
-
 import 'package:flutter/material.dart';
 import '../firebase.dart' as firebase;
 import '../cards/creatorCards.dart';
+
+// TODO: Add quick-scrolling.
 
 class SelectorDialog extends StatefulWidget {
   const SelectorDialog({

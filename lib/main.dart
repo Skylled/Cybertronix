@@ -4,6 +4,11 @@ import 'browser.dart';
 import 'category.dart';
 import 'firebase.dart' as firebase;
 
+// Upcoming features
+// TODO: User management
+// TODO: Google login
+// TODO: Push notifications (Firebase Cloud Messaging)
+
 class CybertronixApp extends StatefulWidget {
   @override
   CybertronixAppState createState() => new CybertronixAppState();
