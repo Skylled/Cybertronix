@@ -1,29 +1,26 @@
 import 'package:intl/intl.dart';
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart' as url_launcher;
-import '../firebase.dart' as firebase;
-import 'creatorCards.dart';
+import '../../firebase.dart' as firebase;
+import '../creatorCards.dart';
 
-class JobCard extends StatefulWidget {
+class JobInfoCard extends StatefulWidget {
   final String jobID;
   final Map<String, dynamic> jobData;
 
-  JobCard(this.jobID, this.jobData);
+  JobInfoCard(this.jobID, this.jobData);
   
   
   @override
-  JobCardState createState() => new JobCardState();
+  JobInfoCardState createState() => new JobInfoCardState();
 }
 
-class JobCardState extends State<JobCard> {
+class JobInfoCardState extends State<JobInfoCard> {
 
   List<Widget> cardLines = <Widget>[];
 
   void goEdit(BuildContext context){
-    showDialog(
-      context: context,
-      child: new CreatorCard("jobs", data: widget.jobData),
-    );
+    showCreatorCard(context, "jobs", data: widget.jobData);
   }
 
   void populateLines (){

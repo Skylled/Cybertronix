@@ -41,10 +41,7 @@ class _SelectorDialogState extends State<SelectorDialog> {
   }
 
   void _onAdd(){
-    showDialog(
-      context: context,
-      child: new CreatorCard(widget.category)
-    );
+    showCreatorCard(context, widget.category);
   }
 
   void _onCancel(){

@@ -59,10 +59,7 @@ class _CategoryPageState extends State<CategoryPage>{
     return new FloatingActionButton(
       child: new Icon(Icons.add),
       onPressed: (){
-        showDialog(
-          context: context,
-          child: new CreatorCard(widget.category)
-        );
+        showCreatorCard(context, widget.category);
       }
     );
   }

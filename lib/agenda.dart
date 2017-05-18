@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'dart:async';
-import 'cards/job.dart';
+import 'cards/categoryCards.dart';
 import 'drawer.dart';
 import 'firebase.dart';
 
@@ -31,13 +31,6 @@ class AgendaPageState extends State<AgendaPage> {
     );
   }
 
-  void popupJobCard(BuildContext context, String jobId, Map<String, dynamic> jobData){
-    showDialog(
-      context: context,
-      child: new JobCard(jobId, jobData)
-    );
-  }
-
   void buildAgenda() {
     agenda = <Widget>[];
     agendaData.then((Map<String, Map<String, Map<String, dynamic>>> value) {
@@ -60,7 +53,7 @@ class AgendaPageState extends State<AgendaPage> {
               subJobs.add(new ListTile(
                 title: new Text('${time.format(jdt)}, ${job["name"]}'),
                 onTap: () {
-                  popupJobCard(context, id, job);
+                  showCategoryCard(context, "jobs", id, data: job);
                 }
               ));
             });
