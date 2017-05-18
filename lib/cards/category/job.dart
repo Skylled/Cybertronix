@@ -3,19 +3,21 @@ import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart' as url_launcher;
 import '../../firebase.dart' as firebase;
 import '../creatorCards.dart';
+import '../categoryCards.dart';
 
 class JobInfoCard extends StatefulWidget {
   final String jobID;
   final Map<String, dynamic> jobData;
 
-  JobInfoCard(this.jobID, this.jobData);
-  
+  JobInfoCard(String jobID, {Map<String, dynamic> jobData}):
+    this.jobID = jobID,
+    this.jobData = (jobData == null && jobID != null) ? firebase.getObject("jobs", jobID) : jobData;
   
   @override
-  JobInfoCardState createState() => new JobInfoCardState();
+  _JobInfoCardState createState() => new _JobInfoCardState();
 }
 
-class JobInfoCardState extends State<JobInfoCard> {
+class _JobInfoCardState extends State<JobInfoCard> {
 
   List<Widget> cardLines = <Widget>[];
 
@@ -68,24 +70,28 @@ class JobInfoCardState extends State<JobInfoCard> {
           }
         ),
         onTap: (){
-          // TODO: Popup a Location preview
+          showCategoryCard(context, "locations", widget.jobData["location"], data: locationData);
         }
       )
     );
     cardLines.add(new Divider());
-    widget.jobData["contacts"].forEach((String contactID) {
-      Map<String, dynamic> contactData = firebase.getObject("contacts", contactID);
-      cardLines.add(new ListTile(
-        title: new Text(contactData["name"]),
-        trailing: new IconButton(
-          icon: new Icon(Icons.phone),
-          onPressed: (){
-            url_launcher.launch('tel:${contactData["phone"]}');
+    if (widget.jobData["contacts"] != null) {
+      widget.jobData["contacts"].forEach((String contactID) {
+        Map<String, dynamic> contactData = firebase.getObject("contacts", contactID);
+        cardLines.add(new ListTile(
+          title: new Text(contactData["name"]),
+          trailing: new IconButton(
+            icon: new Icon(Icons.phone),
+            onPressed: (){
+              url_launcher.launch('tel:${contactData["phone"]}');
+            }
+          ),
+          onTap: () {
+            showCategoryCard(context, "contacts", contactID, data: contactData);
           }
-        ),
-        onTap: () {} // TODO: Launch a contact details card.
-      ));
-    });
+        ));
+      });
+    }
     cardLines.add(new ButtonTheme.bar(
       child: new ButtonBar(
         children: <Widget>[

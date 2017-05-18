@@ -4,13 +4,13 @@ import '../../firebase.dart' as firebase;
 import 'components.dart';
 
 class JobCreatorCard extends StatefulWidget {
-  final Map<String, dynamic> data;
-  final String objID;
+  final Map<String, dynamic> jobData;
+  final String jobID;
 
-  JobCreatorCard({Map<String, dynamic> data: null, String objID: null}):
+  JobCreatorCard({Map<String, dynamic> jobData: null, String jobID: null}):
     // If only objID is given, generate the object's data.
-    this.data = (data == null && objID != null) ? firebase.getObject("jobs", objID) : data,
-    this.objID = objID;
+    this.jobData = (jobData == null && jobID != null) ? firebase.getObject("jobs", jobID) : jobData,
+    this.jobID = jobID;
 
   @override
   _JobCreatorCardState createState() => new _JobCreatorCardState();
@@ -27,7 +27,7 @@ class _JobCreatorCardState extends State<JobCreatorCard> {
 
   void initState(){
     super.initState();
-    currentData = widget.data != null ? new Map<String, dynamic>.from(widget.data) : <String, dynamic>{};
+    currentData = widget.jobData != null ? new Map<String, dynamic>.from(widget.jobData) : <String, dynamic>{};
     _items = getJobItems();
   }
 
@@ -35,7 +35,7 @@ class _JobCreatorCardState extends State<JobCreatorCard> {
     return <CreatorItem<dynamic>>[
       new CreatorItem<String>( // Name
         name: "Title",
-        value: widget.data != null ? widget.data['name'] : '',
+        value: widget.jobData != null ? widget.jobData['name'] : '',
         hint: "(i.e. Pump test at CVS Amite)",
         valueToString: (String value) => value,
         builder: (CreatorItem<String> item){
@@ -75,7 +75,7 @@ class _JobCreatorCardState extends State<JobCreatorCard> {
       new CreatorItem<DateTime>( // When
         // TODO: Bug! If you pick the time after the date, the date resets back.
         name: "Date & time",
-        value: widget.data != null ? DateTime.parse(widget.data["datetime"]) : new DateTime.now(),
+        value: widget.jobData != null ? DateTime.parse(widget.jobData["datetime"]) : new DateTime.now(),
         hint: "When is the job?",
         valueToString: (DateTime dt) => fullfmt.format(dt),
         builder: (CreatorItem<DateTime> item) {
@@ -145,7 +145,7 @@ class _JobCreatorCardState extends State<JobCreatorCard> {
       ),
       new CreatorItem<String>( // Location
         name: "Location",
-        value: widget.data != null ? widget.data["location"] : null,
+        value: widget.jobData != null ? widget.jobData["location"] : null,
         hint: "Where is the job?",
         valueToString: (String locationID){
           if (locationID != null){
@@ -204,7 +204,7 @@ class _JobCreatorCardState extends State<JobCreatorCard> {
       ),
       new CreatorItem<String>(
         name: "Customer",
-        value: widget.data != null ? widget.data["customer"] : null,
+        value: widget.jobData != null ? widget.jobData["customer"] : null,
         hint: "Who is this job for?",
         valueToString: (String customerID) {
           if (customerID != null){
@@ -264,7 +264,7 @@ class _JobCreatorCardState extends State<JobCreatorCard> {
       ),
       new CreatorItem<List<String>>( // Contacts
         name: "Contacts",
-        value: widget.data != null ? widget.data['contacts'] : <String>[],
+        value: widget.jobData != null ? widget.jobData['contacts'] : <String>[],
         hint: "Who is involved with this job?",
         valueToString: (List<String> value) => value.length.toString(),
         builder: (CreatorItem<List<String>> item){
@@ -368,7 +368,7 @@ class _JobCreatorCardState extends State<JobCreatorCard> {
                   child: new Text("Save & Finish"),
                   textColor: Theme.of(context).accentColor,
                   onPressed: () async {
-                     await firebase.sendObject("jobs", currentData, objID: widget.objID);
+                     await firebase.sendObject("jobs", currentData, objID: widget.jobID);
                   }
                 )
               ]

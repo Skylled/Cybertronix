@@ -8,6 +8,7 @@ import 'firebase.dart' as firebase;
 // TODO: User management
 // TODO: Google login
 // TODO: Push notifications (Firebase Cloud Messaging)
+// TODO: Change to @required notation
 
 class CybertronixApp extends StatefulWidget {
   @override
