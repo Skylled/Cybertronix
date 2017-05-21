@@ -76,11 +76,8 @@ class AgendaPageState extends State<AgendaPage> {
     buildAgenda();
   }
 
-  int builds = 0;
-
   @override
   Widget build(BuildContext context) {
-    builds++;
     return new Scaffold(
       key: _scaffoldKey,
       appBar: buildAppBar(),
