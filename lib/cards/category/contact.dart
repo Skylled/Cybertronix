@@ -23,6 +23,10 @@ class _ContactInfoCardState extends State<ContactInfoCard> {
     showCreatorCard(context, "contacts", data: widget.contactData);
   }
 
+  void goShare(){
+    // TODO: Make this contact into a VCard and give it to the SMS app?
+  }
+
   void populateLines(){
     cardLines.add(
       new Container( // TODO: Make this a shrinking title?

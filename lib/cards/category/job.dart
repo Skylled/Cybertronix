@@ -78,14 +78,12 @@ class _JobInfoCardState extends State<JobInfoCard> {
     if (widget.jobData["contacts"] != null) {
       widget.jobData["contacts"].forEach((String contactID) {
         Map<String, dynamic> contactData = firebase.getObject("contacts", contactID);
+        Widget trailing = (contactData["phone"] != null) ? new IconButton(icon: new Icon(Icons.phone),
+                                                                          onPressed: (){ url_launcher.launch('tel:${contactData["phone"]}'); }) 
+                                                         : null;
         cardLines.add(new ListTile(
           title: new Text(contactData["name"]),
-          trailing: new IconButton(
-            icon: new Icon(Icons.phone),
-            onPressed: (){
-              url_launcher.launch('tel:${contactData["phone"]}');
-            }
-          ),
+          trailing: trailing,
           onTap: () {
             showCategoryCard(context, "contacts", contactID, data: contactData);
           }
