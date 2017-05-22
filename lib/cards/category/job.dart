@@ -35,9 +35,7 @@ class _JobInfoCardState extends State<JobInfoCard> {
         child: new Stack(
           children: <Widget>[
             new Positioned.fill(
-              child: new Image(
-                image: new AssetImage('assets/placeholder.jpg')
-              )
+              child: new Image.asset('assets/placeholder.jpg', fit: BoxFit.fitWidth)
             ),
             new Positioned(
               left: 8.0,

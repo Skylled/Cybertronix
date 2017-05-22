@@ -32,7 +32,7 @@ class _LocationInfoCardState extends State<LocationInfoCard> {
           children: <Widget>[
             // TODO: If location doesn't have an image, use a placeholder.
             new Positioned.fill(
-              child: new Image.asset('assets/placeholder.jpg')
+              child: new Image.asset('assets/placeholder.jpg', fit: BoxFit.fitWidth)
             ),
             new Positioned(
               left: 8.0,

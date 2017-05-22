@@ -35,7 +35,7 @@ class _ContactInfoCardState extends State<ContactInfoCard> {
           children: <Widget>[
             // TODO: If contact doesn't have an image, use a placeholder.
             new Positioned.fill(
-              child: new Image.asset('assets/hey_ladies.jpg')
+              child: new Image.asset('assets/hey_ladies.jpg', fit: BoxFit.fitWidth)
             ),
             new Positioned(
               left: 8.0,
