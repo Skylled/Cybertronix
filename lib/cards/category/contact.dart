@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart' as url_launcher;
+import 'package:share/share.dart' as share;
 import '../../firebase.dart' as firebase;
 import '../creatorCards.dart';
 
@@ -23,8 +24,15 @@ class _ContactInfoCardState extends State<ContactInfoCard> {
     showCreatorCard(context, "contacts", data: widget.contactData);
   }
 
-  void goShare(){
-    // TODO: Make this contact into a VCard and give it to the SMS app?
+  void goShare(){ // Hook this into something!
+    String shareString = "${widget.contactData['name']}";
+    if (widget.contactData["phone"] != null){
+      shareString += "\n${widget.contactData['phone']}";
+    }
+    if (widget.contactData["email"] != null){
+      shareString += "\n${widget.contactData['email']}";
+    }
+    share.share(shareString);
   }
 
   void populateLines(){

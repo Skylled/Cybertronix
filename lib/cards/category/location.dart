@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart' as url_launcher;
+import 'package:share/share.dart' as share;
 import '../../firebase.dart' as firebase;
 import '../creatorCards.dart';
 import '../categoryCards.dart';
@@ -22,6 +23,12 @@ class _LocationInfoCardState extends State<LocationInfoCard> {
 
   void goEdit(BuildContext context){
     showCreatorCard(context, "locations", data: widget.locationData);
+  }
+
+  void goShare(){
+    String shareString = "${widget.locationData['name']}\n${widget.locationData['address']}";
+    shareString += "\n${widget.locationData['city']}, ${widget.locationData['state']} ${widget.locationData['zipcode']}";
+    share.share(shareString);
   }
 
   void populateLines(){
@@ -145,6 +152,28 @@ class _LocationInfoCardState extends State<LocationInfoCard> {
         }
       });
     }
+    cardLines.add(new Divider());
+    // This doesn't have to be async. Just adding some responsiveness.
+    // This query could be huge.
+    List<Widget> prevJobs = <Widget>[new ListTile(title: new Text("Loading..."))];
+    firebase.findJobs("location", widget.locationID)
+    .then((Map<String, Map<String, dynamic>> results){
+      setState((){
+        prevJobs.clear();
+        results.forEach((String jobID, Map<String, dynamic> jobData){
+          prevJobs.add(new ListTile(
+            title: new Text("${jobData['name']}"), // TODO: Format and add date.
+            onTap: (){
+              showCategoryCard(context, "jobs", jobID);
+            }
+          ));
+        });
+      });
+    });
+    cardLines.add(new ExpansionTile(
+      title: new Text("Jobs"),
+      children: new List<Widget>.from(prevJobs)
+    ));
     cardLines.add(new ButtonTheme.bar(
       child: new ButtonBar(
         children: <Widget>[
