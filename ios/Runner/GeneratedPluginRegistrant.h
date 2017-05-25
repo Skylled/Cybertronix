@@ -7,9 +7,6 @@
 
 #import <Flutter/Flutter.h>
 
-#import "PathProviderPlugin.h"
-#import "UrlLauncherPlugin.h"
-
 @interface GeneratedPluginRegistrant : NSObject
 + (void)registerWithRegistry:(NSObject<FlutterPluginRegistry>*)registry;
 @end
