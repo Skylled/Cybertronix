@@ -64,7 +64,7 @@ class _ContactInfoCardState extends State<ContactInfoCard> {
     if (widget.contactData["company"] != null){
       cardLines.add(
         new ListTile(
-          leading: new Icon(Icons.work), // TODO: Maybe a building icon?
+          leading: new Icon(Icons.business),
           title: new Text(widget.contactData["company"])
         )
       );
@@ -100,7 +100,7 @@ class _ContactInfoCardState extends State<ContactInfoCard> {
           trailing: new Row(
             children: <Widget>[
               new IconButton(
-                icon: new Icon(Icons.content_copy), // TODO: What icon here?
+                icon: new Icon(Icons.content_copy),
                 onPressed: () {
                   // TODO: Copy email to clipboard.
                 }

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart' as url_launcher;
 import 'package:share/share.dart' as share;
+import 'package:intl/intl.dart';
 import '../../firebase.dart' as firebase;
 import '../creatorCards.dart';
 import '../categoryCards.dart';
@@ -160,9 +161,11 @@ class _LocationInfoCardState extends State<LocationInfoCard> {
     .then((Map<String, Map<String, dynamic>> results){
       setState((){
         prevJobs.clear();
+        DateFormat datefmt = new DateFormat("M/d/y");
         results.forEach((String jobID, Map<String, dynamic> jobData){
+          DateTime date = DateTime.parse(jobData["datetime"]);
           prevJobs.add(new ListTile(
-            title: new Text("${jobData['name']}"), // TODO: Format and add date.
+            title: new Text("${datefmt.format(date)} ${jobData['name']}"),
             onTap: (){
               showCategoryCard(context, "jobs", jobID);
             }
