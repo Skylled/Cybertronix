@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'creator/job.dart';
+import 'creator/contact.dart';
 
 void showCreatorCard(BuildContext context, String category, {Map<String, dynamic> data: null, String objID: null}){
   switch (category){
@@ -9,14 +10,12 @@ void showCreatorCard(BuildContext context, String category, {Map<String, dynamic
         child: new JobCreatorCard(jobData: data, jobID: objID),
       );
       break;
-    /*
     case "contacts":
       showDialog(
         context: context,
-        child: new ContactCreatorCard(data: data, objID: objID),
+        child: new ContactCreatorCard(contactData: data, contactID: objID),
       );
       break;
-    */
     /*
     case "locations":
       showDialog(
