@@ -37,7 +37,7 @@ class _JobCreatorCardState extends State<JobCreatorCard> {
         name: "Title",
         value: widget.jobData != null ? widget.jobData['name'] : '',
         hint: "(i.e. Pump test at CVS Amite)",
-        valueToString: (String value) => value,
+        valueToString: (String value) => value == '' ? "Please enter a name" : value,
         builder: (CreatorItem<String> item){
           void close() {
             setState(() {
@@ -202,7 +202,7 @@ class _JobCreatorCardState extends State<JobCreatorCard> {
           );
         }
       ),
-      new CreatorItem<String>(
+      new CreatorItem<String>( // Customer
         name: "Customer",
         value: widget.jobData != null ? widget.jobData["customer"] : null,
         hint: "Who is this job for?",
@@ -266,7 +266,15 @@ class _JobCreatorCardState extends State<JobCreatorCard> {
         name: "Contacts",
         value: widget.jobData != null ? widget.jobData['contacts'] : <String>[],
         hint: "Who is involved with this job?",
-        valueToString: (List<String> value) => value.length.toString(),
+        valueToString: (List<String> value) {
+          if (value.length == 1){
+            return value.first;
+          } else if (value.length > 1) {
+            return value.length.toString();
+          } else {
+            return "Select contacts";
+          }
+        },
         builder: (CreatorItem<List<String>> item){
           void close() {
             setState((){
