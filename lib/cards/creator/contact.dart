@@ -204,8 +204,8 @@ class _ContactCreatorCardState extends State<ContactCreatorCard> {
                   child: new Text("Save & Finish"),
                   textColor: Theme.of(context).accentColor,
                   onPressed: () async {
-                    await firebase.sendObject("contacts", currentData, objID: widget.contactID);
-                    Navigator.pop(context);
+                    dynamic res = await firebase.sendObject("contacts", currentData, objID: widget.contactID);
+                    Navigator.pop(context, res);
                   },
                 )
               ],

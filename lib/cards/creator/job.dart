@@ -376,8 +376,8 @@ class _JobCreatorCardState extends State<JobCreatorCard> {
                   child: new Text("Save & Finish"),
                   textColor: Theme.of(context).accentColor,
                   onPressed: () async {
-                     await firebase.sendObject("jobs", currentData, objID: widget.jobID);
-                     Navigator.pop(context);
+                     dynamic res = await firebase.sendObject("jobs", currentData, objID: widget.jobID);
+                     Navigator.pop(context, res);
                   }
                 )
               ]

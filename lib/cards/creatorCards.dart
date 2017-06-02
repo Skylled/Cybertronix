@@ -4,22 +4,22 @@ import 'creator/job.dart';
 import 'creator/contact.dart';
 import 'creator/location.dart';
 
-void showCreatorCard(BuildContext context, String category, {Map<String, dynamic> data: null, String objID: null}){
+Future<dynamic> showCreatorCard(BuildContext context, String category, {Map<String, dynamic> data: null, String objID: null}) async {
   switch (category){
     case "jobs":
-      showDialog(
+      return await showDialog(
         context: context,
         child: new JobCreatorCard(jobData: data, jobID: objID),
       );
       break;
     case "contacts":
-      showDialog(
+      return await showDialog(
         context: context,
         child: new ContactCreatorCard(contactData: data, contactID: objID),
       );
       break;
     case "locations":
-      showDialog(
+      return await showDialog(
         context: context,
         child: new LocationCreatorCard(locationData: data, locationID: objID),
       );
@@ -31,10 +31,10 @@ void showCreatorCard(BuildContext context, String category, {Map<String, dynamic
   }
 }
 
-Future<String> awaitNewPackage(BuildContext context) async {
-  return "TODO: Need to write a PackageCreator!";
+Future<Map<String, dynamic>> awaitPackage(BuildContext context, {Map<String, dynamic> packageData}) async {
+  return null;
   /*return await showDialog(
     context: context,
-    child: new PackageCreatorCard()
+    child: new PackageCreatorCard(packageData: packageData)
   ); */
 }
