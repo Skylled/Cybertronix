@@ -18,7 +18,6 @@ class LocationCreatorCard extends StatefulWidget {
 class _LocationCreatorCardState extends State<LocationCreatorCard> {
   List<CreatorItem<dynamic>> _items;
   Map<String, dynamic> currentData;
-  List<String> contactList;
 
   void initState(){
     super.initState();
@@ -152,22 +151,20 @@ class _LocationCreatorCardState extends State<LocationCreatorCard> {
           );
         }
       ),
-      new CreatorItem<List<String>>( // Packages
+      new CreatorItem<List<Map<String, dynamic>>>( // Packages
         name: "Packages",
         value: widget.locationData != null ? widget.locationData["packages"] : <String>[],
         hint: "What kind of equipment is on-site?",
-        valueToString: (List<String> value) {
+        valueToString: (List<Map<String, dynamic>> value) {
           if (value.length == 1) {
-            Map<String, dynamic> packageData = firebase.getObject("packages", value.first);
-            Map<String, dynamic> panelData = firebase.getObject("panels", packageData["panel"]);
-            return "${panelData["manufacturer"]} ${packageData["power"]}";
+            return "${value.first["panel"]["manufacturer"]} ${value.first["power"]}";
           } else if (value.length > 1) {
             return value.length.toString();
           } else {
             return "Add a package";
           }
         },
-        builder: (CreatorItem<List<String>> item){
+        builder: (CreatorItem<List<Map<String, dynamic>>> item){
           void close(){
             setState((){
               item.isExpanded = false;
@@ -179,55 +176,68 @@ class _LocationCreatorCardState extends State<LocationCreatorCard> {
                 return new CollapsibleBody(
                   onSave: () { Form.of(context).save(); close(); },
                   onCancel: () { Form.of(context).reset(); close(); },
-                  child: new FormField<List<String>>(
+                  child: new FormField<List<Map<String, dynamic>>>(
                     initialValue: item.value,
-                    onSaved: (List<String> value) {
+                    onSaved: (List<Map<String, dynamic>> value) {
                       item.value = value;
                       currentData["packages"] = value;
                     },
-                    builder: (FormFieldState<List<String>> field){
-                      List<String> addPackage(String packageID){
-                        List<String> updated = new List<String>.from(field.value);
-                        updated.add(packageID);
+                    builder: (FormFieldState<List<Map<String, dynamic>>> field){
+                      List<Map<String, dynamic>> addPackage(Map<String, dynamic> package){
+                        List<Map<String, dynamic>> updated = new List<Map<String, dynamic>>.from(field.value);
+                        updated.add(package);
                         return updated;
                       }
 
-                      List<String> removePackage(String packageID){
-                        List<String> updated = new List<String>.from(field.value);
-                        updated.remove(packageID);
+                      List<Map<String, dynamic>> changePackage(int index, Map<String, dynamic> package){
+                        List<Map<String, dynamic>> updated = new List<Map<String, dynamic>>.from(field.value);
+                        updated[index] = package;
                         return updated;
                       }
 
-                      Column x = new Column(
-                        mainAxisSize: MainAxisSize.min,
-                        crossAxisAlignment: CrossAxisAlignment.end,
-                        children: field.value.map((String packageID){
-                          Map<String, dynamic> packageData = firebase.getObject("packages", packageID);
-                          Map<String, dynamic> panelData = firebase.getObject("panels", packageData["panel"]);
-                          return new ListTile(
-                            title: new Text("${panelData["manufacturer"]} ${packageData["power"]}"),
-                            onTap: (){
-                              showCreatorCard(context, "packages", data: packageData, objID: packageID);
+                      List<Map<String, dynamic>> removePackage(int index){
+                        List<Map<String, dynamic>> updated = new List<Map<String, dynamic>>.from(field.value);
+                        updated.removeAt(index);
+                        return updated;
+                      }
+
+                      List<ListTile> packageList = new List<ListTile>();
+                      for (int i in new Iterable<int>.generate(field.value.length)){
+                        packageList.add(
+                          new ListTile(
+                            title: new Text("${field.value[i]["panel"]["manufacturer"]} ${field.value[i]["power"]}"),
+                            onTap: () async {
+                              Map<String, dynamic> newPackageData = await awaitPackage(context, packageData: field.value[i]);
+                              if (newPackageData != null && newPackageData != field.value[i]){
+                                field.onChanged(changePackage(i, newPackageData));
+                              }
                             },
                             trailing: new IconButton(
                               icon: new Icon(Icons.remove),
                               onPressed: (){
-                                field.onChanged(removePackage(packageID));
+                                field.onChanged(removePackage(i));
                               },
-                            ),
-                          );
-                        }).toList(),
-                      );
-                      x.children.insert(0, new ListTile(
+                            )
+                          )
+                        );
+                      }
+
+                      packageList.insert(0, new ListTile(
                         title: new Text("Add a package"),
                         trailing: new Icon(Icons.add),
                         onTap: () async {
-                          final String newPackageID = await awaitNewPackage(context);
-                          if (newPackageID != null){
-                            field.onChanged(addPackage(newPackageID));
+                          Map<String, dynamic> newPackage = await awaitPackage(context);
+                          if (newPackage != null){
+                            field.onChanged(addPackage(newPackage));
                           }
                         }
                       ));
+
+                      return new Column(
+                        mainAxisSize: MainAxisSize.min,
+                        crossAxisAlignment: CrossAxisAlignment.end,
+                        children: packageList,
+                      );
                     }
                   )
                 );
@@ -340,8 +350,8 @@ class _LocationCreatorCardState extends State<LocationCreatorCard> {
                   child: new Text("Save & Finish"),
                   textColor: Theme.of(context).accentColor,
                   onPressed: () async {
-                    await firebase.sendObject("locations", currentData);
-                    Navigator.pop(context);
+                    dynamic res = await firebase.sendObject("locations", currentData);
+                    Navigator.pop(context, res);
                   },
                 )
               ],
