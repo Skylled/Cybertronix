@@ -25,7 +25,24 @@ void showCategoryCard(BuildContext context, String category, String objID,
       );
       break;
     default:
-      Scaffold.of(context).showSnackBar(new SnackBar(
-          content: new Text("This category is not available yet.")));
+      showDialog(
+        context: context,
+        child: new AlertDialog(
+          content: new Text("This category ($category) is not implemented yet."),
+          actions: <Widget>[new RaisedButton(
+            child: new Text("Ok"),
+            onPressed: (){
+              Navigator.pop(context);
+            },
+          )],
+        )
+      );
   }
+}
+
+void showPackageCard(BuildContext context, Map<String, dynamic> data){
+  showDialog(
+    context: context,
+    child: new PackageInfoCard(packageData: data)
+  );
 }
