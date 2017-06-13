@@ -193,7 +193,20 @@ class _ContactCreatorCardState extends State<ContactCreatorCard> {
       child: new Card(
         child: new ListView(
           children: <Widget>[
-            new ExpansionPanelList(),
+            new ExpansionPanelList(
+              expansionCallback: (int index, bool isExpanded){
+                setState((){
+                  _items[index].isExpanded = !isExpanded;
+                });
+              },
+              children: _items.map((CreatorItem<dynamic> item){
+                return new ExpansionPanel(
+                  isExpanded: item.isExpanded,
+                  headerBuilder: item.headerBuilder,
+                  body: item.builder(item)
+                );
+              }).toList()
+            ),
             new ButtonBar(
               children: <Widget>[
                 new FlatButton(
