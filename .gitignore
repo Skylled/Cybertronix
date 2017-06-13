@@ -10,3 +10,4 @@ pubspec.lock
 .flutter-plugins
 .vscode
 flutter_*.log
+google-services.json

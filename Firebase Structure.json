@@ -1,0 +1,168 @@
+{
+    "annuals": { // Easier to query if separated.
+        "1":{
+            "name": "CVS Amite",
+            "location": 1,
+            "customer": 1,
+            "lastperformed": "2016-07-20", // Date or datetime
+            "contacts": [1],
+            "notes": []
+        }
+    },
+    "contacts": {
+        "1": {
+            "name": "Rick Astley",
+            "company": "Acadian Fire",
+            "phone": "867-5309",
+            "email": "RAstley@acadian.org",
+            "notes": []
+        }
+    },
+    "customers": {
+        "1": {
+            "name": "Acadian Fire",
+            "contacts": [1],
+            "rate": "",
+            "jobs": [], // Redundancy
+            "notes": []
+        }
+    },
+    "jobs": {
+        "1": {
+            "name": "",
+            "contacts": [1, 2],
+            "billed": false,
+            "datetime": "2017-03-27T08:30:00Z", // ISO 8601
+            "notes": [],
+            "po": null, // Not a default value
+            "customer": 1,
+            "location": 1,
+            "packages": [1], // Normally only one, but allow for 2+
+            "paperwork": ["firebaseID", "firebaseID2"] // Default empty
+        }
+    },
+    "locations": {
+        "1":{
+            "name": "CVS Pharmacy Amite",
+            "packages": [
+                {
+                    "power": "diesel",
+                    "panel": {
+                        "manufacturer": "Metron",
+                        "model": "m300",
+                        "serial": "09-1109827",
+                        "chargervolts": 240,
+                        "enginevolts": 48,
+                        "ground": "negative", // Consider optimizing
+                        "start": 100,
+                        "stop": 115,
+                        "enclosure": "Nema 3",
+                        "notes": []
+                    },
+                    "pump": {
+                        "manufacturer": "Aurora",
+                        "model": "u94894898",
+                        "serial": "83882747sk",
+                        "rpm": 3000,
+                        "shutoff": "",
+                        "rated": "",
+                        "over": "",
+                        "notes": []
+                    },
+                    "motor": {
+                        "manufacturer": "Clarke",
+                        "model": "clk1836",
+                        "serial": "567890237",
+                        "volts": 48,
+                        "hp": 200,
+                        "rpm": 4000,
+                        "notes": []
+                    },
+                    "jockeypanel": {
+                        "manufacturer": "Tornatech",
+                        "model": "JP3-460-2",
+                        "serial": "2CYB018920",
+                        "hp": 2.0,
+                        "start": 125,
+                        "stop": 140,
+                        "enclosure": "Nema 3R",
+                        "notes": []
+                    },
+                    "jockeypump": {
+                        "manufacturer": "Grunfos",
+                        "model": "173927",
+                        "serial": "idkman279",
+                        "hp": 2.0,
+                        "volts": 480,
+                        "phase": "single",
+                        "notes": []
+                    }
+                },
+                {
+                    "power": "electric",
+                    "panel": {
+                        "manufacturer": "Tornatech",
+                        "model": "GPE-201",
+                        "serial": "THX278301",
+                        "hp": 75,
+                        "starting": "wye delta",
+                        "volts": 460,
+                        "phase": "three",
+                        "start": 100,
+                        "stop": 115,
+                        "enclosure": "Nema 3R",
+                        "tswitch": true,
+                        "notes": []
+                    },
+                    "tswitch": {
+                        "manufacturer": "Metron",
+                        "model": "sdjd273",
+                        "serial": "3638268",
+                        "notes": []
+                    },
+                    "pump": {
+                        "manufacturer": "Aurora",
+                        "model": "u94894898",
+                        "serial": "83882747sk",
+                        "rpm": 3000,
+                        "shutoff": "",
+                        "rated": "",
+                        "over": "",
+                        "notes": []
+                    },
+                    "motor": {
+                        "manufacturer": "Weg",
+                        "model": "3918303",
+                        "serial": "1279383027d",
+                        "volts": 480,
+                        "amps": 20.0,
+                        "rpm": 2000,
+                        "hp": 20.0,
+                        "phase": "three",
+                        "notes": []
+                    }
+                }
+            ],
+            "contacts": [1],
+            "address": "300 W Oak St",
+            "city": "Amite",
+            "state": "LA",
+            "zipcode": "70422",
+            "jobs": [], // Redundancy for easy querying
+            "recurring": { // More redundancy
+                "annual": 1
+            },
+            "notes": []
+        }
+    },
+    "monthlies": {
+        "1":{
+            "name": "CVS Amite", // Taken from location name
+            "location": 1,
+            "customer": 1,
+            "lastperformed": "2016-07-20", // Date or datetime
+            "contacts": [1],
+            "notes": []
+        }
+    }
+}

@@ -1,4 +1,4 @@
-package com.yourcompany.Cybertronix;
+package net.hotfixit.cybertronix;
 
 import android.os.Bundle;
 import io.flutter.app.FlutterActivity;
