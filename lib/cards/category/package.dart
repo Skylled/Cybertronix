@@ -1,126 +1,5 @@
 import 'package:flutter/material.dart';
 
-TextStyle titleStyle = new TextStyle(
-  fontSize: 16.0,
-  color: Colors.grey
-);
-
-TextStyle dataStyle = new TextStyle(
-  fontSize: 24.0,
-  color: Colors.black87
-);
-
-class DataStack extends StatelessWidget {
-  final String title;
-  final String data;
-
-  DataStack(String title, dynamic data):
-    this.title = title,
-    this.data = data.toString();
-
-  @override
-  Widget build(BuildContext context){
-    return new SizedBox(
-      height: 20.0,
-      width: 80.0,
-      child: new Stack(
-        children: <Widget>[
-          new Positioned(
-            left: 4.0,
-            top: 4.0,
-            child: new Text(title, style: titleStyle)
-          ),
-          new Positioned(
-            left: 4.0,
-            top: 24.0,
-            child: new Text(data, style: dataStyle)
-          )
-        ],
-      ),
-    );
-  }
-}
-
-class PanelInfoWidget extends StatelessWidget{
-  final Map<String, dynamic> panelData;
-  final String power;
-
-  PanelInfoWidget(this.panelData, this.power);
-
-  @override
-  Widget build(BuildContext context){
-    /* Column[
-      Row[Stack.positioned, Stack.positioned],
-      Row[Stack.positioned, Stack.positioned]
-    ] */
-    return new GridView.count(
-      shrinkWrap: true,
-      crossAxisCount: 2,
-      children: <Widget>[
-        new DataStack("Manufacturer", panelData["manufacturer"]),
-        new DataStack("Power", power),
-
-        new DataStack("Model #", panelData["model"]),
-        new DataStack("Serial #", panelData["serial"]),
-
-        new DataStack("Start pressure", panelData["start"]),
-        new DataStack("Stop pressure", panelData["stop"]),
-
-        new DataStack("Charger voltage", panelData["chargervolts"]),
-        new DataStack("DC Voltage", panelData["enginevolts"]),
-
-        new DataStack("Enclosure", panelData["enclosure"]),
-        new DataStack("Grounding", panelData["ground"])
-      ]
-    );
-  }
-}
-
-class PumpInfoWidget extends StatelessWidget{
-  final Map<String, dynamic> pumpData;
-  
-  PumpInfoWidget(this.pumpData);
-
-  @override
-  Widget build(BuildContext context){
-    return new Container();
-  }
-}
-
-class MotorInfoWidget extends StatelessWidget{
-  final Map<String, dynamic> motorData;
-  final String power;
-
-  MotorInfoWidget(this.motorData, this.power);
-
-  @override
-  Widget build(BuildContext context){
-    return new Container();
-  }
-}
-
-class JockeyPanelInfoWidget extends StatelessWidget{
-  final Map<String, dynamic> panelData;
-  
-  JockeyPanelInfoWidget(this.panelData);
-
-  @override
-  Widget build(BuildContext context){
-    return new Container();
-  }
-}
-
-class JockeyPumpInfoWidget extends StatelessWidget{
-  final Map<String, dynamic> pumpData;
-  
-  JockeyPumpInfoWidget(this.pumpData);
-
-  @override
-  Widget build(BuildContext context){
-    return new Container();
-  }
-}
-
 class PackageInfoCard extends StatelessWidget{
   final Map<String, dynamic> packageData;
 
@@ -139,7 +18,19 @@ class PackageInfoCard extends StatelessWidget{
     "starting": "Starting Type",
     "volts": "AC Volts",
     "phase": "Phase",
+    "rpm": "RPM",
+    "ground": "Ground",
+    "shutoff": "Shutoff", // TODO: here and down
+    "rated": "Rated",
+    "over": "Over",
   };
+
+  Widget packageTile(Map<String, dynamic> object, String key){
+    return new ListTile(
+      title: new Text(object[key].toString()),
+      subtitle: new Text(prettify[key]),
+    );
+  }
 
   List<Widget> panelSubList(Map<String, dynamic> panel, String power){
     List<String> keyList;
@@ -155,19 +46,49 @@ class PackageInfoCard extends StatelessWidget{
           subtitle: new Text("Power")
         );
       }
-      return new ListTile(
-        title: new Text(panel[key].toString()),
-        subtitle: new Text(prettify[key]),
-      );
+      return packageTile(panel, key);
     }).toList();
   }
 
   List<Widget> tswitchSubList(Map<String, dynamic> tswitch){
     return <String>["manufacturer", "model", "serial"].map((String key){
-      return new ListTile(
-        title: new Text(tswitch[key].toString()),
-        subtitle: new Text(prettify[key]),
-      );
+      return packageTile(tswitch, key);
+    }).toList();
+  }
+
+  List<Widget> pumpSubList(Map<String, dynamic> pump){
+    return <String>["manufacturer", "model", "serial", "rpm", "shutoff", "rated", "over"].map((String key){
+      return packageTile(pump, key);
+    }).toList();
+  }
+
+  List<Widget> motorSubList(Map<String, dynamic> motor, String power){
+    List<String> keyList;
+    if (power == "diesel"){
+      keyList = <String>["manufacturer", "power", "model", "serial", "hp", "rpm", "volts", "ground"];
+    } else {
+      keyList = <String>["manufacturer", "power", "model", "serial", "hp", "rpm", "volts", "amps", "phase"];
+    }
+    return keyList.map((String key){
+      if (key == "power"){
+        return new ListTile(
+          title: new Text(power),
+          subtitle: new Text("Power")
+        );
+      }
+      return packageTile(motor, key);
+    }).toList();
+  }
+
+  List<Widget> jpanelSubList(Map<String, dynamic> jpanel){
+    return <String>["manufacturer", "model", "serial", "hp", "start", "stop", "enclosure"].map((String key){
+      return packageTile(jpanel, key);
+    }).toList();
+  }
+
+  List<Widget> jpumpSubList(Map<String, dynamic> jpump){
+    return <String>["manufacturer", "model", "serial", "hp", "volts", "phase"].map((String key){
+      return packageTile(jpump, key);
     }).toList();
   }
 
@@ -182,26 +103,26 @@ class PackageInfoCard extends StatelessWidget{
     if (packageData["tswitch"] != null){
       lines.add(new ExpansionTile(
         title: new Text("Transfer Switch"),
-        children: <Widget>[],
+        children: tswitchSubList(packageData["tswitch"]),
       ));
     }
     if (packageData["pump"] != null){
       lines.add(new ExpansionTile(
         title: new Text("Pump"),
-        children: <Widget>[new PumpInfoWidget(packageData["pump"])],
+        children: pumpSubList(packageData["pump"]),
       ));
     }
     if (packageData["motor"] != null){
       lines.add(new ExpansionTile(
         title: new Text("Motor"),
-        children: <Widget>[new MotorInfoWidget(packageData["motor"], packageData["power"])],
+        children: motorSubList(packageData["motor"], packageData["power"]),
       ));
     }
     if (packageData["jockeypanel"] != null){
       List<Widget> jockeyWidgets = <Widget>[];
-      jockeyWidgets.add(new JockeyPanelInfoWidget(packageData["jockeyPanel"]));
+      jockeyWidgets.addAll(jpanelSubList(packageData["jockeypanel"]));
       if (packageData["jockeypump"] != null){
-        jockeyWidgets.add(new JockeyPumpInfoWidget(packageData["jockeyPump"]));
+        jockeyWidgets.addAll(jpumpSubList(packageData["jockeyPump"]));
       }
       lines.add(new ExpansionTile(
         title: new Text("Jockey"),
