@@ -88,70 +88,21 @@ class _LocationInfoCardState extends State<LocationInfoCard> {
     if (widget.locationData["packages"] != null){
       // Firebase lists cannot be length 0
       cardLines.add(new Divider());
-      cardLines.add(
-        new ListTile(
-          dense: true,
-          title: new Text("Package info")
-        )
-      );
-      widget.locationData["packages"].forEach((String packageID){
-        Map<String, dynamic> package = firebase.getObject("packages", packageID);
-        Map<String, dynamic> panel = firebase.getObject("panels", package["panel"]);
-        Map<String, dynamic> pump = firebase.getObject("pumps", package["pump"]);
-        Map<String, dynamic> jockeyPanel = firebase.getObject("jockeypanels", package["jockeypanel"]);
-        Map<String, dynamic> jockeyPump = firebase.getObject("jockeypumps", package["jockeypump"]);
-        // i.e. "Tornatech Diesel"
+      List<Widget> packageLines = <Widget>[];
+
+      widget.locationData["packages"].forEach((Map<String, dynamic> package){
+        Map<String, dynamic> panel = package["panel"];
         String title = "${panel != null ? panel['manufacturer'] : ''} ${package['power']}";
-        List<Widget> packageLines = <Widget>[];
-        if (panel != null){
-          packageLines.add(
-            new ListTile(
-              title: new Text("Panel info"),
-              onTap: (){
-                showCategoryCard(context, "panels", package["panel"], data: panel);
-              }
-            )
-          );
-        }
-        if (pump != null){
-          packageLines.add(
-            new ListTile(
-              title: new Text("Pump info"),
-              onTap: (){
-                showCategoryCard(context, "pumps", package["pump"], data: pump);
-              }
-            )
-          );
-        }
-        cardLines.add(new ExpansionTile(
+        packageLines.add(new ListTile(
           title: new Text(title),
-          children: packageLines,
+          onTap: (){ showPackageCard(context, package); },
         ));
-        if (jockeyPanel != null){
-          List<Widget> jockeyLines = <Widget>[
-            new ListTile(
-              title: new Text("Jockey panel info"),
-              onTap: (){
-                showCategoryCard(context, "jockeypanels", package["jockeypanel"], data: jockeyPanel);
-              }
-            )
-          ];
-          if (jockeyPump != null){
-            jockeyLines.add(
-              new ListTile(
-                title: new Text("Jockey pump info"),
-                onTap: (){
-                  showCategoryCard(context, "jockeypumps", package["jockeypump"], data: jockeyPump);
-                }
-              )
-            );
-          }
-          cardLines.add(new ExpansionTile(
-            title: new Text("${jockeyPanel["manufacturer"]}"),
-            children: jockeyLines
-          ));
-        }
       });
+
+      cardLines.add(new ExpansionTile(
+        title: new Text("Packages"),
+        children: packageLines,
+      ));
     }
     cardLines.add(new Divider());
     // This doesn't have to be async. Just adding some responsiveness.

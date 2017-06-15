@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'category/job.dart';
 import 'category/contact.dart';
 import 'category/location.dart';
+import 'category/package.dart';
 
 void showCategoryCard(BuildContext context, String category, String objID,
     {Map<String, dynamic> data: null}) {
@@ -43,6 +44,6 @@ void showCategoryCard(BuildContext context, String category, String objID,
 void showPackageCard(BuildContext context, Map<String, dynamic> data){
   showDialog(
     context: context,
-    child: new PackageInfoCard(packageData: data)
+    child: new PackageInfoCard(data)
   );
 }
