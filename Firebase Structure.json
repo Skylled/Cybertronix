@@ -46,13 +46,13 @@
             "name": "CVS Pharmacy Amite",
             "packages": [
                 {
-                    "power": "diesel",
+                    "power": "Diesel",
                     "panel": {
                         "manufacturer": "Metron",
                         "model": "m300",
                         "serial": "09-1109827",
                         "chargervolts": 240,
-                        "enginevolts": 48,
+                        "enginevolts": 24,
                         "start": 100,
                         "stop": 115,
                         "enclosure": "Nema 3",
@@ -99,7 +99,7 @@
                     }
                 },
                 {
-                    "power": "electric",
+                    "power": "Electric",
                     "panel": {
                         "manufacturer": "Tornatech",
                         "model": "GPE-201",

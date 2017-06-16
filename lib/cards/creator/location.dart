@@ -68,7 +68,7 @@ class _LocationCreatorCardState extends State<LocationCreatorCard> {
       ),
       new CreatorItem<Map<String, String>>( // Street Address
         name: "Street Address",
-        value: widget.locationData != null ? {"address": widget.locationData["address"],
+        value: widget.locationData != null ? <String, String>{"address": widget.locationData["address"],
                                               "city": widget.locationData['city'],
                                               "state": widget.locationData['state']}
                                            : <String, String>{},

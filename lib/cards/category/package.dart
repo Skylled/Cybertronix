@@ -5,7 +5,7 @@ class PackageInfoCard extends StatelessWidget{
 
   PackageInfoCard(this.packageData);
 
-  Map<String, String> prettify = <String, String>{
+  final Map<String, String> prettify = <String, String>{
     "manufacturer": "Manufacturer",
     "model": "Model #",
     "serial": "Serial #",
@@ -34,7 +34,7 @@ class PackageInfoCard extends StatelessWidget{
 
   List<Widget> panelSubList(Map<String, dynamic> panel, String power){
     List<String> keyList;
-    if (power == "diesel"){
+    if (power == "Diesel"){
       keyList = <String>["manufacturer", "power", "model", "serial", "chargervolts", "enginevolts", "start", "stop", "enclosure"];
     } else {
       keyList = <String>["manufacturer", "power", "model", "serial", "hp", "volts", "phase", "starting", "start", "stop", "enclosure"];
@@ -64,7 +64,7 @@ class PackageInfoCard extends StatelessWidget{
 
   List<Widget> motorSubList(Map<String, dynamic> motor, String power){
     List<String> keyList;
-    if (power == "diesel"){
+    if (power == "Diesel"){
       keyList = <String>["manufacturer", "power", "model", "serial", "hp", "rpm", "volts", "ground"];
     } else {
       keyList = <String>["manufacturer", "power", "model", "serial", "hp", "rpm", "volts", "amps", "phase"];
