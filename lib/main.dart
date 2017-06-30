@@ -30,7 +30,7 @@ class CybertronixAppState extends State<CybertronixApp> {
   @override
   void initState() {
     super.initState();
-    firebase.getTempFolder().then((Null x) {
+    firebase.getDocsFolder().then((bool b) {
       firebase.refreshCache();
     });
   }

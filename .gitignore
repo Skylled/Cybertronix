@@ -11,3 +11,6 @@ pubspec.lock
 .vscode
 flutter_*.log
 google-services.json
+key.jks
+android/key.properties
+android/app/src/main/java/io/flutter/plugins/GeneratedPluginRegistrant.java
