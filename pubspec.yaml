@@ -9,6 +9,7 @@ dependencies:
   path_provider: any
   image_picker:
   share:
+  firebase_storage:
 
 # For information on the generic Dart part of this file, see the
 # following page: https://www.dartlang.org/tools/pub/pubspec
