@@ -4,8 +4,6 @@ import 'cards/creatorCards.dart';
 import 'cards/categoryCards.dart';
 import 'firebase.dart';
 
-// TODO: Add quick-scrolling.
-
 class CategoryPage extends StatefulWidget{
   const CategoryPage(this.category);
 

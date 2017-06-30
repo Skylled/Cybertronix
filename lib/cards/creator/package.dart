@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'components.dart';
 
-// TODO: Fun: Make coresponding fields read from each other, as default if blank.
+// Fun: Make coresponding fields read from each other, as default if blank.
 
 class PackageCreatorCard extends StatefulWidget {
   final Map<String, dynamic> packageData;

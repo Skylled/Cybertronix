@@ -2,8 +2,6 @@ import 'package:flutter/material.dart';
 import '../firebase.dart' as firebase;
 import '../cards/creatorCards.dart';
 
-// TODO: Add quick-scrolling.
-
 class SelectorDialog extends StatefulWidget {
   const SelectorDialog({
     Key key,
@@ -21,6 +19,7 @@ class SelectorDialog extends StatefulWidget {
 class _SelectorDialogState extends State<SelectorDialog> {
   String _selectedID;
   List<ListTile> objectList = <ListTile>[];
+  List<Map<String, dynamic>> objList = <Map<String, dynamic>>[];
 
   @override
   void initState(){
@@ -28,16 +27,11 @@ class _SelectorDialogState extends State<SelectorDialog> {
     _selectedID = widget.initialObject;
     Map<String, Map<String, dynamic>> objects = firebase.getCategory(widget.category);
     objects.forEach((String id, Map<String, dynamic> data){
-      setState((){
-        objectList.add(new ListTile(
-          title: new Text(data["name"]),
-          onTap: (){
-            Navigator.pop(context, id);
-          },
-          selected: (id == _selectedID)
-        ));
-      });
+      Map<String, dynamic> obj = new Map<String, dynamic>.from(data);
+      obj["id"] = id;
+      objList.add(obj);
     });
+    // Sort this eventually.
   }
 
   void _onAdd(){
@@ -70,14 +64,23 @@ class _SelectorDialogState extends State<SelectorDialog> {
           padding: const EdgeInsets.all(8.0),
           child: new Column(
             children: <Widget>[
-              new Column(
-                children: new List<Widget>.from(objectList)
+              new ListView.builder(
+                shrinkWrap: true,
+                itemBuilder: (BuildContext context, int index){
+                  return new ListTile(
+                    title: new Text(objList[index]["name"]),
+                    onTap: (){
+                      Navigator.pop(context, objList[index]["id"]);
+                    },
+                    selected: (objList[index]["id"] == _selectedID)
+                  );
+                },
               ),
               actions
-            ]
-          )
-        )
-      )
+            ],
+          ),
+        ),
+      ),
     );
   }
 }

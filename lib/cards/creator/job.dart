@@ -73,7 +73,6 @@ class _JobCreatorCardState extends State<JobCreatorCard> {
         },
       ),
       new CreatorItem<DateTime>( // When
-        // TODO: Bug! If you pick the time after the date, the date resets back.
         name: "Date & time",
         value: widget.jobData != null ? DateTime.parse(widget.jobData["datetime"]) : new DateTime.now(),
         hint: "When is the job?",
