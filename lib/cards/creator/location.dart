@@ -7,9 +7,7 @@ class LocationCreatorCard extends StatefulWidget {
   final Map<String, dynamic> locationData;
   final String locationID;
 
-  LocationCreatorCard({Map<String, dynamic> locationData: null, String locationID: null}):
-    this.locationData = (locationData == null && locationID != null) ? firebase.getObject("locations", locationID) : locationData,
-    this.locationID = locationID;
+  LocationCreatorCard({this.locationData, this.locationID});
   
   @override
   _LocationCreatorCardState createState() => new _LocationCreatorCardState();
@@ -282,33 +280,29 @@ class _LocationCreatorCardState extends State<LocationCreatorCard> {
                       currentData["contacts"] = value;
                     },
                     builder: (FormFieldState<List<String>> field){
-                      Column x =  new Column(
+                      Column col =  new Column(
                         mainAxisSize: MainAxisSize.min,
                         crossAxisAlignment: CrossAxisAlignment.end,
                         children: field.value.map((String contactID){
-                          Map<String, dynamic> conData = firebase.getObject("contacts", contactID);
-                          return new Chip(
-                            label: new Text(conData["name"]),
-                            onDeleted: () {
-                              field.onChanged(removeContact(field.value, contactID));
-                            }
-                          );
+                          return new AsyncContactChip(firebase.getObject("contacts", contactID), (){
+                            field.onChanged(removeContact(field.value, contactID));
+                          });
                         }).toList()
                       );
-                      x.children.insert(0, new ListTile(
+                      col.children.insert(0, new ListTile(
                         title: new Text("Add a contact"),
                         trailing: new Icon(Icons.add),
                         onTap: () async {
-                          final String chosen = await pickFromCategory(
+                          Map<String, dynamic> chosen = await pickFromCategory(
                             context: context,
                             category: "contacts",
                           );
-                          if (chosen != null && !field.value.contains(chosen)){
-                            field.onChanged(addContact(field.value, chosen));
+                          if (chosen != null && !field.value.contains(chosen["id"])){
+                            field.onChanged(addContact(field.value, chosen["id"]));
                           }
                         }
                       ));
-                      return x;
+                      return col;
                     }
                   ),
                 );

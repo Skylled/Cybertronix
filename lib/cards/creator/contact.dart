@@ -6,9 +6,7 @@ class ContactCreatorCard extends StatefulWidget {
   final Map<String, dynamic> contactData;
   final String contactID;
 
-  ContactCreatorCard({Map<String, dynamic> contactData: null, String contactID: null}):
-    this.contactData = (contactData == null && contactID != null) ? firebase.getObject("contacts", contactID) : contactData,
-    this.contactID = contactID;
+  ContactCreatorCard({this.contactData, this.contactID});
   
   @override
   _ContactCreatorCardState createState() => new _ContactCreatorCardState();
@@ -217,8 +215,8 @@ class _ContactCreatorCardState extends State<ContactCreatorCard> {
                   child: new Text("Save & Finish"),
                   textColor: Theme.of(context).accentColor,
                   onPressed: () async {
-                    dynamic res = await firebase.sendObject("contacts", currentData, objID: widget.contactID);
-                    Navigator.pop(context, res);
+                    firebase.sendObject("contacts", currentData, objID: widget.contactID);
+                    Navigator.pop(context);
                   },
                 )
               ],

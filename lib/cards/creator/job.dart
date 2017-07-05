@@ -7,10 +7,7 @@ class JobCreatorCard extends StatefulWidget {
   final Map<String, dynamic> jobData;
   final String jobID;
 
-  JobCreatorCard({Map<String, dynamic> jobData: null, String jobID: null}):
-    // If only objID is given, generate the object's data.
-    this.jobData = (jobData == null && jobID != null) ? firebase.getObject("jobs", jobID) : jobData,
-    this.jobID = jobID;
+  JobCreatorCard({this.jobData, this.jobID});
 
   @override
   _JobCreatorCardState createState() => new _JobCreatorCardState();
@@ -21,6 +18,9 @@ class _JobCreatorCardState extends State<JobCreatorCard> {
   Map<String, dynamic> currentData;
   List<String> contactList;
 
+  String locationName = "";
+  String customerName = "";
+
   DateFormat datefmt = new DateFormat("EEEE, MMMM d");
   DateFormat timefmt = new DateFormat("h:mm a");
   DateFormat fullfmt = new DateFormat("h:mm a, EEEE, MMMM d");
@@ -28,6 +28,16 @@ class _JobCreatorCardState extends State<JobCreatorCard> {
   void initState(){
     super.initState();
     currentData = widget.jobData != null ? new Map<String, dynamic>.from(widget.jobData) : <String, dynamic>{};
+    if (currentData["location"] != null){
+      firebase.getObject("locations", currentData["location"]).then((Map<String, dynamic> data){
+        locationName = data["name"];
+      });
+    }
+    if (currentData["customer"] != null){
+      firebase.getObject("customers", currentData["customer"]).then((Map<String, dynamic> data){
+        customerName = data["name"];
+      });
+    }
     _items = getJobItems();
   }
 
@@ -146,9 +156,9 @@ class _JobCreatorCardState extends State<JobCreatorCard> {
         name: "Location",
         value: widget.jobData != null ? widget.jobData["location"] : null,
         hint: "Where is the job?",
-        valueToString: (String locationID){
+        valueToString: (String locationID) {
           if (locationID != null){
-            return firebase.getObject("locations", locationID)["name"];
+            return locationName;
           } else {
             return "Select a location";
           }
@@ -181,13 +191,14 @@ class _JobCreatorCardState extends State<JobCreatorCard> {
                             title: new Text(item.valueToString(field.value)),
                             trailing: new Icon(Icons.create),
                             onTap: () async {
-                              final String chosen = await pickFromCategory(
+                              Map<String, dynamic> chosen = await pickFromCategory(
                                 context: context,
                                 category: "locations",
                                 initialObject: field.value,
                               );
-                              if (chosen != null && chosen != field.value){
-                                field.onChanged(chosen);
+                              if (chosen != null && chosen["id"] != field.value){
+                                locationName = chosen["name"];
+                                field.onChanged(chosen["id"]);
                               }
                             }
                           )
@@ -207,8 +218,7 @@ class _JobCreatorCardState extends State<JobCreatorCard> {
         hint: "Who is this job for?",
         valueToString: (String customerID) {
           if (customerID != null){
-            Map<String, dynamic> customerData = firebase.getObject("customers", customerID);
-            return customerData["name"];
+            return customerName;
           } else {
             return "Select a customer";
           }
@@ -241,13 +251,13 @@ class _JobCreatorCardState extends State<JobCreatorCard> {
                             title: new Text(item.valueToString(item.value)),
                             trailing: new Icon(Icons.create),
                             onTap: () async {
-                              final String chosen = await pickFromCategory(
+                              Map<String, dynamic> chosen = await pickFromCategory(
                                 context: context,
                                 category: "customers",
                                 initialObject: field.value,
                               );
-                              if (chosen != null && chosen != field.value){
-                                field.onChanged(chosen);
+                              if (chosen != null && chosen["id"] != field.value){
+                                field.onChanged(chosen["id"]);
                               }
                             }
                           )
@@ -309,25 +319,21 @@ class _JobCreatorCardState extends State<JobCreatorCard> {
                         mainAxisSize: MainAxisSize.min,
                         crossAxisAlignment: CrossAxisAlignment.end,
                         children: field.value.map((String contactID){
-                          Map<String, dynamic> conData = firebase.getObject("contacts", contactID);
-                          return new Chip(
-                            label: new Text(conData["name"]),
-                            onDeleted: () {
-                              field.onChanged(removeContact(field.value, contactID));
-                            }
-                          );
+                          return new AsyncContactChip(firebase.getObject("contacts", contactID), (){
+                            field.onChanged(removeContact(field.value, contactID));
+                          });
                         }).toList()
                       );
                       x.children.insert(0, new ListTile(
                         title: new Text("Add a contact"),
                         trailing: new Icon(Icons.add),
                         onTap: () async {
-                          final String chosen = await pickFromCategory(
+                          Map<String, dynamic> chosen = await pickFromCategory(
                             context: context,
                             category: "contacts",
                           );
-                          if (chosen != null && !field.value.contains(chosen)){
-                            field.onChanged(addContact(field.value, chosen));
+                          if (chosen != null && !field.value.contains(chosen["id"])){
+                            field.onChanged(addContact(field.value, chosen["id"]));
                           }
                         }
                       ));
@@ -375,8 +381,8 @@ class _JobCreatorCardState extends State<JobCreatorCard> {
                   child: new Text("Save & Finish"),
                   textColor: Theme.of(context).accentColor,
                   onPressed: () async {
-                     dynamic res = await firebase.sendObject("jobs", currentData, objID: widget.jobID);
-                     Navigator.pop(context, res);
+                     firebase.sendObject("jobs", currentData, objID: widget.jobID);
+                     Navigator.pop(context);
                   }
                 )
               ]

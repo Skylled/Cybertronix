@@ -2,8 +2,12 @@ import 'package:flutter/material.dart';
 import 'drawer.dart';
 import 'cards/creatorCards.dart';
 import 'cards/categoryCards.dart';
-import 'firebase.dart';
+import 'firebase.dart' as firebase;
 
+/// This is a page that lists all items in a category.
+/// 
+/// It pulls the data using [firebase.getCategory] and
+/// slaps it in a [ListView]
 class CategoryPage extends StatefulWidget{
   const CategoryPage(this.category);
 
@@ -26,15 +30,16 @@ class _CategoryPageState extends State<CategoryPage>{
   }
   
   void generateList(){
-    Map<String, Map<String, dynamic>> objects = getCategory(widget.category);
-    objects.forEach((String id, Map<String, dynamic> data){
-      setState((){
-        objectList.add(new ListTile(
-          title: new Text(data["name"]),
-          onTap: (){
-            showCategoryCard(context, widget.category, id, data: data);
-          }
-        ));
+    firebase.getCategory(widget.category).then((Map<String, Map<String, dynamic>> objects){
+      objects.forEach((String id, Map<String, dynamic> data){
+        setState((){
+          objectList.add(new ListTile(
+            title: new Text(data["name"]),
+            onTap: (){
+              showCategoryCard(context, widget.category, id, data: data);
+            }
+          ));
+        });
       });
     });
   }

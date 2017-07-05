@@ -30,9 +30,7 @@ class CybertronixAppState extends State<CybertronixApp> {
   @override
   void initState() {
     super.initState();
-    firebase.getDocsFolder().then((bool b) {
-      firebase.refreshCache();
-    });
+    firebase.initDatabase();
   }
 
   Route<Null> _getRoute(RouteSettings settings) {

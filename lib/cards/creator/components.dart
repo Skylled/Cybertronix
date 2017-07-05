@@ -1,7 +1,6 @@
 
 import 'dart:async';
 import 'package:flutter/material.dart';
-import '../../firebase.dart' as firebase;
 import '../../dialogs/selector.dart';
 
 // Internal: Most of this code borrowed from expansion_panels_demo.dart
@@ -24,13 +23,6 @@ DateTime replaceDate(DateTime original, DateTime newdt){
     original.hour,
     original.minute
   );
-}
-
-Map<String, dynamic> mapFromID(String category, String id) {
-  Map<String, dynamic> objMap = <String, dynamic>{"id": id};
-  Map<String, dynamic> data = firebase.getObject(category, id);
-  objMap["data"] = data;
-  return objMap;
 }
 
 class AsyncContactChip extends StatefulWidget {
@@ -65,7 +57,7 @@ class _AsyncContactChipState extends State<AsyncContactChip>{
   }
 }
 
-Future<String> pickFromCategory({
+Future<Map<String, dynamic>> pickFromCategory({
   BuildContext context,
   String category,
   String initialObject: null,

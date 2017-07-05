@@ -10,9 +10,7 @@ class LocationInfoCard extends StatefulWidget {
   final String locationID;
   final Map<String, dynamic> locationData;
 
-  LocationInfoCard(String locationID, {Map<String, dynamic> locationData: null}):
-    this.locationID = locationID,
-    this.locationData = (locationData == null && locationID != null) ? firebase.getObject("locations", locationID) : locationData;
+  LocationInfoCard(this.locationID, {this.locationData});
   
   @override
   _LocationInfoCardState createState() => new _LocationInfoCardState();
@@ -23,7 +21,10 @@ class _LocationInfoCardState extends State<LocationInfoCard> {
   List<Widget> cardLines = <Widget>[];
 
   void goEdit(BuildContext context){
-    showCreatorCard(context, "locations", data: widget.locationData);
+    setState(() async {
+      await showCreatorCard(context, "locations", data: widget.locationData);
+      populateLines();
+    });
   }
 
   void goShare(){
@@ -33,6 +34,7 @@ class _LocationInfoCardState extends State<LocationInfoCard> {
   }
 
   void populateLines(){
+    cardLines = <Widget>[];
     cardLines.add(
       new Container( // TODO: Make this a shrinking title?
         height: 200.0,
@@ -71,18 +73,24 @@ class _LocationInfoCardState extends State<LocationInfoCard> {
     );
     if (widget.locationData["contacts"] != null) {
       cardLines.add(new Divider());
+      // `offset` essentially marks where the divider is, and thus, where to insert
+      int offset = cardLines.length;
       widget.locationData["contacts"].forEach((String contactID) {
-        Map<String, dynamic> contactData = firebase.getObject("contacts", contactID);
-        Widget trailing = (contactData["phone"] != null) ? new IconButton(icon: new Icon(Icons.phone),
-                                                                          onPressed: (){ url_launcher.launch('tel:${contactData["phone"]}'); }) 
-                                                         : null;
-        cardLines.add(new ListTile(
-          title: new Text(contactData["name"]),
-          trailing: trailing,
-          onTap: () {
-            showCategoryCard(context, "contacts", contactID, data: contactData);
-          }
-        ));
+        firebase.getObject("contacts", contactID).then((Map<String, dynamic> contactData){
+          setState((){
+            Widget trailing = (contactData["phone"] != null)
+                ? new IconButton(icon: new Icon(Icons.phone),
+                    onPressed: (){ url_launcher.launch('tel:${contactData["phone"]}'); })
+                : null;
+            cardLines.insert(offset, new ListTile(
+              title: new Text(contactData["name"]),
+              trailing: trailing,
+              onTap: () {
+                showCategoryCard(context, "contacts", contactID, data: contactData);
+              }
+            ));
+          });
+        });
       });
     }
     if (widget.locationData["packages"] != null){
@@ -118,7 +126,7 @@ class _LocationInfoCardState extends State<LocationInfoCard> {
           prevJobs.add(new ListTile(
             title: new Text("${datefmt.format(date)} ${jobData['name']}"),
             onTap: (){
-              showCategoryCard(context, "jobs", jobID);
+              showCategoryCard(context, "jobs", jobID, data: jobData);
             }
           ));
         });
@@ -143,7 +151,7 @@ class _LocationInfoCardState extends State<LocationInfoCard> {
   }
 
   @override
-  void initState(){
+  void initState() {
     super.initState();
     populateLines();
   }

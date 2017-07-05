@@ -25,13 +25,13 @@ class _SelectorDialogState extends State<SelectorDialog> {
   void initState(){
     super.initState();
     _selectedID = widget.initialObject;
-    Map<String, Map<String, dynamic>> objects = firebase.getCategory(widget.category);
-    objects.forEach((String id, Map<String, dynamic> data){
-      Map<String, dynamic> obj = new Map<String, dynamic>.from(data);
-      obj["id"] = id;
-      objList.add(obj);
+    firebase.getCategory(widget.category).then((Map<String, Map<String, dynamic>> objects){
+      objects.forEach((String id, Map<String, dynamic> data){
+        Map<String, dynamic> obj = new Map<String, dynamic>.from(data);
+        obj["id"] = id;
+        objList.add(obj);
+      });
     });
-    // Sort this eventually.
   }
 
   void _onAdd(){
@@ -70,7 +70,7 @@ class _SelectorDialogState extends State<SelectorDialog> {
                   return new ListTile(
                     title: new Text(objList[index]["name"]),
                     onTap: (){
-                      Navigator.pop(context, objList[index]["id"]);
+                      Navigator.pop(context, objList[index]);
                     },
                     selected: (objList[index]["id"] == _selectedID)
                   );

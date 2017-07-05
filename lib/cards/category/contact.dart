@@ -1,16 +1,22 @@
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart' as url_launcher;
 import 'package:share/share.dart' as share;
-import '../../firebase.dart' as firebase;
 import '../creatorCards.dart';
+import 'package:meta/meta.dart';
 
+/// A Material Card with a contact's info
+/// 
+/// Usually used with [showDialog]
 class ContactInfoCard extends StatefulWidget {
+  /// The contact's ID in Firebase
   final String contactID;
+  /// The contact data stored in Firebase
   final Map<String, dynamic> contactData;
 
-  ContactInfoCard(String contactID, {Map<String, dynamic> contactData: null}):
-    this.contactID = contactID,
-    this.contactData = (contactData == null && contactID != null) ? firebase.getObject("contacts", contactID) : contactData;
+  /// A Material Card with a contact's info
+  ContactInfoCard(this.contactID, {
+    @required this.contactData: null
+    });
   
   @override
   _ContactInfoCardState createState() => new _ContactInfoCardState();
@@ -37,7 +43,7 @@ class _ContactInfoCardState extends State<ContactInfoCard> {
 
   void populateLines(){
     cardLines.add(
-      new Container( // TODO: Make this a shrinking title?
+      new Container( // Future: Make this a sliver
         height: 200.0,
         child: new Stack(
           children: <Widget>[
@@ -129,7 +135,7 @@ class _ContactInfoCardState extends State<ContactInfoCard> {
   }
 
   @override
-  void initState(){
+  void initState() {
     super.initState();
     populateLines();
   }
