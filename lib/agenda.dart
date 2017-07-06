@@ -5,14 +5,16 @@ import 'cards/categoryCards.dart';
 import 'drawer.dart';
 import 'firebase.dart';
 
+/// A two week summary page of upcoming jobs
+/// 
+/// Something of a to-do list, organized by date and time.
+/// See [getAgendaData] for the data format it uses.
 class AgendaPage extends StatefulWidget {
-  const AgendaPage();
-
   @override
-  AgendaPageState createState() => new AgendaPageState();
+  _AgendaPageState createState() => new _AgendaPageState();
 }
 
-class AgendaPageState extends State<AgendaPage> {
+class _AgendaPageState extends State<AgendaPage> {
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
   List<Widget> agenda;
   Future<Map<String, Map<String, Map<String, dynamic>>>> agendaData = getAgendaData();

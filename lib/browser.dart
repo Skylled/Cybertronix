@@ -1,14 +1,15 @@
 import 'package:flutter/material.dart';
 import 'drawer.dart';
 
+/// A page showing the different categories available to browse
+/// 
+/// Currently: Jobs, Locations, Customers, Contacts, Annual tests, and Monthly tests
 class BrowserPage extends StatefulWidget {
-  const BrowserPage();
-
   @override
-  BrowserPageState createState() => new BrowserPageState();
+  _BrowserPageState createState() => new _BrowserPageState();
 }
 
-class BrowserPageState extends State<BrowserPage>{
+class _BrowserPageState extends State<BrowserPage>{
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
 
   @override

@@ -58,8 +58,8 @@ class CybertronixAppState extends State<CybertronixApp> {
         brightness: Brightness.light,
         primarySwatch: Colors.deepOrange,
       ),
+      home: new AgendaPage(),
       routes: <String, WidgetBuilder>{
-        '/': (BuildContext context) => new AgendaPage(), // Agenda
         '/browse': (BuildContext context) => new BrowserPage()
         /*  '/reports': (BuildContext context) => new ReportsPage(),
             '/search': (BuildContext context) => new SearchPage(), // Maybe have a search menu in the AppBar

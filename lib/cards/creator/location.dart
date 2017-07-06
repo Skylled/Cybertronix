@@ -344,8 +344,8 @@ class _LocationCreatorCardState extends State<LocationCreatorCard> {
                   child: new Text("Save & Finish"),
                   textColor: Theme.of(context).accentColor,
                   onPressed: () async {
-                    dynamic res = await firebase.sendObject("locations", currentData);
-                    Navigator.pop(context, res);
+                    firebase.sendObject("locations", currentData);
+                    Navigator.pop(context);
                   },
                 )
               ],
