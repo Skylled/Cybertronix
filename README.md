@@ -25,6 +25,11 @@ This is a landing page for all the categories of data that might want to be brow
 through.
 
 # FAQ
+## Why does the app crash on startup?
+
+You need to include `google-services.json` from Firebase to run this app in any capacity.
+Maybe soon I'll spin up a demo Firebase instance and sync it here for demonstration.
+
 ## Why are you doing things the weird/hard way?
 
 Probably because I don't know any better. This is my first Dartlang project, and my first
