@@ -11,12 +11,13 @@ import 'firebase.dart' as firebase;
 // TODO: Change to @required notation
 // TODO: Add copy support to all Category cards on long-press
 
+/// Cybertronix is a job management software; a work in progress.
 class CybertronixApp extends StatefulWidget {
   @override
-  CybertronixAppState createState() => new CybertronixAppState();
+  _CybertronixAppState createState() => new _CybertronixAppState();
 }
 
-class CybertronixAppState extends State<CybertronixApp> {
+class _CybertronixAppState extends State<CybertronixApp> {
   final List<String> _classes = <String>[
     'annuals',
     'contacts',

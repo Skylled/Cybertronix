@@ -1,10 +1,17 @@
 import 'package:flutter/material.dart';
 
+/// A detailed card with all the info about a panel package, returned
+/// from Firebase, organized into [ExpansionPanel]s.
 class PackageInfoCard extends StatelessWidget{
+
+  /// This info comes direct from the location card's data
   final Map<String, dynamic> packageData;
 
+  /// A detailed card with all the info about a panel package, returned
+  /// from Firebase, organized into [ExpansionPanel]s.
   PackageInfoCard(this.packageData);
 
+  /// This is a cheap way to make my Firebase names look better
   final Map<String, String> prettify = <String, String>{
     "manufacturer": "Manufacturer",
     "model": "Model #",
@@ -25,6 +32,8 @@ class PackageInfoCard extends StatelessWidget{
     "over": "Over",
   };
 
+  /// This function takes a sub-object from the main Firebase object
+  /// and returns a [ListTile].
   Widget packageTile(Map<String, dynamic> object, String key){
     return new ListTile(
       title: new Text(object[key].toString()),
@@ -32,6 +41,8 @@ class PackageInfoCard extends StatelessWidget{
     );
   }
 
+  /// This takes the panel data returned from, and returns widgets for an
+  /// [ExpansionTile]
   List<Widget> panelSubList(Map<String, dynamic> panel, String power){
     List<String> keyList;
     if (power == "Diesel"){
@@ -50,19 +61,19 @@ class PackageInfoCard extends StatelessWidget{
     }).toList();
   }
 
-  List<Widget> tswitchSubList(Map<String, dynamic> tswitch){
+  List<Widget> _tswitchSubList(Map<String, dynamic> tswitch){
     return <String>["manufacturer", "model", "serial"].map((String key){
       return packageTile(tswitch, key);
     }).toList();
   }
 
-  List<Widget> pumpSubList(Map<String, dynamic> pump){
+  List<Widget> _pumpSubList(Map<String, dynamic> pump){
     return <String>["manufacturer", "model", "serial", "rpm", "shutoff", "rated", "over"].map((String key){
       return packageTile(pump, key);
     }).toList();
   }
 
-  List<Widget> motorSubList(Map<String, dynamic> motor, String power){
+  List<Widget> _motorSubList(Map<String, dynamic> motor, String power){
     List<String> keyList;
     if (power == "Diesel"){
       keyList = <String>["manufacturer", "power", "model", "serial", "hp", "rpm", "volts", "ground"];
@@ -80,19 +91,19 @@ class PackageInfoCard extends StatelessWidget{
     }).toList();
   }
 
-  List<Widget> jpanelSubList(Map<String, dynamic> jpanel){
+  List<Widget> _jpanelSubList(Map<String, dynamic> jpanel){
     return <String>["manufacturer", "model", "serial", "hp", "start", "stop", "enclosure"].map((String key){
       return packageTile(jpanel, key);
     }).toList();
   }
 
-  List<Widget> jpumpSubList(Map<String, dynamic> jpump){
+  List<Widget> _jpumpSubList(Map<String, dynamic> jpump){
     return <String>["manufacturer", "model", "serial", "hp", "volts", "phase"].map((String key){
       return packageTile(jpump, key);
     }).toList();
   }
 
-  List<Widget> getLines(){
+  List<Widget> _getLines(){
     List<Widget> lines = <Widget>[];
     if (packageData["panel"] != null){
       lines.add(new ExpansionTile(
@@ -103,26 +114,26 @@ class PackageInfoCard extends StatelessWidget{
     if (packageData["tswitch"] != null){
       lines.add(new ExpansionTile(
         title: new Text("Transfer Switch"),
-        children: tswitchSubList(packageData["tswitch"]),
+        children: _tswitchSubList(packageData["tswitch"]),
       ));
     }
     if (packageData["pump"] != null){
       lines.add(new ExpansionTile(
         title: new Text("Pump"),
-        children: pumpSubList(packageData["pump"]),
+        children: _pumpSubList(packageData["pump"]),
       ));
     }
     if (packageData["motor"] != null){
       lines.add(new ExpansionTile(
         title: new Text("Motor"),
-        children: motorSubList(packageData["motor"], packageData["power"]),
+        children: _motorSubList(packageData["motor"], packageData["power"]),
       ));
     }
     if (packageData["jockeypanel"] != null){
       List<Widget> jockeyWidgets = <Widget>[];
-      jockeyWidgets.addAll(jpanelSubList(packageData["jockeypanel"]));
+      jockeyWidgets.addAll(_jpanelSubList(packageData["jockeypanel"]));
       if (packageData["jockeypump"] != null){
-        jockeyWidgets.addAll(jpumpSubList(packageData["jockeyPump"]));
+        jockeyWidgets.addAll(_jpumpSubList(packageData["jockeyPump"]));
       }
       lines.add(new ExpansionTile(
         title: new Text("Jockey"),
@@ -138,7 +149,7 @@ class PackageInfoCard extends StatelessWidget{
       padding: const EdgeInsets.fromLTRB(8.0, 28.0, 8.0, 12.0),
       child: new Card(
         child: new ListView(
-          children: getLines(),
+          children: _getLines(),
         ),
       ),
     );

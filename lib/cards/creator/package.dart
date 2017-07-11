@@ -3,9 +3,21 @@ import 'components.dart';
 
 // Fun: Make coresponding fields read from each other, as default if blank.
 
+/// This [Card] opens in a dialog, and lets you create a 
+/// new pump package, or, if fed in data, edit
+/// an existing package.
+/// 
+/// The difference from other Creator Cards is that the
+/// this one [Navigator.pop]'s the final data back to the
+/// LocationCreatorCard.
+/// 
+/// This is the most complicated of the cards, and likely
+/// the one that needs the most documentation. One day...
 class PackageCreatorCard extends StatefulWidget {
+  /// The data of an existing package to be edited (Optional)
   final Map<String, dynamic> packageData;
 
+  /// Creates a pump package creator/editor in a Card
   PackageCreatorCard({Map<String, dynamic> packageData: null}):
     this.packageData = packageData;
   
@@ -13,6 +25,7 @@ class PackageCreatorCard extends StatefulWidget {
   _PackageCreatorCardState createState() => new _PackageCreatorCardState();
 }
 
+// TODO: I really want to document this whole class.
 class _PackageCreatorCardState extends State<PackageCreatorCard> {
   List<CreatorItem<dynamic>> _items;
   Map<String, dynamic> currentData;

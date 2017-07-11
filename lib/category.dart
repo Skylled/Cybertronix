@@ -9,8 +9,10 @@ import 'firebase.dart' as firebase;
 /// It pulls the data using [firebase.getCategory] and
 /// slaps it in a [ListView]
 class CategoryPage extends StatefulWidget{
+  /// A page that lists all items in a category.
   const CategoryPage(this.category);
-
+  
+  /// The category to load objects from.
   final String category;
 
   @override

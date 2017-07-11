@@ -2,14 +2,22 @@ import 'package:flutter/material.dart';
 import '../firebase.dart' as firebase;
 import '../cards/creatorCards.dart';
 
+/// This [Dialog] loads a list of objects from a
+/// category in Firebase, with the [initialObject]
+/// indicating which object is currently selected.
+/// 
+/// [Navigator.pop]s with the newly selected data.
 class SelectorDialog extends StatefulWidget {
+  /// Opens a dialog to select an object from a category
   const SelectorDialog({
     Key key,
     this.category,
     this.initialObject,
   }) : super(key: key);
 
+  /// The category in Firebase to select from
   final String category;
+  /// The object to show as currently selected
   final String initialObject;
 
   @override
@@ -43,6 +51,7 @@ class _SelectorDialogState extends State<SelectorDialog> {
   }
 
   Widget build(BuildContext context){
+    // TODO: I removed `actions` from this widget, for debugging.
     final Widget actions = new ButtonTheme.bar(
       child: new ButtonBar(
         children: <Widget>[

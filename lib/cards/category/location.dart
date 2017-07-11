@@ -6,10 +6,14 @@ import '../../firebase.dart' as firebase;
 import '../creatorCards.dart';
 import '../categoryCards.dart';
 
+/// This card shows all the basic info about a location
 class LocationInfoCard extends StatefulWidget {
+  /// The Firebase ID of the location loaded
   final String locationID;
+  /// The data loaded from Firebase
   final Map<String, dynamic> locationData;
 
+  /// This card shows all the basic info about a location
   LocationInfoCard(this.locationID, {this.locationData});
   
   @override

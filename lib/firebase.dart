@@ -3,6 +3,8 @@ import 'package:firebase_database/firebase_database.dart';
 
 Map<String, DatabaseReference> _refs;
 
+/// Initializes the database with a maximum 50MB cache, and
+/// tells the underlying implementation to cache all categories.
 void initDatabase(){
   _refs = new Map<String, DatabaseReference>();
   FirebaseDatabase.instance.setPersistenceEnabled(true);
@@ -13,18 +15,24 @@ void initDatabase(){
     _refs[category].keepSynced(true);
   });
 }
-//Map<String, Map<String, dynamic>>
+
+/// Retrieves all the objects from a given [category],
+/// sorted by `name`, unless set otherwise by [sortBy].
 Future<Map<String, Map<String, dynamic>>> getCategory(String category, {String sortBy: "name"}) async {
   DatabaseReference ref = _refs[category];
   DataSnapshot snap = await ref.orderByChild(sortBy).once();
   return snap.value;
 }
 
+/// Retrieve a specific object from a [category] by its [id].
 Future<Map<String, dynamic>> getObject(String category, String id) async {
   DataSnapshot snap = await _refs[category].child(id).once();
   return snap.value;
 }
 
+/// Writes a new object to a [category] or changes the object at [objID]
+/// to brand new data.
+// TODO: I don't know if this can delete fields correctly.
 void sendObject(String category, Map<String, dynamic> data, {String objID: null}) {
   DatabaseReference ref = _refs[category];
   if (objID != null) {
@@ -34,14 +42,17 @@ void sendObject(String category, Map<String, dynamic> data, {String objID: null}
   }
 }
 
+/// Finds all jobs whose [field] matches the [searchterm].
 Future<Map<String, Map<String, dynamic>>> findJobs(String field, String searchterm) async {
   DatabaseReference ref = _refs["jobs"];
   DataSnapshot snap = await ref.orderByChild(field).equalTo(searchterm).once();
   return snap.value;
 }
 
+/// Retrieves the next two weeks of jobs and sorts by datetime.
+/// 
+/// Format: Map<DateString, Map<JobId, Map<Key, Value>>>
 Future<Map<String, Map<String, Map<String, dynamic>>>> getAgendaData() async {
-  // Map<DateString, Map<JobId, Map<Key, Value>>>
   Map<String, Map<String, Map<String, dynamic>>> agendaData = new Map<String, dynamic>();
   DateTime today = new DateTime.now();
   // 15 because any full 8601 string would be alphabetized after the stripped counterpart.

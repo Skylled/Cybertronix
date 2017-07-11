@@ -5,6 +5,10 @@ import 'creator/contact.dart';
 import 'creator/location.dart';
 import 'creator/package.dart';
 
+// TODO: Redo all Navigator.pop calls to return the object data
+
+/// Opens a [Dialog] [Card] with a creator/editor for the given 
+/// [category]. [data] and [objID] are for pre-filling the editor.
 Future<dynamic> showCreatorCard(BuildContext context, String category, {Map<String, dynamic> data: null, String objID: null}) async {
   switch (category){
     case "jobs":
@@ -32,6 +36,8 @@ Future<dynamic> showCreatorCard(BuildContext context, String category, {Map<Stri
   }
 }
 
+/// Opens a [Dialog] [Card] with a Creator/Editor for a package.
+/// [packageData] is for prefilling the editor.
 Future<Map<String, dynamic>> awaitPackage(BuildContext context, {Map<String, dynamic> packageData: null}) async {
   Map<String, dynamic> newPackageData = <String, dynamic>{};
   if (packageData == null) {

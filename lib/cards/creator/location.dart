@@ -3,10 +3,16 @@ import '../../firebase.dart' as firebase;
 import 'components.dart';
 import '../creatorCards.dart';
 
+/// This [Card] opens in a dialog, and lets you create a 
+/// new Location, or, if fed in data and an ID, edit an existing
+/// Location.
 class LocationCreatorCard extends StatefulWidget {
+  /// The data of an existing Location to be edited (Optional)
   final Map<String, dynamic> locationData;
+  /// The ID of an existing Location to edit (Optional)
   final String locationID;
 
+  /// Creates a Location creator/editor in a Card
   LocationCreatorCard({this.locationData, this.locationID});
   
   @override

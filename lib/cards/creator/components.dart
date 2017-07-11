@@ -1,10 +1,8 @@
-
 import 'dart:async';
 import 'package:flutter/material.dart';
 import '../../dialogs/selector.dart';
 
-// Internal: Most of this code borrowed from expansion_panels_demo.dart
-
+/// Takes a [DateTime] and replaces its time with one from a [TimeOfDay]
 DateTime replaceTimeOfDay(DateTime dt, TimeOfDay tod){
   return new DateTime(
     dt.year,
@@ -15,6 +13,8 @@ DateTime replaceTimeOfDay(DateTime dt, TimeOfDay tod){
   );
 }
 
+/// This takes two [DateTime]s and returns a new one with the second's date
+/// and the first's time.
 DateTime replaceDate(DateTime original, DateTime newdt){
   return new DateTime(
     newdt.year,
@@ -25,10 +25,18 @@ DateTime replaceDate(DateTime original, DateTime newdt){
   );
 }
 
+/// AsyncContactChip creates a [Chip] that displays "Loading..." until
+/// the provided [Future] returns.
+/// In this instance, the text it changes to is the Map's `name` property.
+/// But it can be easily modified for other uses.
+/// I love this little snippet for some reason.
 class AsyncContactChip extends StatefulWidget {
   final Future<Map<String, dynamic>> contactData;
   final VoidCallback onDeleted;
 
+  /// Takes a [Future] Contact and a [VoidCallback] and creates
+  /// a [Chip] that when the Future returns will read the Contact's
+  /// name.
   AsyncContactChip(this.contactData, this.onDeleted);
 
   @override
@@ -57,6 +65,7 @@ class _AsyncContactChipState extends State<AsyncContactChip>{
   }
 }
 
+/// Open a [SelectorDialog] to pick an object.
 Future<Map<String, dynamic>> pickFromCategory({
   BuildContext context,
   String category,
@@ -70,6 +79,9 @@ Future<Map<String, dynamic>> pickFromCategory({
     )
   );
 }
+
+// Internal: Most of the following code is borrowed from 
+// flutter/examples/flutter_gallery/lib/demo/material/expansion_panels_demo.dart
 
 typedef Widget CreatorItemBodyBuilder<T>(CreatorItem<T> item);
 typedef String ValueToString<T>(T value);

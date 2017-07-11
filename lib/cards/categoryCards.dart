@@ -4,6 +4,7 @@ import 'category/contact.dart';
 import 'category/location.dart';
 import 'category/package.dart';
 
+/// This pops up a [Dialog] [Card] with info about a particular object.
 void showCategoryCard(BuildContext context, String category, String objID,
     {Map<String, dynamic> data: null}) {
   switch (category) {
@@ -41,6 +42,7 @@ void showCategoryCard(BuildContext context, String category, String objID,
   }
 }
 
+/// This displays a [Dialog] [Card] with info loaded from Firebase
 void showPackageCard(BuildContext context, Map<String, dynamic> data){
   showDialog(
     context: context,

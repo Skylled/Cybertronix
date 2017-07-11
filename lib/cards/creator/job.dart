@@ -3,10 +3,15 @@ import 'package:flutter/material.dart';
 import '../../firebase.dart' as firebase;
 import 'components.dart';
 
+/// This [Card] opens in a dialog, and lets you create a 
+/// new job, or, if fed in data and an ID, edit an existing job.
 class JobCreatorCard extends StatefulWidget {
+  /// The data of an existing job to be edited (Optional)
   final Map<String, dynamic> jobData;
+  /// The ID of an existing job to edit (Optional)
   final String jobID;
 
+  /// Creates a job creator/editor in a Card
   JobCreatorCard({this.jobData, this.jobID});
 
   @override

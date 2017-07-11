@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+/// Builds the same [Drawer] across the app, with
+/// the same few buttons to go to different pages
 Drawer buildDrawer(BuildContext context, String currentPage) {
   void goAgenda(){
     if (currentPage == "agenda"){
