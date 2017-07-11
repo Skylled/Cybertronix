@@ -10,6 +10,8 @@ dependencies:
   image_picker:
   image:
   share:
+  google_sign_in:
+  firebase_auth:
   firebase_storage:
   firebase_database:
   meta: ^1.0.5

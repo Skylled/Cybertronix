@@ -1,5 +1,18 @@
 import 'dart:async';
 import 'package:firebase_database/firebase_database.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:google_sign_in/google_sign_in.dart';
+
+/// The firebase auth instance
+final FirebaseAuth auth = FirebaseAuth.instance;
+/// The google sign in plugin instance
+final GoogleSignIn googleSignIn = new GoogleSignIn();
+
+/// This is a cheap (and possibly inaccurate) way of
+/// keeping track whether the user is logged in.
+bool loggedIn = false;
+/// The currently logged in user (or null)
+FirebaseUser user;
 
 Map<String, DatabaseReference> _refs;
 

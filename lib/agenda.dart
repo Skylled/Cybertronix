@@ -3,7 +3,8 @@ import 'package:intl/intl.dart';
 import 'dart:async';
 import 'cards/categoryCards.dart';
 import 'drawer.dart';
-import 'firebase.dart';
+import 'login.dart';
+import 'firebase.dart' as firebase;
 
 /// A two week summary page of upcoming jobs
 /// 
@@ -17,7 +18,7 @@ class AgendaPage extends StatefulWidget {
 class _AgendaPageState extends State<AgendaPage> {
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
   List<Widget> agenda;
-  Future<Map<String, Map<String, Map<String, dynamic>>>> agendaData = getAgendaData();
+  Future<Map<String, Map<String, Map<String, dynamic>>>> agendaData = firebase.getAgendaData();
 
   Widget buildAppBar(){
     return new AppBar(
@@ -80,16 +81,20 @@ class _AgendaPageState extends State<AgendaPage> {
 
   @override
   Widget build(BuildContext context) {
-    return new Scaffold(
-      key: _scaffoldKey,
-      appBar: buildAppBar(),
-      floatingActionButton: buildFloatingActionButton(),
-      drawer: buildDrawer(context, 'agenda'),
-      body: new Center(
-        child: new ListView(
-          children: new List<Widget>.from(agenda)
+    if (firebase.loggedIn) {
+      return new Scaffold(
+        key: _scaffoldKey,
+        appBar: buildAppBar(),
+        floatingActionButton: buildFloatingActionButton(),
+        drawer: buildDrawer(context, 'agenda'),
+        body: new Center(
+          child: new ListView(
+            children: new List<Widget>.from(agenda)
+          ),
         ),
-      ),
-    );
+      );
+    } else {
+      return new LoginPage();
+    }
   }
 }
