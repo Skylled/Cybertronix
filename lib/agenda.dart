@@ -3,7 +3,6 @@ import 'package:intl/intl.dart';
 import 'dart:async';
 import 'cards/categoryCards.dart';
 import 'drawer.dart';
-import 'login.dart';
 import 'firebase.dart' as firebase;
 
 /// A two week summary page of upcoming jobs
@@ -17,7 +16,7 @@ class AgendaPage extends StatefulWidget {
 
 class _AgendaPageState extends State<AgendaPage> {
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
-  List<Widget> agenda;
+  List<Widget> agenda = <Widget>[];
   Future<Map<String, Map<String, Map<String, dynamic>>>> agendaData = firebase.getAgendaData();
 
   Widget buildAppBar(){
@@ -34,43 +33,45 @@ class _AgendaPageState extends State<AgendaPage> {
     );
   }
 
-  void buildAgenda() {
-    agenda = <Widget>[];
-    agendaData.then((Map<String, Map<String, Map<String, dynamic>>> value) {
-      value.forEach((String day, Map<String, Map<String, dynamic>> jobs) {
-        DateTime date = DateTime.parse(day);
-        DateFormat formatter = new DateFormat('EEEE, MMMM d');
-        String txt = formatter.format(date);
-        List<Widget> subJobs = <Widget>[];
-        if (jobs.length == 0) {
-          setState((){
-            subJobs.add(new ListTile(
-              title: new Text("No jobs scheduled.")
-            ));
-          });
-        } else {
-          jobs.forEach((String id, Map<String, dynamic> job) {
-            DateTime jdt = DateTime.parse(job["datetime"]);
-            DateFormat time = new DateFormat.jm();
+  Future<Null> buildAgenda() async {
+    if (await firebase.ensureLoggedIn()){
+      agenda = <Widget>[];
+      agendaData.then((Map<String, Map<String, Map<String, dynamic>>> value) {
+        value.forEach((String day, Map<String, Map<String, dynamic>> jobs) {
+          DateTime date = DateTime.parse(day);
+          DateFormat formatter = new DateFormat('EEEE, MMMM d');
+          String txt = formatter.format(date);
+          List<Widget> subJobs = <Widget>[];
+          if (jobs.length == 0) {
             setState((){
               subJobs.add(new ListTile(
-                title: new Text('${time.format(jdt)}, ${job["name"]}'),
-                onTap: () {
-                  showCategoryCard(context, "jobs", id, data: job);
-                }
+                title: new Text("No jobs scheduled.")
               ));
             });
+          } else {
+            jobs.forEach((String id, Map<String, dynamic> job) {
+              DateTime jdt = DateTime.parse(job["datetime"]);
+              DateFormat time = new DateFormat.jm();
+              setState((){
+                subJobs.add(new ListTile(
+                  title: new Text('${time.format(jdt)}, ${job["name"]}'),
+                  onTap: () {
+                    showCategoryCard(context, "jobs", id, data: job);
+                  }
+                ));
+              });
+            });
+          }
+          setState((){
+            agenda.add(new ExpansionTile(
+              title: new Text(txt),
+              leading: new CircleAvatar(child: new Text(jobs.length.toString())),
+              children: subJobs
+            ));
           });
-        }
-        setState((){
-          agenda.add(new ExpansionTile(
-            title: new Text(txt),
-            leading: new CircleAvatar(child: new Text(jobs.length.toString())),
-            children: subJobs
-          ));
         });
       });
-    }); 
+    } 
   }
 
   @override
@@ -81,20 +82,16 @@ class _AgendaPageState extends State<AgendaPage> {
 
   @override
   Widget build(BuildContext context) {
-    if (firebase.loggedIn) {
-      return new Scaffold(
-        key: _scaffoldKey,
-        appBar: buildAppBar(),
-        floatingActionButton: buildFloatingActionButton(),
-        drawer: buildDrawer(context, 'agenda'),
-        body: new Center(
-          child: new ListView(
-            children: new List<Widget>.from(agenda)
-          ),
+    return new Scaffold(
+      key: _scaffoldKey,
+      appBar: buildAppBar(),
+      floatingActionButton: buildFloatingActionButton(),
+      drawer: buildDrawer(context, 'agenda'),
+      body: new Center(
+        child: new ListView(
+          children: new List<Widget>.from(agenda)
         ),
-      );
-    } else {
-      return new LoginPage();
-    }
+      ),
+    );
   }
 }

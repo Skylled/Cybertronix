@@ -8,11 +8,36 @@ final FirebaseAuth auth = FirebaseAuth.instance;
 /// The google sign in plugin instance
 final GoogleSignIn googleSignIn = new GoogleSignIn();
 
-/// This is a cheap (and possibly inaccurate) way of
-/// keeping track whether the user is logged in.
-bool loggedIn = false;
-/// The currently logged in user (or null)
-FirebaseUser user;
+
+// This is mostly borrowed from flutter's FriendlyChat example
+Future<bool> ensureLoggedIn() async {
+  GoogleSignInAccount user = googleSignIn.currentUser;
+  if (user == null)
+    user = await googleSignIn.signInSilently();
+  if (user == null) {
+    print('Silent login failed');
+    user = await googleSignIn.signIn();
+  } else {
+    print('Silent login succeeded');
+  }
+  if (user == null) {
+    print('User declined to log in.');
+    return false;
+  }
+  if (auth.currentUser == null) {
+    GoogleSignInAuthentication credentials =
+    await googleSignIn.currentUser.authentication;
+    await auth.signInWithGoogle(
+      idToken: credentials.idToken,
+      accessToken: credentials.accessToken,
+    );
+  }
+  if (auth.currentUser == null) {
+    return false;
+  } else {
+    return true;
+  }
+}
 
 Map<String, DatabaseReference> _refs;
 
