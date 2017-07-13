@@ -34,44 +34,60 @@ class _AgendaPageState extends State<AgendaPage> {
   }
 
   Future<Null> buildAgenda() async {
-    if (await firebase.ensureLoggedIn()){
-      agenda = <Widget>[];
-      agendaData.then((Map<String, Map<String, Map<String, dynamic>>> value) {
-        value.forEach((String day, Map<String, Map<String, dynamic>> jobs) {
-          DateTime date = DateTime.parse(day);
-          DateFormat formatter = new DateFormat('EEEE, MMMM d');
-          String txt = formatter.format(date);
-          List<Widget> subJobs = <Widget>[];
-          if (jobs.length == 0) {
-            setState((){
-              subJobs.add(new ListTile(
-                title: new Text("No jobs scheduled.")
-              ));
-            });
-          } else {
-            jobs.forEach((String id, Map<String, dynamic> job) {
-              DateTime jdt = DateTime.parse(job["datetime"]);
-              DateFormat time = new DateFormat.jm();
-              setState((){
-                subJobs.add(new ListTile(
-                  title: new Text('${time.format(jdt)}, ${job["name"]}'),
-                  onTap: () {
-                    showCategoryCard(context, "jobs", id, data: job);
-                  }
-                ));
-              });
-            });
-          }
+    agenda = <Widget>[]; // Always start from fresh.
+    try {
+      if (! await firebase.ensureLoggedIn()){
+        agenda.add(new ListTile(
+          title: new Text("Working offline. Tap to login."),
+          onTap: () async {
+            buildAgenda();
+          },
+        ));
+      }
+    } catch (e) {
+      print("Caught login exception: $e");
+      agenda.add(new ListTile(
+        title: new Text("Working offline. Tap to login."),
+        onTap: () async {
+          buildAgenda();
+        }
+      ));
+    }
+    agendaData.then((Map<String, Map<String, Map<String, dynamic>>> value) {
+      value.forEach((String day, Map<String, Map<String, dynamic>> jobs) {
+        DateTime date = DateTime.parse(day);
+        DateFormat formatter = new DateFormat('EEEE, MMMM d');
+        String txt = formatter.format(date);
+        List<Widget> subJobs = <Widget>[];
+        if (jobs.length == 0) {
           setState((){
-            agenda.add(new ExpansionTile(
-              title: new Text(txt),
-              leading: new CircleAvatar(child: new Text(jobs.length.toString())),
-              children: subJobs
+            subJobs.add(new ListTile(
+              title: new Text("No jobs scheduled.")
             ));
           });
+        } else {
+          jobs.forEach((String id, Map<String, dynamic> job) {
+            DateTime jdt = DateTime.parse(job["datetime"]);
+            DateFormat time = new DateFormat.jm();
+            setState((){
+              subJobs.add(new ListTile(
+                title: new Text('${time.format(jdt)}, ${job["name"]}'),
+                onTap: () {
+                  showCategoryCard(context, "jobs", id, data: job);
+                }
+              ));
+            });
+          });
+        }
+        setState((){
+          agenda.add(new ExpansionTile(
+            title: new Text(txt),
+            leading: new CircleAvatar(child: new Text(jobs.length.toString())),
+            children: subJobs
+          ));
         });
       });
-    } 
+    });
   }
 
   @override
