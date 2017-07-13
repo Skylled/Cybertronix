@@ -2,12 +2,14 @@ import 'dart:async';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 
 /// The firebase auth instance
 final FirebaseAuth auth = FirebaseAuth.instance;
 /// The google sign in plugin instance
 final GoogleSignIn googleSignIn = new GoogleSignIn();
 
+final FirebaseMessaging firebaseMessaging = new FirebaseMessaging();
 
 // This is mostly borrowed from flutter's FriendlyChat example
 Future<bool> ensureLoggedIn() async {
@@ -35,6 +37,7 @@ Future<bool> ensureLoggedIn() async {
   if (auth.currentUser == null) {
     return false;
   } else {
+    firebaseMessaging.subscribeToTopic(auth.currentUser.email);
     return true;
   }
 }
@@ -44,6 +47,8 @@ Map<String, DatabaseReference> _refs;
 /// Initializes the database with a maximum 50MB cache, and
 /// tells the underlying implementation to cache all categories.
 void initDatabase(){
+  firebaseMessaging.requestNotificationPermissions();
+
   _refs = new Map<String, DatabaseReference>();
   FirebaseDatabase.instance.setPersistenceEnabled(true);
   FirebaseDatabase.instance.setPersistenceCacheSizeBytes(50000000);

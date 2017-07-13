@@ -12,6 +12,7 @@ dependencies:
   share:
   google_sign_in:
   firebase_auth:
+  firebase_messaging:
   firebase_storage:
   firebase_database:
   meta: ^1.0.5
