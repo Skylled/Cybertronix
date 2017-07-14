@@ -37,7 +37,7 @@ Future<bool> ensureLoggedIn() async {
   if (auth.currentUser == null) {
     return false;
   } else {
-    firebaseMessaging.subscribeToTopic(auth.currentUser.email);
+    firebaseMessaging.subscribeToTopic(auth.currentUser.uid);
     return true;
   }
 }
@@ -105,7 +105,10 @@ Future<Map<String, Map<String, Map<String, dynamic>>>> getAgendaData() async {
     agendaData[newDate.toIso8601String().substring(0, 10)] = new Map<String, dynamic>();
   }
   DatabaseReference ref = _refs["jobs"];
-  DataSnapshot snap = await ref.orderByChild("datetime").startAt(today.toIso8601String().substring(0,10)).endAt(twoweeks.toIso8601String().substring(0, 10)).once();
+  DataSnapshot snap = await ref.orderByChild("datetime")
+                               .startAt(today.toIso8601String().substring(0,10))
+                               .endAt(twoweeks.toIso8601String().substring(0, 10))
+                               .once();
   if (snap.value != null) {
     snap.value.forEach((String id, Map<String, dynamic> job) {
       String jobDate = job["datetime"].substring(0, 10);
