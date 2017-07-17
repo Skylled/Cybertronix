@@ -15,7 +15,7 @@ class ContactInfoCard extends StatefulWidget {
 
   /// A Material Card with a contact's info
   ContactInfoCard(this.contactID, {
-    @required this.contactData: null
+    @required this.contactData
     });
   
   @override
@@ -27,7 +27,11 @@ class _ContactInfoCardState extends State<ContactInfoCard> {
   List<Widget> cardLines = <Widget>[];
 
   void goEdit(BuildContext context){
-    showCreatorCard(context, "contacts", data: widget.contactData);
+    showCreatorCard(context, "contacts", data: widget.contactData).then((dynamic x){
+      setState((){
+        populateLines();
+      });
+    });
   }
 
   void goShare(){ // Hook this into something!

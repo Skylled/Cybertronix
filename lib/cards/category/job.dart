@@ -1,4 +1,3 @@
-import 'dart:async';
 import 'package:intl/intl.dart';
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart' as url_launcher;
@@ -26,10 +25,12 @@ class _JobInfoCardState extends State<JobInfoCard> {
   List<Widget> cardLines = <Widget>[];
   Map<String, dynamic> locationData;
 
+  // TODO: .then() instead of await
   void goEdit(BuildContext context) {
-    setState(() async {
-      await showCreatorCard(context, "jobs", data: widget.jobData);
-      populateLines();
+    showCreatorCard(context, "jobs", data: widget.jobData).then((dynamic x){
+      setState((){
+        populateLines();
+      });
     });
   }
 

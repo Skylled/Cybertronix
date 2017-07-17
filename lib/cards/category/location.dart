@@ -25,9 +25,10 @@ class _LocationInfoCardState extends State<LocationInfoCard> {
   List<Widget> cardLines = <Widget>[];
 
   void goEdit(BuildContext context){
-    setState(() async {
-      await showCreatorCard(context, "locations", data: widget.locationData);
-      populateLines();
+    showCreatorCard(context, "locations", data: widget.locationData).then((dynamic x){
+      setState((){
+        populateLines();
+      });
     });
   }
 
