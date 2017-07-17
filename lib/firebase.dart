@@ -73,15 +73,29 @@ Future<Map<String, dynamic>> getObject(String category, String id) async {
   return snap.value;
 }
 
+Map<String, dynamic> scrub(Map<String, dynamic> data) {
+  Map<String, dynamic> newData = new Map<String, dynamic>.from(data);
+  newData.forEach((String key, dynamic value){
+    if (value is Map) {
+      scrub(value); // Recursion!
+    } else if (value is String) {
+      if (value.length < 0) {
+        value = null;
+      }
+    }
+  });
+  return newData;
+}
+
 /// Writes a new object to a [category] or changes the object at [objID]
 /// to brand new data.
 // TODO: I don't know if this can delete fields correctly.
 void sendObject(String category, Map<String, dynamic> data, {String objID: null}) {
   DatabaseReference ref = _refs[category];
   if (objID != null) {
-    ref.child(objID).set(data);
+    ref.child(objID).set(scrub(data));
   } else {
-    ref.push().set(data);
+    ref.push().set(scrub(data));
   }
 }
 
