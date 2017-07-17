@@ -25,7 +25,6 @@ class _JobInfoCardState extends State<JobInfoCard> {
   List<Widget> cardLines = <Widget>[];
   Map<String, dynamic> locationData;
 
-  // TODO: .then() instead of await
   void goEdit(BuildContext context) {
     showCreatorCard(context, "jobs", data: widget.jobData).then((dynamic x){
       setState((){
@@ -35,7 +34,7 @@ class _JobInfoCardState extends State<JobInfoCard> {
   }
 
   void populateLines (){
-    cardLines = <Widget>[];
+    cardLines.clear();
     DateFormat formatter = new DateFormat("h:mm a, EEEE, MMMM d");
     String address =
         '${locationData["address"]}, ${locationData["city"]}, ${locationData["state"]}';

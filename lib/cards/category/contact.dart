@@ -46,6 +46,7 @@ class _ContactInfoCardState extends State<ContactInfoCard> {
   }
 
   void populateLines(){
+    cardLines.clear();
     cardLines.add(
       new Container( // Future: Make this a sliver
         height: 200.0,
@@ -89,7 +90,6 @@ class _ContactInfoCardState extends State<ContactInfoCard> {
             new IconButton(
               icon: new Icon(Icons.message),
               onPressed: (){
-                // TODO: double check url
                 url_launcher.launch('sms:${widget.contactData["phone"]}');
               }
             ),

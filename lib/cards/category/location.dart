@@ -39,7 +39,7 @@ class _LocationInfoCardState extends State<LocationInfoCard> {
   }
 
   void populateLines(){
-    cardLines = <Widget>[];
+    cardLines.clear();
     cardLines.add(
       new Container( // TODO: Make this a shrinking title?
         height: 200.0,

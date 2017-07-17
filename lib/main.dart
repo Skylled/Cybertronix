@@ -7,8 +7,10 @@ import 'firebase.dart' as firebase;
 // Upcoming features
 // TODO: Add users to jobs
 // TODO: Push notifications (Firebase Cloud Messaging)
-// TODO: Change to @required notation
+// TODO: Change to @required notation?
 // TODO: Add copy support to all Category cards on long-press
+
+// MAJOR: Blank strings, ("") are NOT nullified in Firebase!
 
 /// Cybertronix is a job management software; a work in progress.
 class CybertronixApp extends StatefulWidget {
