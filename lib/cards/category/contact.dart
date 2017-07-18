@@ -27,7 +27,7 @@ class _ContactInfoCardState extends State<ContactInfoCard> {
   List<Widget> cardLines = <Widget>[];
 
   void goEdit(BuildContext context){
-    showCreatorCard(context, "contacts", data: widget.contactData).then((dynamic x){
+    showCreatorCard(context, "contacts", data: widget.contactData, objID: widget.contactID).then((dynamic x){
       setState((){
         populateLines();
       });

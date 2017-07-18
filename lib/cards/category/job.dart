@@ -26,7 +26,7 @@ class _JobInfoCardState extends State<JobInfoCard> {
   Map<String, dynamic> locationData;
 
   void goEdit(BuildContext context) {
-    showCreatorCard(context, "jobs", data: widget.jobData).then((dynamic x){
+    showCreatorCard(context, "jobs", data: widget.jobData, objID: widget.jobID).then((dynamic x){
       setState((){
         populateLines();
       });
