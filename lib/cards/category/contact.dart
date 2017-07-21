@@ -25,22 +25,26 @@ class ContactInfoCard extends StatefulWidget {
 class _ContactInfoCardState extends State<ContactInfoCard> {
 
   List<Widget> cardLines = <Widget>[];
+  Map<String, dynamic> contactData;
 
   void goEdit(BuildContext context){
-    showCreatorCard(context, "contacts", data: widget.contactData, objID: widget.contactID).then((dynamic x){
-      setState((){
-        populateLines();
-      });
+    showCreatorCard(context, "contacts", data: contactData, objID: widget.contactID).then((dynamic x){
+      if (x is Map){
+        setState((){
+          contactData = x;
+          populateLines();
+        });
+      }
     });
   }
 
   void goShare(){ // Hook this into something!
-    String shareString = "${widget.contactData['name']}";
-    if (widget.contactData["phone"] != null){
-      shareString += "\n${widget.contactData['phone']}";
+    String shareString = "${contactData['name']}";
+    if (contactData["phone"] != null){
+      shareString += "\n${contactData['phone']}";
     }
-    if (widget.contactData["email"] != null){
-      shareString += "\n${widget.contactData['email']}";
+    if (contactData["email"] != null){
+      shareString += "\n${contactData['email']}";
     }
     share.share(shareString);
   }
@@ -60,7 +64,7 @@ class _ContactInfoCardState extends State<ContactInfoCard> {
               left: 8.0,
               bottom: 16.0,
               child: new Text(
-                widget.contactData["name"],
+                contactData["name"],
                 style: new TextStyle(
                   color: Colors.white,
                   fontSize: 24.0,
@@ -72,41 +76,41 @@ class _ContactInfoCardState extends State<ContactInfoCard> {
         )
       )
     );
-    if (widget.contactData["company"] != null){
+    if (contactData["company"] != null){
       cardLines.add(
         new ListTile(
           leading: new Icon(Icons.business),
-          title: new Text(widget.contactData["company"])
+          title: new Text(contactData["company"])
         )
       );
     }
     cardLines.add(new Divider());
-    if (widget.contactData["phone"] != null) {
+    if (contactData["phone"] != null) {
       // TODO: Refactor in Firebase to allow for multiple phone numbers.
       cardLines.add(
         new ListTile(
-          title: new Text(widget.contactData["phone"]),
+          title: new Text(contactData["phone"]),
           trailing: new Row(children: <Widget>[
             new IconButton(
               icon: new Icon(Icons.message),
               onPressed: (){
-                url_launcher.launch('sms:${widget.contactData["phone"]}');
+                url_launcher.launch('sms:${contactData["phone"]}');
               }
             ),
             new IconButton(
               icon: new Icon(Icons.phone),
               onPressed: (){
-                url_launcher.launch('tel:${widget.contactData["phone"]}');
+                url_launcher.launch('tel:${contactData["phone"]}');
               }
             ),
           ]),
         )
       );
     }
-    if (widget.contactData["email"] != null) {
+    if (contactData["email"] != null) {
       cardLines.add(
         new ListTile(
-          title: new Text(widget.contactData["email"]),
+          title: new Text(contactData["email"]),
           trailing: new Row(
             children: <Widget>[
               new IconButton(
@@ -117,7 +121,7 @@ class _ContactInfoCardState extends State<ContactInfoCard> {
               ),
               new IconButton(
                 icon: new Icon(Icons.mail),
-                onPressed: (){url_launcher.launch("mailto:${widget.contactData['email']}");}
+                onPressed: (){url_launcher.launch("mailto:${contactData['email']}");}
               )
             ]
           )
@@ -141,6 +145,7 @@ class _ContactInfoCardState extends State<ContactInfoCard> {
   @override
   void initState() {
     super.initState();
+    contactData = widget.contactData;
     populateLines();
   }
 

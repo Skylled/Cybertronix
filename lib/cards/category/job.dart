@@ -24,15 +24,23 @@ class JobInfoCard extends StatefulWidget {
 
 class _JobInfoCardState extends State<JobInfoCard> {
   List<Widget> cardLines = <Widget>[];
+  Map<String, dynamic> jobData;
   Map<String, dynamic> locationData;
   Map<String, Map<String, dynamic>> userData;
   Map<String, Map<String, dynamic>> contactData;
 
   void goEdit(BuildContext context) {
-    showCreatorCard(context, "jobs", data: widget.jobData, objID: widget.jobID).then((dynamic x){
-      setState((){
-        populateLines();
-      });
+    showCreatorCard(context, "jobs", data: jobData, objID: widget.jobID).then((dynamic x){
+      if (x is Map){
+        jobData = x;
+        List<Future<dynamic>> futures = <Future<dynamic>>[getLocationData(), getContactData(), getUserData()];
+        Future.wait(futures).then((List<dynamic> results){
+          locationData = results[0];
+          contactData = results[1];
+          userData = results[2];
+          setState((){ populateLines(); });
+        });
+      }
     });
   }
 
@@ -53,7 +61,7 @@ class _JobInfoCardState extends State<JobInfoCard> {
               left: 8.0,
               bottom: 16.0,
               child: new Text(
-                widget.jobData["name"],
+                jobData["name"],
                 style: new TextStyle(
                   color: Colors.white,
                   fontSize: 24.0,
@@ -70,7 +78,7 @@ class _JobInfoCardState extends State<JobInfoCard> {
       new ListTile(
           leading: new Icon(Icons.access_time),
           title:
-              new Text(formatter.format(DateTime.parse(widget.jobData["datetime"])))),
+              new Text(formatter.format(DateTime.parse(jobData["datetime"])))),
     );
 
     if (locationData != null) {
@@ -85,7 +93,7 @@ class _JobInfoCardState extends State<JobInfoCard> {
             },
           ),
           onTap: () {
-            showCategoryCard(context, "locations", widget.jobData["location"],
+            showCategoryCard(context, "locations", jobData["location"],
                 data: locationData);
           },
         ),
@@ -137,9 +145,9 @@ class _JobInfoCardState extends State<JobInfoCard> {
   }
 
   Future<Map<String, Map<String, dynamic>>> getUserData() async {
-    if (widget.jobData["users"] != null){
+    if (jobData["users"] != null){
       Map<String, Map<String, dynamic>> users = new Map<String, Map<String, dynamic>>();
-      for (String userID in widget.jobData["users"]){
+      for (String userID in jobData["users"]){
         users[userID] = await firebase.getObject("users", userID);
       }
       return users;
@@ -149,9 +157,9 @@ class _JobInfoCardState extends State<JobInfoCard> {
   }
   // Map<contactID, <key, value>>
   Future<Map<String, Map<String, dynamic>>> getContactData() async {
-    if (widget.jobData["contacts"] != null) {
+    if (jobData["contacts"] != null) {
       Map<String, Map<String, dynamic>> contacts = new Map<String, Map<String, dynamic>>();
-      for (String contactID in widget.jobData["contacts"]){
+      for (String contactID in jobData["contacts"]){
         // Future: Thread better, using Future.wait
         contacts[contactID] = await firebase.getObject("contacts", contactID);
       }
@@ -162,8 +170,8 @@ class _JobInfoCardState extends State<JobInfoCard> {
   }
 
   Future<Map<String, dynamic>> getLocationData() async {
-    if (widget.jobData["location"] != null){
-      return await firebase.getObject("locations", widget.jobData["location"]);
+    if (jobData["location"] != null){
+      return await firebase.getObject("locations", jobData["location"]);
     } else {
       return null;
     }
@@ -172,6 +180,7 @@ class _JobInfoCardState extends State<JobInfoCard> {
   @override
   void initState(){
     super.initState();
+    jobData = widget.jobData;
     populateLines();
     List<Future<dynamic>> futures = <Future<dynamic>>[getLocationData(), getContactData(), getUserData()];
     Future.wait(futures).then((List<dynamic> results){

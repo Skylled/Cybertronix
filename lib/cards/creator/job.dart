@@ -415,7 +415,6 @@ class _JobCreatorCardState extends State<JobCreatorCard> {
           );
         }
       )
-      // TODO: Assigned users
       // TODO: Billing [po, billed?]
       // TODO: Notes
     ];
@@ -452,7 +451,7 @@ class _JobCreatorCardState extends State<JobCreatorCard> {
                   textColor: Theme.of(context).accentColor,
                   onPressed: () async {
                      firebase.sendObject("jobs", currentData, objID: widget.jobID);
-                     Navigator.pop(context);
+                     Navigator.pop(context, currentData);
                   }
                 )
               ]

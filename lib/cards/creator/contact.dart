@@ -229,7 +229,7 @@ class _ContactCreatorCardState extends State<ContactCreatorCard> {
                   textColor: Theme.of(context).accentColor,
                   onPressed: () async {
                     firebase.sendObject("contacts", currentData, objID: widget.contactID);
-                    Navigator.pop(context);
+                    Navigator.pop(context, currentData);
                   },
                 )
               ],

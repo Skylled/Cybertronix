@@ -22,19 +22,23 @@ class LocationInfoCard extends StatefulWidget {
 
 class _LocationInfoCardState extends State<LocationInfoCard> {
   
+  Map<String, dynamic> locationData;
   List<Widget> cardLines = <Widget>[];
 
   void goEdit(BuildContext context){
-    showCreatorCard(context, "locations", data: widget.locationData, objID: widget.locationID).then((dynamic x){
-      setState((){
-        populateLines();
-      });
+    showCreatorCard(context, "locations", data: locationData, objID: widget.locationID).then((dynamic x){
+      if (x is Map){
+        setState((){
+          locationData = x;
+          populateLines();
+        });
+      }
     });
   }
 
   void goShare(){
-    String shareString = "${widget.locationData['name']}\n${widget.locationData['address']}";
-    shareString += "\n${widget.locationData['city']}, ${widget.locationData['state']} ${widget.locationData['zipcode']}";
+    String shareString = "${locationData['name']}\n${locationData['address']}";
+    shareString += "\n${locationData['city']}, ${locationData['state']} ${locationData['zipcode']}";
     share.share(shareString);
   }
 
@@ -53,7 +57,7 @@ class _LocationInfoCardState extends State<LocationInfoCard> {
               left: 8.0,
               bottom: 16.0,
               child: new Text(
-                widget.locationData["name"],
+                locationData["name"],
                 style: new TextStyle(
                   color: Colors.white,
                   fontSize: 24.0,
@@ -65,22 +69,22 @@ class _LocationInfoCardState extends State<LocationInfoCard> {
         )
       )
     );
-    String subtitle = "${widget.locationData['city']}, ${widget.locationData['state']} ${widget.locationData['zipcode']}";
+    String subtitle = "${locationData['city']}, ${locationData['state']} ${locationData['zipcode']}";
     cardLines.add(
       new ListTile(
-        title: new Text(widget.locationData["address"]),
+        title: new Text(locationData["address"]),
         subtitle: new Text(subtitle),
         trailing: new Icon(Icons.navigation),
         onTap: () {
-          url_launcher.launch('google.navigation:q=${widget.locationData["address"]}, $subtitle');
+          url_launcher.launch('google.navigation:q=${locationData["address"]}, $subtitle');
         }
       )
     );
-    if (widget.locationData["contacts"] != null) {
+    if (locationData["contacts"] != null) {
       cardLines.add(new Divider());
       // `offset` essentially marks where the divider is, and thus, where to insert
       int offset = cardLines.length;
-      widget.locationData["contacts"].forEach((String contactID) {
+      locationData["contacts"].forEach((String contactID) {
         firebase.getObject("contacts", contactID).then((Map<String, dynamic> contactData){
           setState((){
             Widget trailing = (contactData["phone"] != null)
@@ -98,12 +102,12 @@ class _LocationInfoCardState extends State<LocationInfoCard> {
         });
       });
     }
-    if (widget.locationData["packages"] != null){
+    if (locationData["packages"] != null){
       // Firebase lists cannot be length 0
       cardLines.add(new Divider());
       List<Widget> packageLines = <Widget>[];
 
-      widget.locationData["packages"].forEach((Map<String, dynamic> package){
+      locationData["packages"].forEach((Map<String, dynamic> package){
         Map<String, dynamic> panel = package["panel"];
         String title = "${panel != null ? panel['manufacturer'] : ''} ${package['power']}";
         packageLines.add(new ListTile(
@@ -158,6 +162,7 @@ class _LocationInfoCardState extends State<LocationInfoCard> {
   @override
   void initState() {
     super.initState();
+    locationData = widget.locationData;
     populateLines();
   }
 
