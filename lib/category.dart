@@ -23,24 +23,21 @@ class _CategoryPageState extends State<CategoryPage>{
   _CategoryPageState();
 
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
-  List<Widget> objectList = <Widget>[];
+  List<Map<String, dynamic>> objects = <Map<String, dynamic>>[];
 
   @override
   void initState() {
     super.initState();
-    generateList();
+    generateObjects();
   }
-  
-  void generateList(){
-    firebase.getCategory(widget.category).then((Map<String, Map<String, dynamic>> objects){
-      objects.forEach((String id, Map<String, dynamic> data){
-        setState((){
-          objectList.add(new ListTile(
-            title: new Text(data["name"]),
-            onTap: (){
-              showCategoryCard(context, widget.category, id, data: data);
-            }
-          ));
+
+  void generateObjects(){
+    firebase.getCategory(widget.category).then((Map<String, Map<String, dynamic>> objs){
+      setState((){
+        objects = <Map<String, dynamic>>[];
+        objs.forEach((String id, Map<String, dynamic> data){
+          data["id"] = id;
+          objects.add(data);
         });
       });
     });
@@ -64,20 +61,33 @@ class _CategoryPageState extends State<CategoryPage>{
     return new FloatingActionButton(
       child: new Icon(Icons.add),
       onPressed: (){
-        showCreatorCard(context, widget.category);
+        showCreatorCard(context, widget.category).then((dynamic x){
+          generateObjects();
+        });
       }
     );
   }
 
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context){
+    // TODO: Make sure this object has the correct length upon regeneration
+    // See: buildFAB
+    List<Map<String, dynamic>> buildObjs = new List<Map<String, dynamic>>.from(objects);
     return new Scaffold(
       key: _scaffoldKey,
       appBar: buildAppBar(),
       drawer: buildDrawer(context, 'browse'),
       floatingActionButton: buildFAB(),
-      body: new ListView(
-        children: new List<Widget>.from(objectList)
-      )
+      body: new ListView.builder(
+        itemCount: buildObjs.length, // TODO: change this var
+        itemBuilder: (BuildContext context, int index){
+          return new ListTile(
+            title: new Text(buildObjs[index]["name"]),
+            onTap: (){
+              showCategoryCard(context, widget.category, buildObjs[index]["id"], data: buildObjs[index]);
+            },
+          );
+        },
+      ),
     );
   }
 }
