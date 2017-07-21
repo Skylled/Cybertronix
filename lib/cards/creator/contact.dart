@@ -60,7 +60,14 @@ class _ContactCreatorCardState extends State<ContactCreatorCard> {
                       onSaved: (String value){
                         item.value = value;
                         currentData['name'] = value;
-                      }
+                      },
+                      validator: (String value){
+                        if (value.length > 0){
+                          return null;
+                        } else {
+                          return "Name must be entered.";
+                        }
+                      },
                     ),
                   ),
                 );

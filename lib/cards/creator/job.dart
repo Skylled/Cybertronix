@@ -351,6 +351,7 @@ class _JobCreatorCardState extends State<JobCreatorCard> {
           );
         }
       )
+      // TODO: Assigned users
       // TODO: Billing [po, billed?]
       // TODO: Notes
     ];

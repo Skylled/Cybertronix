@@ -77,9 +77,9 @@ Map<String, dynamic> scrub(Map<String, dynamic> data) {
   Map<String, dynamic> newData = new Map<String, dynamic>.from(data);
   newData.forEach((String key, dynamic value){
     if (value is Map) {
-      scrub(value); // Recursion!
+      value = scrub(value); // Recursion!
     } else if (value is String) {
-      if (value.length < 0) {
+      if (value.length <= 0) {
         value = null;
       }
     }
