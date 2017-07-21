@@ -47,8 +47,6 @@ class _JobInfoCardState extends State<JobInfoCard> {
   void populateLines (){
     cardLines.clear();
     DateFormat formatter = new DateFormat("h:mm a, EEEE, MMMM d");
-    String address =
-        '${locationData["address"]}, ${locationData["city"]}, ${locationData["state"]}';
     cardLines.add(
       new Container(
         height: 200.0,
@@ -73,15 +71,18 @@ class _JobInfoCardState extends State<JobInfoCard> {
         ),
       ),
     );
-
-    cardLines.add(
-      new ListTile(
-          leading: new Icon(Icons.access_time),
-          title:
-              new Text(formatter.format(DateTime.parse(jobData["datetime"])))),
-    );
+    if (jobData["datetime"] != null ){
+      cardLines.add(
+        new ListTile(
+            leading: new Icon(Icons.access_time),
+            title:
+                new Text(formatter.format(DateTime.parse(jobData["datetime"])))),
+      );
+    }
 
     if (locationData != null) {
+      String address =
+        '${locationData["address"]}, ${locationData["city"]}, ${locationData["state"]}';
       cardLines.add(
         new ListTile(
           title: new Text(locationData["name"]),
@@ -181,7 +182,6 @@ class _JobInfoCardState extends State<JobInfoCard> {
   void initState(){
     super.initState();
     jobData = widget.jobData;
-    populateLines();
     List<Future<dynamic>> futures = <Future<dynamic>>[getLocationData(), getContactData(), getUserData()];
     Future.wait(futures).then((List<dynamic> results){
       locationData = results[0];
