@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:intl/intl.dart';
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart' as url_launcher;
@@ -24,6 +25,8 @@ class JobInfoCard extends StatefulWidget {
 class _JobInfoCardState extends State<JobInfoCard> {
   List<Widget> cardLines = <Widget>[];
   Map<String, dynamic> locationData;
+  Map<String, Map<String, dynamic>> userData;
+  Map<String, Map<String, dynamic>> contactData;
 
   void goEdit(BuildContext context) {
     showCreatorCard(context, "jobs", data: widget.jobData, objID: widget.jobID).then((dynamic x){
@@ -62,12 +65,14 @@ class _JobInfoCardState extends State<JobInfoCard> {
         ),
       ),
     );
+
     cardLines.add(
       new ListTile(
           leading: new Icon(Icons.access_time),
           title:
               new Text(formatter.format(DateTime.parse(widget.jobData["datetime"])))),
     );
+
     if (locationData != null) {
       cardLines.add(
         new ListTile(
@@ -86,47 +91,95 @@ class _JobInfoCardState extends State<JobInfoCard> {
         ),
       );
     }
-    cardLines.add(new Divider());
-    if (widget.jobData["contacts"] != null) {
-      widget.jobData["contacts"].forEach((String contactID) {
-        firebase
-            .getObject("contacts", contactID)
-            .then((Map<String, dynamic> contactData) {
-          setState(() {
-            Widget trailing = (contactData["phone"] != null)
-                ? new IconButton(
-                    icon: new Icon(Icons.phone),
-                    onPressed: () {
-                      url_launcher.launch('tel:${contactData["phone"]}');
-                    })
-                : null;
-            cardLines.insert(
-                cardLines.length - 1,
-                new ListTile(
-                  title: new Text(contactData["name"]),
-                  trailing: trailing,
-                  onTap: () {
-                    showCategoryCard(context, "contacts", contactID,
-                        data: contactData);
-                  },
-                ));
-          });
-        });
+
+    if (contactData != null) {
+      cardLines.add(new Divider());
+      contactData.forEach((String contactID, Map<String, dynamic> contact){
+        Widget trailing = (contact["phone"] != null) ?
+                            new IconButton(
+                              icon: new Icon(Icons.phone),
+                              onPressed: (){
+                                url_launcher.launch('tel:${contact["phone"]}');
+                              })
+                            : null;
+        cardLines.add(
+          new ListTile(
+            title: new Text(contact["name"]),
+            trailing: trailing,
+            onTap: (){
+              showCategoryCard(context, "contacts", contactID, data: contact);
+            },
+          )
+        );
       });
+    }
+
+    if (userData != null) {
+      cardLines.add(new Divider());
+      List<Widget> assigned = <Widget>[];
+      userData.forEach(
+        (String userID, Map<String, dynamic> user){
+          assigned.add(
+            new ListTile(
+              title: new Text("${user["name"]}"),
+              /*onTap: (){
+                showCategoryCard(context, "users", userID);
+              },*/
+            )
+          );
+        }
+      );
+      cardLines.add(new ExpansionTile(
+        title: new Text("Employees assigned"),
+        children: assigned
+      ));
+    }
+  }
+
+  Future<Map<String, Map<String, dynamic>>> getUserData() async {
+    if (widget.jobData["users"] != null){
+      Map<String, Map<String, dynamic>> users = new Map<String, Map<String, dynamic>>();
+      for (String userID in widget.jobData["users"]){
+        users[userID] = await firebase.getObject("users", userID);
+      }
+      return users;
+    } else {
+      return null;
+    }
+  }
+  // Map<contactID, <key, value>>
+  Future<Map<String, Map<String, dynamic>>> getContactData() async {
+    if (widget.jobData["contacts"] != null) {
+      Map<String, Map<String, dynamic>> contacts = new Map<String, Map<String, dynamic>>();
+      for (String contactID in widget.jobData["contacts"]){
+        // Future: Thread better, using Future.wait
+        contacts[contactID] = await firebase.getObject("contacts", contactID);
+      }
+      return contacts;
+    } else {
+      return null;
+    }
+  }
+
+  Future<Map<String, dynamic>> getLocationData() async {
+    if (widget.jobData["location"] != null){
+      return await firebase.getObject("locations", widget.jobData["location"]);
+    } else {
+      return null;
     }
   }
 
   @override
   void initState(){
     super.initState();
-    if (widget.jobData["location"] != null){
-      firebase.getObject("locations", widget.jobData["location"]).then((Map<String, dynamic> data){
-        locationData = data;
-        populateLines();
-      });
-    } else {
-      populateLines();
-    }
+    populateLines();
+    List<Future<dynamic>> futures = <Future<dynamic>>[getLocationData(), getContactData(), getUserData()];
+    Future.wait(futures).then((List<dynamic> results){
+      locationData = results[0];
+      contactData = results[1];
+      userData = results[2];
+      setState((){ populateLines(); });
+    });
   }
 
   @override

@@ -4,6 +4,19 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 
+/*
+Some notes on cloud messaging.
+I need to write a Firebase Cloud Function that
+when a job is created/edited with a listed User,
+pull the user's UID and send a Message to the
+topic: $uid
+
+Doing it client-side is potentially unreliable
+
+Another challenge: Routing. How do you set it from the push?
+Click the push, open direct to the job
+*/
+
 /// The firebase auth instance
 final FirebaseAuth auth = FirebaseAuth.instance;
 /// The google sign in plugin instance
@@ -53,7 +66,8 @@ void initDatabase(){
   FirebaseDatabase.instance.setPersistenceEnabled(true);
   FirebaseDatabase.instance.setPersistenceCacheSizeBytes(50000000);
 
-  <String>["annuals", "contacts", "customers", "jobs", "locations", "monthlies"].forEach((String category){
+  <String>["annuals", "contacts", "customers",
+           "jobs", "locations", "monthlies", "users"].forEach((String category){
     _refs[category] = FirebaseDatabase.instance.reference().child(category);
     _refs[category].keepSynced(true);
   });

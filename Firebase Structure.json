@@ -163,5 +163,12 @@
             "contacts": [1],
             "notes": []
         }
+    },
+    "users": {
+        "1":{
+            "name": "Bob Belcher",
+            "uid": "f9d809890sf809f3",
+            "contact": "1"
+        }
     }
 }
