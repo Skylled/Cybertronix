@@ -1,6 +1,16 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import '../firebase.dart' as firebase;
 import '../cards/creatorCards.dart';
+
+// It almost might be better to rewrite this whole dialog.
+
+// TODO: Set exact size
+// Get the device size, set an exact size for header & footer
+// Set the Dialog to be of a size minus border
+// Set the Body/ListView to be:
+// Screen width minus border width
+// Screen height minus (border + header + footer) height
 
 /// This [Dialog] loads a list of objects from a
 /// category in Firebase, with the [initialObject]
@@ -12,38 +22,43 @@ class SelectorDialog extends StatefulWidget {
   const SelectorDialog({
     Key key,
     this.category,
-    this.initialObject,
+    this.initialObjects,
   }) : super(key: key);
 
   /// The category in Firebase to select from
   final String category;
   /// The object to show as currently selected
-  final String initialObject;
+  final List<String> initialObjects;
 
   @override
   _SelectorDialogState createState() => new _SelectorDialogState();
 }
 
 class _SelectorDialogState extends State<SelectorDialog> {
-  String _selectedID;
   List<ListTile> objectList = <ListTile>[];
   List<Map<String, dynamic>> objList = <Map<String, dynamic>>[];
 
   @override
   void initState(){
     super.initState();
-    _selectedID = widget.initialObject;
     firebase.getCategory(widget.category).then((Map<String, Map<String, dynamic>> objects){
-      objects.forEach((String id, Map<String, dynamic> data){
-        Map<String, dynamic> obj = new Map<String, dynamic>.from(data);
-        obj["id"] = id;
-        objList.add(obj);
+      setState((){
+        objects.forEach((String id, Map<String, dynamic> data){
+          Map<String, dynamic> obj = new Map<String, dynamic>.from(data);
+          obj["id"] = id;
+          objList.add(obj);
+        });
       });
     });
   }
 
-  void _onAdd(){
-    showCreatorCard(context, widget.category);
+  Future<Null> _onAdd() async {
+    dynamic res = await showCreatorCard(context, widget.category);
+    // If the Creator Card popped with data,
+    if (res != null){
+      // Pop that data further up the chain.
+      Navigator.pop(context, res);
+    }
   }
 
   void _onCancel(){
@@ -73,17 +88,20 @@ class _SelectorDialogState extends State<SelectorDialog> {
           padding: const EdgeInsets.all(8.0),
           child: new Column(
             children: <Widget>[
-              new ListView.builder(
-                shrinkWrap: true,
-                itemBuilder: (BuildContext context, int index){
-                  return new ListTile(
-                    title: new Text(objList[index]["name"]),
-                    onTap: (){
-                      Navigator.pop(context, objList[index]);
-                    },
-                    selected: (objList[index]["id"] == _selectedID)
-                  );
-                },
+              new Container(
+                padding: const EdgeInsets.only(bottom:25.0),
+                child: new ListView.builder(
+                  shrinkWrap: true,
+                  itemBuilder: (BuildContext context, int index){
+                    return new ListTile(
+                      title: new Text(objList[index]["name"]),
+                      onTap: (){
+                        Navigator.pop(context, objList[index]);
+                      },
+                      selected: (widget.initialObjects.contains(objList[index]["id"]))
+                    );
+                  },
+                ),
               ),
               actions
             ],

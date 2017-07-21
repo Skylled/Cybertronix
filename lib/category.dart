@@ -78,7 +78,7 @@ class _CategoryPageState extends State<CategoryPage>{
       drawer: buildDrawer(context, 'browse'),
       floatingActionButton: buildFAB(),
       body: new ListView.builder(
-        itemCount: buildObjs.length, // TODO: change this var
+        itemCount: buildObjs.length,
         itemBuilder: (BuildContext context, int index){
           return new ListTile(
             title: new Text(buildObjs[index]["name"]),

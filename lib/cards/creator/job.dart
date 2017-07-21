@@ -210,7 +210,7 @@ class _JobCreatorCardState extends State<JobCreatorCard> {
                               Map<String, dynamic> chosen = await pickFromCategory(
                                 context: context,
                                 category: "locations",
-                                initialObject: field.value,
+                                initialObjects: <String>[field.value],
                               );
                               if (chosen != null && chosen["id"] != field.value){
                                 locationName = chosen["name"];
@@ -270,7 +270,7 @@ class _JobCreatorCardState extends State<JobCreatorCard> {
                               Map<String, dynamic> chosen = await pickFromCategory(
                                 context: context,
                                 category: "customers",
-                                initialObject: field.value,
+                                initialObjects: <String>[field.value],
                               );
                               if (chosen != null && chosen["id"] != field.value){
                                 field.onChanged(chosen["id"]);
@@ -336,6 +336,7 @@ class _JobCreatorCardState extends State<JobCreatorCard> {
                           Map<String, dynamic> chosen = await pickFromCategory(
                             context: context,
                             category: "contacts",
+                            initialObjects: field.value
                           );
                           if (chosen != null && !field.value.contains(chosen["id"])){
                             field.onChanged(addObj(field.value, chosen["id"]));

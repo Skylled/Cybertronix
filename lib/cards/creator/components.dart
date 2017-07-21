@@ -69,13 +69,13 @@ class _AsyncChipState extends State<AsyncChip>{
 Future<Map<String, dynamic>> pickFromCategory({
   BuildContext context,
   String category,
-  String initialObject: null,
+  List<String> initialObjects: null,
 }) async {
   return await showDialog(
     context: context,
     child: new SelectorDialog(
       category: category,
-      initialObject: initialObject
+      initialObjects: initialObjects
     )
   );
 }

@@ -5,7 +5,6 @@ import 'category.dart';
 import 'firebase.dart' as firebase;
 
 // Upcoming features
-// TODO: Add users to jobs
 // TODO: Push notifications (Firebase Cloud Messaging)
 // TODO: Change to @required notation?
 // TODO: Add copy support to all Category cards on long-press
