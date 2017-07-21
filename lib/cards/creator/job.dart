@@ -21,7 +21,6 @@ class JobCreatorCard extends StatefulWidget {
 class _JobCreatorCardState extends State<JobCreatorCard> {
   List<CreatorItem<dynamic>> _items;
   Map<String, dynamic> currentData;
-  List<String> contactList;
 
   String locationName = "";
   String customerName = "";
@@ -29,6 +28,18 @@ class _JobCreatorCardState extends State<JobCreatorCard> {
   DateFormat datefmt = new DateFormat("EEEE, MMMM d");
   DateFormat timefmt = new DateFormat("h:mm a");
   DateFormat fullfmt = new DateFormat("h:mm a, EEEE, MMMM d");
+
+  List<String> addObj(List<String> objList, String objID){
+    List<String> updated = new List<String>.from(objList);
+    updated.add(objID);
+    return updated;
+  }
+
+  List<String> removeObj(List<String> objList, String objID){
+    List<String> updated = new List<String>.from(objList);
+    updated.remove(objID);
+    return updated;
+  }
 
   void initState(){
     super.initState();
@@ -295,17 +306,6 @@ class _JobCreatorCardState extends State<JobCreatorCard> {
               item.isExpanded = false;
             });
           }
-          List<String> removeContact(List<String> conList, String contactID){
-            List<String> updated = new List<String>.from(conList);
-            updated.remove(contactID);
-            return updated;
-          }
-          
-          List<String> addContact(List<String> conList, String contactID){
-            List<String> updated = new List<String>.from(conList);
-            updated.add(contactID);
-            return updated;
-          }
           
           return new Form(
             child: new Builder(
@@ -324,8 +324,8 @@ class _JobCreatorCardState extends State<JobCreatorCard> {
                         mainAxisSize: MainAxisSize.min,
                         crossAxisAlignment: CrossAxisAlignment.end,
                         children: field.value.map((String contactID){
-                          return new AsyncContactChip(firebase.getObject("contacts", contactID), (){
-                            field.onChanged(removeContact(field.value, contactID));
+                          return new AsyncChip(firebase.getObject("contacts", contactID), (){
+                            field.onChanged(removeObj(field.value, contactID));
                           });
                         }).toList()
                       );
@@ -338,7 +338,7 @@ class _JobCreatorCardState extends State<JobCreatorCard> {
                             category: "contacts",
                           );
                           if (chosen != null && !field.value.contains(chosen["id"])){
-                            field.onChanged(addContact(field.value, chosen["id"]));
+                            field.onChanged(addObj(field.value, chosen["id"]));
                           }
                         }
                       ));
@@ -347,6 +347,70 @@ class _JobCreatorCardState extends State<JobCreatorCard> {
                   ),
                 );
               }
+            ),
+          );
+        }
+      ),
+      new CreatorItem<List<String>>( // Users
+        name: "Users",
+        value: widget.jobData != null ? widget.jobData["users"] : <String>[],
+        hint: "Which employees are assigned to this job?",
+        valueToString: (List<String> value) {
+          if (value.length == 1){
+            return value.first;
+          } else if (value.length > 1) {
+            return value.length.toString();
+          } else {
+            return "Select contacts";
+          }
+        },
+        builder: (CreatorItem<List<String>> item) {
+          void close() {
+            setState((){
+              item.isExpanded = false;
+            });
+          }
+
+          return new Form(
+            child: new Builder(
+              builder: (BuildContext context){
+                return new CollapsibleBody(
+                  onSave: () { Form.of(context).save(); close(); },
+                  onCancel: () { Form.of(context).reset(); close(); },
+                  child: new FormField<List<String>>(
+                    initialValue: item.value,
+                    onSaved: (List<String> value){
+                      item.value = value;
+                      currentData["users"] = value;
+                    },
+                    builder: (FormFieldState<List<String>> field) {
+                      Column x = new Column(
+                        mainAxisSize: MainAxisSize.min,
+                        crossAxisAlignment: CrossAxisAlignment.end,
+                        children: field.value.map((String userID) {
+                          return new AsyncChip(firebase.getObject("users", userID), (){
+                            field.onChanged(removeObj(field.value, userID));
+                          });
+                        }).toList(),
+                      );
+                      x.children.insert(0, new ListTile(
+                        title: new Text("Add a contact"),
+                        trailing: new Icon(Icons.add),
+                        onTap: () async {
+                          Map<String, dynamic> chosen = await pickFromCategory(
+                            context: context,
+                            category: "users",
+                          );
+                          if (chosen != null && !field.value.contains(chosen["id"])){
+                            field.onChanged(addObj(field.value, chosen["id"]));
+                          }
+                        },
+                      ));
+                      return x;
+                    },
+                  )
+                );
+              },
             ),
           );
         }

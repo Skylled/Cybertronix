@@ -290,7 +290,7 @@ class _LocationCreatorCardState extends State<LocationCreatorCard> {
                         mainAxisSize: MainAxisSize.min,
                         crossAxisAlignment: CrossAxisAlignment.end,
                         children: field.value.map((String contactID){
-                          return new AsyncContactChip(firebase.getObject("contacts", contactID), (){
+                          return new AsyncChip(firebase.getObject("contacts", contactID), (){
                             field.onChanged(removeContact(field.value, contactID));
                           });
                         }).toList()

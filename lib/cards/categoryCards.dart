@@ -26,7 +26,6 @@ void showCategoryCard(BuildContext context, String category, String objID,
         child: new LocationInfoCard(objID, locationData: data),
       );
       break;
-    // TODO: Users
     default:
       showDialog(
         context: context,
