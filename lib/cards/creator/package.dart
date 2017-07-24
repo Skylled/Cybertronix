@@ -25,7 +25,6 @@ class PackageCreatorCard extends StatefulWidget {
   _PackageCreatorCardState createState() => new _PackageCreatorCardState();
 }
 
-// TODO: I really want to document this whole class.
 class _PackageCreatorCardState extends State<PackageCreatorCard> {
   List<CreatorItem<dynamic>> _items;
   Map<String, dynamic> currentData;

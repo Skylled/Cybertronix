@@ -36,7 +36,6 @@ class _CategoryPageState extends State<CategoryPage>{
       setState((){
         objects = <Map<String, dynamic>>[];
         objs.forEach((String id, Map<String, dynamic> data){
-          data["id"] = id;
           objects.add(data);
         });
       });
