@@ -40,8 +40,10 @@ class _ContactInfoCardState extends State<ContactInfoCard> {
 
   void goShare(){ // Hook this into something!
     String shareString = "${contactData['name']}";
-    if (contactData["phone"] != null){
-      shareString += "\n${contactData['phone']}";
+    if (contactData["phoneNumbers"] != null){
+      contactData["phoneNumbers"].forEach((Map<String, String> phone){
+        shareString += "\n${phone["type"]}: ${phone["number"]}";
+      });
     }
     if (contactData["email"] != null){
       shareString += "\n${contactData['email']}";
@@ -85,27 +87,39 @@ class _ContactInfoCardState extends State<ContactInfoCard> {
       );
     }
     cardLines.add(new Divider());
-    if (contactData["phone"] != null) {
-      // TODO: Refactor in Firebase to allow for multiple phone numbers.
-      cardLines.add(
-        new ListTile(
-          title: new Text(contactData["phone"]),
-          trailing: new Row(children: <Widget>[
-            new IconButton(
-              icon: new Icon(Icons.message),
-              onPressed: (){
-                url_launcher.launch('sms:${contactData["phone"]}');
+    if (contactData["phoneNumbers"] != null) {
+      contactData["phoneNumbers"].forEach((Map<String, String> phone){
+        cardLines.add(
+          new ListTile(
+            leading: (){
+              if (phone["type"] == "Cell"){
+                return new Icon(Icons.phone_android);
+              } else if (phone["type"] == "Office") {
+                return new Icon(Icons.work);
+              } else {
+                return null;
               }
+            }(),
+            title: new Text(phone["number"]),
+            trailing: new Row(
+              children: <Widget>[
+                new IconButton(
+                  icon: new Icon(Icons.message),
+                  onPressed: (){
+                    url_launcher.launch('sms:${phone["number"]}');
+                  },
+                ),
+                new IconButton(
+                  icon: new Icon(Icons.phone),
+                  onPressed: (){
+                    url_launcher.launch('tel:${phone["number"]}');
+                  },
+                ),
+              ],
             ),
-            new IconButton(
-              icon: new Icon(Icons.phone),
-              onPressed: (){
-                url_launcher.launch('tel:${contactData["phone"]}');
-              }
-            ),
-          ]),
-        )
-      );
+          ),
+        );
+      });
     }
     if (contactData["email"] != null) {
       cardLines.add(
@@ -113,12 +127,6 @@ class _ContactInfoCardState extends State<ContactInfoCard> {
           title: new Text(contactData["email"]),
           trailing: new Row(
             children: <Widget>[
-              new IconButton(
-                icon: new Icon(Icons.content_copy),
-                onPressed: () {
-                  // TODO: Copy email to clipboard.
-                }
-              ),
               new IconButton(
                 icon: new Icon(Icons.mail),
                 onPressed: (){url_launcher.launch("mailto:${contactData['email']}");}

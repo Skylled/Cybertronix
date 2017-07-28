@@ -45,7 +45,7 @@ class _LocationInfoCardState extends State<LocationInfoCard> {
   void populateLines(){
     cardLines.clear();
     cardLines.add(
-      new Container( // TODO: Make this a shrinking title?
+      new Container( // Future: Make this a shrinking title?
         height: 200.0,
         child: new Stack(
           children: <Widget>[
@@ -87,9 +87,9 @@ class _LocationInfoCardState extends State<LocationInfoCard> {
       locationData["contacts"].forEach((String contactID) {
         firebase.getObject("contacts", contactID).then((Map<String, dynamic> contactData){
           setState((){
-            Widget trailing = (contactData["phone"] != null)
+            Widget trailing = (contactData["phoneNumbers"] != null)
                 ? new IconButton(icon: new Icon(Icons.phone),
-                    onPressed: (){ url_launcher.launch('tel:${contactData["phone"]}'); })
+                    onPressed: (){ url_launcher.launch('tel:${contactData["phoneNumbers"][0]["number"]}'); })
                 : null;
             cardLines.insert(offset, new ListTile(
               title: new Text(contactData["name"]),

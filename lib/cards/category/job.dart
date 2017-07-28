@@ -52,6 +52,11 @@ class _JobInfoCardState extends State<JobInfoCard> {
         height: 200.0,
         child: new Stack(
           children: <Widget>[
+            // TODO: Make this a horizontally scrolling gallery
+            // TODO: Tap to enlarge
+            // Enlargement dialog should be responsive to rotation and pinch-zoom
+            // TODO: Pull pictures from Firebase
+            // Use Job-specific first, then location.
             new Positioned.fill(
                 child: new Image.asset('assets/placeholder.jpg',
                     fit: BoxFit.fitWidth)),
@@ -104,11 +109,11 @@ class _JobInfoCardState extends State<JobInfoCard> {
     if (contactData != null) {
       cardLines.add(new Divider());
       contactData.forEach((String contactID, Map<String, dynamic> contact){
-        Widget trailing = (contact["phone"] != null) ?
+        Widget trailing = (contact["phoneNumbers"] != null) ?
                             new IconButton(
                               icon: new Icon(Icons.phone),
                               onPressed: (){
-                                url_launcher.launch('tel:${contact["phone"]}');
+                                url_launcher.launch('tel:${contact["phoneNumbers"][0]["number"]}');
                               })
                             : null;
         cardLines.add(

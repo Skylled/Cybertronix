@@ -115,13 +115,32 @@ class _ContactCreatorCardState extends State<ContactCreatorCard> {
           );
         }
       ),
-      // TODO: This should be a List of phone numbers.
-      new CreatorItem<String>( // Phone number
-        name: "Phone number",
-        value: widget.contactData != null ? widget.contactData["phone"] : '',
-        hint: "555-555-5555",
-        valueToString: (String value) => value,
-        builder: (CreatorItem<String> item){
+      // [{"number": "555-555-5555", "type": "cell"},]
+      new CreatorItem<List<Map<String, String>>>(
+        name: "Phone numbers",
+        value: (){
+          if (widget.contactData != null){
+            if (widget.contactData["phoneNumbers"] != null){
+              return widget.contactData["phoneNumbers"];
+            }
+          }
+          return new List<Map<String, String>>();
+        }(),
+        hint: "Work: 555-555-5555",
+        valueToString: (List<Map<String, String>> value){
+          if (value != null) {
+            if (value.length == 1){
+              return "${value[0]["type"]}: ${value[0]["number"]}";
+            } else if (value.length == 2){
+              // Special circumstance, due to defaults
+              return "${value[0]["type"]}, ${value[1]["type"]}";
+            } else if (value.length == 3) {
+              return "${value[0]["type"]}, ${value[1]["type"]}, ${value[2]["type"]}";
+            }
+          }
+          return "Enter phone number(s)";
+        },
+        builder: (CreatorItem<List<Map<String, String>>> item){
           void close() {
             setState((){
               item.isExpanded = false;
@@ -132,26 +151,131 @@ class _ContactCreatorCardState extends State<ContactCreatorCard> {
             child: new Builder(
               builder: (BuildContext context){
                 return new CollapsibleBody(
-                  margin: const EdgeInsets.symmetric(horizontal: 16.0),
                   onSave: () { Form.of(context).save(); close(); },
-                  onCancel: (){ Form.of(context).reset(); close(); },
-                  child: new Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                    child: new TextFormField(
-                      controller: item.textController,
-                      decoration: new InputDecoration(
-                        hintText: item.hint,
-                        labelText: item.name,
-                      ),
-                      onSaved: (String value){
-                        item.value = value;
-                        currentData['phone'] = value;
+                  onCancel: () { Form.of(context).reset(); close(); },
+                  child: new FormField<List<Map<String, String>>>(
+                    initialValue: item.value,
+                    onSaved: (List<Map<String, String>> value){
+                      value.removeWhere((Map<String, String> phone){
+                        if (phone["number"] == null){
+                          return true;
+                        } else if (phone["number"].length < 7) {
+                          return true;
+                        } else {
+                          return false;
+                        }
+                      });
+                      item.value = value;
+                      currentData["phoneNumbers"] = value;
+                    },
+                    builder: (FormFieldState<List<Map<String, String>>> field){
+                      List<Map<String, String>> _changeNumber(int index, String key, String value){
+                        List<Map<String, String>> result = new List<Map<String, String>>.from(field.value);
+                        result[index][key] = value;
+                        return result;
                       }
-                    ),
-                  ),
+
+                      return new Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: <Widget>[
+                          // TODO: Refactor smaller.
+                          new ListTile(
+                            trailing: new DropdownButton<String>(
+                              items: <DropdownMenuItem<String>>[
+                                new DropdownMenuItem<String>(
+                                  value: "Cell",
+                                  child: new Icon(Icons.phone_android)
+                                ),
+                                new DropdownMenuItem<String>(
+                                  value: "Office",
+                                  child: new Icon(Icons.work)
+                                )
+                              ],
+                              onChanged: (String value){
+                                field.onChanged(_changeNumber(0, "type", value));
+                              },
+                              value: (){
+                                if (field.value.length > 0){
+                                  if (field.value[0] != null) {
+                                    return field.value[0]["type"];
+                                  }
+                                }
+                                return "Cell";
+                              }(),
+                            ),
+                            title: new TextField(
+                              keyboardType: TextInputType.phone,
+                              controller: new TextEditingController(
+                                text: (){
+                                  if (field.value.length > 0){
+                                    if (field.value[0] != null) {
+                                      return field.value[0]["number"];
+                                    }
+                                  }
+                                  return null;
+                                }(),
+                              ),
+                              decoration: new InputDecoration(
+                                hintText: "(555-555-5555 or 8005551234)",
+                                labelText: "Phone number"
+                              ),
+                              onChanged: (String value){
+                                field.onChanged(_changeNumber(0, "number", value));
+                              },
+                            )
+                          ),
+                          new ListTile(
+                            trailing: new DropdownButton<String>(
+                              items: <DropdownMenuItem<String>>[
+                                new DropdownMenuItem<String>(
+                                  value: "Cell",
+                                  child: new Icon(Icons.phone_android)
+                                ),
+                                new DropdownMenuItem<String>(
+                                  value: "Office",
+                                  child: new Icon(Icons.work)
+                                )
+                              ],
+                              onChanged: (String value){
+                                field.onChanged(_changeNumber(1, "type", value));
+                              },
+                              value: (){
+                                if (field.value.length > 1){
+                                  if (field.value != null) {
+                                    return field.value[1]["type"];
+                                  }
+                                }
+                                return "Office";
+                              }(),
+                            ),
+                            title: new TextField(
+                              keyboardType: TextInputType.phone,
+                              controller: new TextEditingController(
+                                text: (){
+                                  if (field.value.length > 1){
+                                    if (field.value[1] != null) {
+                                      return field.value[1]["number"];
+                                    }
+                                  }
+                                  return null;
+                                }(),
+                              ),
+                              decoration: new InputDecoration(
+                                hintText: "(555-555-5555 or 8005551234)",
+                                labelText: "Phone number"
+                              ),
+                              onChanged: (String value){
+                                field.onChanged(_changeNumber(1, "number", value));
+                              },
+                            )
+                          ),
+                        ],
+                      );
+                    },
+                  )
                 );
               },
-            )
+            ),
           );
         }
       ),
