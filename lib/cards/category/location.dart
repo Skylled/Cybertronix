@@ -41,7 +41,6 @@ class _LocationInfoCardState extends State<LocationInfoCard> {
 
   Future<Null> goPhotos() async {
     // Future: This need to be a full popup with add/remove support
-    // TODO: Select image, scale image down, upload to Firebase.
     File imageFile = await ImagePicker.pickImage();
     firebase.uploadPhoto(imageFile).then((String url){
       setState((){

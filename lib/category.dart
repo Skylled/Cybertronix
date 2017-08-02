@@ -49,7 +49,7 @@ class _CategoryPageState extends State<CategoryPage>{
         new IconButton(
           icon: new Icon(Icons.search),
           onPressed: (){
-            // TODO: How the hell do I search?
+            // Future: Implement Elastic Search?
           }
         )
       ]

@@ -5,8 +5,6 @@ import 'category.dart';
 import 'firebase.dart' as firebase;
 
 // Upcoming features
-// TODO: ImagePicker and FirebaseStorage support.
-// TODO: Push notifications (Firebase Cloud Messaging)
 // TODO: Add copy support to all Category cards on long-press
 
 /// Cybertronix is a job management software; a work in progress.
