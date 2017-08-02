@@ -52,7 +52,7 @@ class _ContactInfoCardState extends State<ContactInfoCard> {
         } else {
           newData["photos"] = <String>[url];
         }
-        firebase.sendObject("locations", newData, objID: widget.contactID);
+        firebase.sendObject("contacts", newData, objID: widget.contactID);
         contactData = newData;
         populateLines();
       });
