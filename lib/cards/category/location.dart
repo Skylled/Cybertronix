@@ -39,7 +39,7 @@ class _LocationInfoCardState extends State<LocationInfoCard> {
     });
   }
 
-  Future<Null> goPhotos(BuildContext context) async {
+  Future<Null> goPhotos() async {
     // Future: This need to be a full popup with add/remove support
     // TODO: Select image, scale image down, upload to Firebase.
     File imageFile = await ImagePicker.pickImage();
@@ -47,9 +47,9 @@ class _LocationInfoCardState extends State<LocationInfoCard> {
       setState((){
         Map<String, dynamic> newData = new Map<String, dynamic>.from(locationData);
         if (newData["photos"] != null){
-          newData['photos'].add(url);
+          newData["photos"].add(url);
         } else {
-          newData['photos'] = <String>[url];
+          newData["photos"] = <String>[url];
         }
         firebase.sendObject("locations", newData, objID: widget.locationID);
         locationData = newData;
@@ -177,9 +177,9 @@ class _LocationInfoCardState extends State<LocationInfoCard> {
       child: new ButtonBar(
         children: <Widget>[
           new FlatButton(
-            child: new Text("Add photos"),
+            child: new Text("Add a photo"),
             onPressed: (){
-              goPhotos(context);
+              goPhotos();
             },
           ),
           new FlatButton(

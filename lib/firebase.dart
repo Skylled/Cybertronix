@@ -107,11 +107,11 @@ Future<Map<String, dynamic>> getObject(String category, String id) async {
   return snap.value;
 }
 
-Map<String, dynamic> scrub(Map<String, dynamic> data) {
+Map<String, dynamic> _scrub(Map<String, dynamic> data) {
   Map<String, dynamic> newData = new Map<String, dynamic>.from(data);
   newData.forEach((String key, dynamic value){
     if (value is Map) {
-      value = scrub(value); // Recursion!
+      value = _scrub(value); // Recursion!
     } else if (value is String) {
       if (value.length <= 0) {
         value = null;
@@ -126,11 +126,11 @@ Map<String, dynamic> scrub(Map<String, dynamic> data) {
 void sendObject(String category, Map<String, dynamic> data, {String objID: null}) {
   DatabaseReference ref = _refs[category];
   if (objID != null) {
-    ref.child(objID).set(scrub(data));
+    ref.child(objID).set(_scrub(data));
   } else {
     DatabaseReference tempRef = ref.push();
     data["id"] = tempRef.key;
-    tempRef.set(scrub(data));
+    tempRef.set(_scrub(data));
   }
 }
 

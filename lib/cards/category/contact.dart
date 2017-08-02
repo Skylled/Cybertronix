@@ -1,8 +1,12 @@
+import 'dart:async';
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart' as url_launcher;
 import 'package:share/share.dart' as share;
-import '../creatorCards.dart';
 import 'package:meta/meta.dart';
+import 'package:image_picker/image_picker.dart';
+import '../../firebase.dart' as firebase;
+import '../creatorCards.dart';
 
 /// A Material Card with a contact's info
 /// 
@@ -38,6 +42,23 @@ class _ContactInfoCardState extends State<ContactInfoCard> {
     });
   }
 
+  Future<Null> goPhotos() async {
+    File imageFile = await ImagePicker.pickImage();
+    firebase.uploadPhoto(imageFile).then((String url){
+      setState((){
+        Map<String, dynamic> newData = new Map<String, dynamic>.from(contactData);
+        if (newData["photos"] != null){
+          newData["photos"].add(url);
+        } else {
+          newData["photos"] = <String>[url];
+        }
+        firebase.sendObject("locations", newData, objID: widget.contactID);
+        contactData = newData;
+        populateLines();
+      });
+    });
+  }
+
   void goShare(){ // Hook this into something!
     String shareString = "${contactData['name']}";
     if (contactData["phoneNumbers"] != null){
@@ -58,9 +79,14 @@ class _ContactInfoCardState extends State<ContactInfoCard> {
         height: 200.0,
         child: new Stack(
           children: <Widget>[
-            // TODO: If contact doesn't have an image, use a placeholder.
             new Positioned.fill(
-              child: new Image.asset('assets/hey_ladies.jpg', fit: BoxFit.fitWidth)
+              child: (){
+                if (contactData["photos"] != null){
+                  return new Image.network(contactData["photos"][0], fit: BoxFit.fitWidth);
+                } else {
+                  return new Image.asset('assets/hey_ladies.jpg', fit: BoxFit.fitWidth);
+                }
+              }(),
             ),
             new Positioned(
               left: 8.0,
@@ -139,6 +165,12 @@ class _ContactInfoCardState extends State<ContactInfoCard> {
     cardLines.add(new ButtonTheme.bar(
       child: new ButtonBar(
         children: <Widget>[
+          new FlatButton(
+            child: new Text("Add a photo"),
+            onPressed: (){
+              goPhotos();
+            },
+          ),
           new FlatButton(
             child: new Text("Edit info"),
             onPressed: (){
