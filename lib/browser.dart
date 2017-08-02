@@ -32,7 +32,7 @@ class _BrowserPageState extends State<BrowserPage>{
             onPressed: () {
               Navigator.pushNamed(context, '/browse/${category.toLowerCase()}');
             },
-            iconSize: 48.0
+            iconSize: 64.0
           ),
           new Text(category)
         ]
@@ -42,12 +42,11 @@ class _BrowserPageState extends State<BrowserPage>{
 
   Widget buildBody(){
     return new GridView.count(
+      shrinkWrap: true,
       crossAxisCount: 2,
-      mainAxisSpacing: 4.0,
-      crossAxisSpacing: 4.0,
       padding: const EdgeInsets.all(4.0),
       children: <GridTile>[
-        buildIconTile("Jobs", Icons.work),
+        buildIconTile("Jobs", Icons.business_center),
         buildIconTile("Locations", Icons.place),
         buildIconTile("Customers", Icons.assignment),
         buildIconTile("Contacts", Icons.contacts),
