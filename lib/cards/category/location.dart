@@ -1,7 +1,10 @@
+import 'dart:async';
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart' as url_launcher;
 import 'package:share/share.dart' as share;
 import 'package:intl/intl.dart';
+import 'package:image_picker/image_picker.dart';
 import '../../firebase.dart' as firebase;
 import '../creatorCards.dart';
 import '../categoryCards.dart';
@@ -36,6 +39,25 @@ class _LocationInfoCardState extends State<LocationInfoCard> {
     });
   }
 
+  Future<Null> goPhotos(BuildContext context) async {
+    // Future: This need to be a full popup with add/remove support
+    // TODO: Select image, scale image down, upload to Firebase.
+    File imageFile = await ImagePicker.pickImage();
+    firebase.uploadPhoto(imageFile).then((String url){
+      setState((){
+        Map<String, dynamic> newData = new Map<String, dynamic>.from(locationData);
+        if (newData["photos"] != null){
+          newData['photos'].add(url);
+        } else {
+          newData['photos'] = <String>[url];
+        }
+        firebase.sendObject("locations", newData, objID: widget.locationID);
+        locationData = newData;
+        populateLines();
+      });
+    });
+  }
+
   void goShare(){
     String shareString = "${locationData['name']}\n${locationData['address']}";
     shareString += "\n${locationData['city']}, ${locationData['state']} ${locationData['zipcode']}";
@@ -49,9 +71,15 @@ class _LocationInfoCardState extends State<LocationInfoCard> {
         height: 200.0,
         child: new Stack(
           children: <Widget>[
-            // TODO: If location doesn't have an image, use a placeholder.
+            // TODO: Add a share button.
             new Positioned.fill(
-              child: new Image.asset('assets/placeholder.jpg', fit: BoxFit.fitWidth)
+              child: (){
+                if (locationData["photos"] != null){
+                  return new Image.network(locationData["photos"][0], fit: BoxFit.fitWidth);
+                } else {
+                  return new Image.asset('assets/placeholder.jpg', fit: BoxFit.fitWidth);
+                }
+              }(),
             ),
             new Positioned(
               left: 8.0,
@@ -148,6 +176,12 @@ class _LocationInfoCardState extends State<LocationInfoCard> {
     cardLines.add(new ButtonTheme.bar(
       child: new ButtonBar(
         children: <Widget>[
+          new FlatButton(
+            child: new Text("Add photos"),
+            onPressed: (){
+              goPhotos(context);
+            },
+          ),
           new FlatButton(
             child: new Text("Edit info"),
             onPressed: (){

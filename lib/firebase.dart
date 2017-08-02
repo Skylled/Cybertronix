@@ -1,8 +1,13 @@
 import 'dart:async';
+import 'dart:io';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:firebase_storage/firebase_storage.dart';
+import 'package:image/image.dart' as image_lib;
+import 'package:path/path.dart' as path;
+import 'package:path_provider/path_provider.dart' as provider;
 
 /*
 Some notes on cloud messaging.
@@ -23,6 +28,21 @@ final FirebaseAuth auth = FirebaseAuth.instance;
 final GoogleSignIn googleSignIn = new GoogleSignIn();
 
 final FirebaseMessaging firebaseMessaging = new FirebaseMessaging();
+
+Future<String> uploadPhoto(File imageFile) async {
+  // Future: Make a thumbnail and a full-scale, upload both
+  // Needs a paid plan, due to file sizes.
+  String fileName = path.basename(imageFile.path);
+  String filePath = "images/${auth.currentUser.uid}/$fileName";
+  StorageReference ref = FirebaseStorage.instance.ref().child(filePath);
+  image_lib.Image original = image_lib.decodeImage(imageFile.readAsBytesSync());
+  image_lib.Image rescale = image_lib.copyResize(original, 750);
+  String temp = (await provider.getTemporaryDirectory()).path;
+  File finalFile = await new File("$temp/$fileName").create(recursive: true);
+  finalFile.writeAsBytesSync(image_lib.encodeJpg(rescale));
+  Uri downloadUrl = (await ref.put(finalFile).future).downloadUrl;
+  return downloadUrl.toString();
+}
 
 // This is mostly borrowed from flutter's FriendlyChat example
 Future<bool> ensureLoggedIn() async {
@@ -116,6 +136,7 @@ void sendObject(String category, Map<String, dynamic> data, {String objID: null}
 
 /// Finds all jobs whose [field] matches the [searchterm].
 Future<Map<String, Map<String, dynamic>>> findJobs(String field, String searchterm) async {
+  print("searchterm: ${searchterm.runtimeType} $searchterm");
   DatabaseReference ref = _refs["jobs"];
   DataSnapshot snap = await ref.orderByChild(field).equalTo(searchterm).once();
   return snap.value;
