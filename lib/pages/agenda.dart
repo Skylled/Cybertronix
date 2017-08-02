@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'dart:async';
-import 'cards/categoryCards.dart';
-import 'drawer.dart';
-import 'firebase.dart' as firebase;
+import '../cards/categoryCards.dart';
+import '../drawer.dart';
+import '../firebase.dart' as firebase;
 
 /// A two week summary page of upcoming jobs
 /// 

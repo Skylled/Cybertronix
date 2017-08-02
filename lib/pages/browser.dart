@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'drawer.dart';
+import '../drawer.dart';
 
 /// A page showing the different categories available to browse
 /// 

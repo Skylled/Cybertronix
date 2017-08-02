@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'agenda.dart';
-import 'browser.dart';
-import 'category.dart';
+import 'pages/agenda.dart';
+import 'pages/browser.dart';
+import 'pages/category.dart';
 import 'firebase.dart' as firebase;
 
 // Upcoming features
@@ -57,6 +57,7 @@ class _CybertronixAppState extends State<CybertronixApp> {
       ),
       home: new AgendaPage(),
       routes: <String, WidgetBuilder>{
+        '/agenda': (BuildContext context) => new AgendaPage(),
         '/browse': (BuildContext context) => new BrowserPage()
         /*  '/reports': (BuildContext context) => new ReportsPage(),
             '/search': (BuildContext context) => new SearchPage(), // Maybe have a search menu in the AppBar

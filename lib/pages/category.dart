@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'drawer.dart';
-import 'cards/creatorCards.dart';
-import 'cards/categoryCards.dart';
-import 'firebase.dart' as firebase;
+import '../drawer.dart';
+import '../cards/creatorCards.dart';
+import '../cards/categoryCards.dart';
+import '../firebase.dart' as firebase;
 
 /// This is a page that lists all items in a category.
 /// 
