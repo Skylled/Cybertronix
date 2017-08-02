@@ -178,9 +178,7 @@ class _LocationInfoCardState extends State<LocationInfoCard> {
         children: <Widget>[
           new FlatButton(
             child: new Text("Add a photo"),
-            onPressed: (){
-              goPhotos();
-            },
+            onPressed: goPhotos,
           ),
           new FlatButton(
             child: new Text("Edit info"),

@@ -1,7 +1,9 @@
 import 'dart:async';
+import 'dart:io';
 import 'package:intl/intl.dart';
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart' as url_launcher;
+import 'package:image_picker/image_picker.dart';
 import '../../firebase.dart' as firebase;
 import '../creatorCards.dart';
 import '../categoryCards.dart';
@@ -44,6 +46,24 @@ class _JobInfoCardState extends State<JobInfoCard> {
     });
   }
 
+  Future<Null> goPhotos() async {
+    File imageFile = await ImagePicker.pickImage();
+    // TODO: Ask if photo is for job or location.
+    firebase.uploadPhoto(imageFile).then((String url){
+      setState((){
+        Map<String, dynamic> newData = new Map<String, dynamic>.from(jobData);
+        if (newData["photos"] != null){
+          newData["photos"].add(url);
+        } else {
+          newData["photos"] = <String>[url];
+        }
+        firebase.sendObject("jobs", newData, objID: widget.jobID);
+        jobData = newData;
+        populateLines();
+      });
+    });
+  }
+
   void populateLines (){
     cardLines.clear();
     DateFormat formatter = new DateFormat("h:mm a, EEEE, MMMM d");
@@ -55,11 +75,18 @@ class _JobInfoCardState extends State<JobInfoCard> {
             // TODO: Make this a horizontally scrolling gallery
             // TODO: Tap to enlarge
             // Enlargement dialog should be responsive to rotation and pinch-zoom
-            // TODO: Pull pictures from Firebase
             // Use Job-specific first, then location.
             new Positioned.fill(
-                child: new Image.asset('assets/placeholder.jpg',
-                    fit: BoxFit.fitWidth)),
+              child: (){
+                if (jobData["photos"] != null) {
+                  return new Image.network(jobData["photos"][0], fit: BoxFit.fitWidth);
+                } else if (locationData != null && locationData["photos"] != null) {
+                  return new Image.network(locationData["photos"][0], fit: BoxFit.fitWidth);
+                } else {
+                  return new Image.asset('assets/placeholder.jpg', fit: BoxFit.fitWidth);
+                }
+              }(),
+            ),
             new Positioned(
               left: 8.0,
               bottom: 16.0,
@@ -210,6 +237,10 @@ class _JobInfoCardState extends State<JobInfoCard> {
             new ButtonTheme.bar(
               child: new ButtonBar(
                 children: <Widget>[
+                  new FlatButton(
+                    child: new Text("Add a photo"),
+                    onPressed: goPhotos
+                  ),
                   new FlatButton(
                     child: new Text('Edit info'),
                     onPressed: () {
