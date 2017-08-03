@@ -74,17 +74,34 @@ class _LocationInfoCardState extends State<LocationInfoCard> {
             // TODO: Add a share button.
             new Positioned.fill(
               child: (){
-                if (locationData["photos"] != null){
-                  if (locationData["photos"].length == 1){
-                    return new Image.network(locationData["photos"][0], fit: BoxFit.fitWidth);
+                List<String> photoList = locationData["photos"];
+                if (photoList != null){
+                  if (photoList.length == 1){
+                    return new GestureDetector(
+                      child: new Image.network(photoList[0], fit: BoxFit.fitWidth),
+                      onTap: () async {
+                        // TODO: Refactor to save space
+                        await showDialog(
+                          context: context,
+                          child: new ZoomableImage(
+                            new NetworkImage(photoList[0]),
+                            scale: 10.0,
+                            onTap: (){
+                              Navigator.pop(context);
+                            },
+                          ),
+                        );
+                      }
+                    );
                   } else {
                     return new ListView(
                       scrollDirection: Axis.horizontal,
                       shrinkWrap: true,
-                      children: locationData["photos"].map((String url){
+                      children: photoList.map((String url){
                         return new GestureDetector(
                           child: new Image.network(url, fit: BoxFit.fitHeight),
                           onTap: () async {
+                            print("Why doesn't this work?");
                             await showDialog(
                               context: context,
                               child: new ZoomableImage(
@@ -97,7 +114,7 @@ class _LocationInfoCardState extends State<LocationInfoCard> {
                             );
                           },
                         );
-                      }),
+                      }).toList(),
                     );
                   }
                 } else {
