@@ -46,19 +46,51 @@ class _JobInfoCardState extends State<JobInfoCard> {
     });
   }
 
+  // TODO MAJOR: The dialog does not refresh well.
+  // Also, the image does not seem to show up in the view unless exited and re-opened.
+  // Could have something to do with the upload speed. Will test in release build on wifi.
   Future<Null> goPhotos() async {
     File imageFile = await ImagePicker.pickImage();
-    // TODO: Ask if photo is for job or location.
+    String uploadCategory;
+    if (locationData != null){
+      uploadCategory = await showDialog<String>(
+        context: context,
+        child: new SimpleDialog(
+          title: new Text("Is this picture job-specific or about the location in general?"),
+          children: <Widget>[
+            new SimpleDialogOption(
+              onPressed: (){ Navigator.pop(context, "jobs"); },
+              child: new Text("Job"),
+            ),
+            new SimpleDialogOption(
+              onPressed: (){ Navigator.pop(context, "locations"); },
+              child: new Text("Location"),
+            ),
+          ],
+        ),
+      );
+    } else {
+      uploadCategory = "jobs";
+    }
     firebase.uploadPhoto(imageFile).then((String url){
       setState((){
-        Map<String, dynamic> newData = new Map<String, dynamic>.from(jobData);
+        Map<String, dynamic> finish(Map<String, dynamic> input){
+          Map<String, dynamic> newData = new Map<String, dynamic>.from(input);
         if (newData["photos"] != null){
           newData["photos"].add(url);
         } else {
           newData["photos"] = <String>[url];
         }
-        firebase.sendObject("jobs", newData, objID: widget.jobID);
-        jobData = newData;
+          return newData;
+        }
+
+        if (uploadCategory == "jobs"){
+          jobData = finish(jobData);
+          firebase.sendObject("jobs", jobData, objID: widget.jobID);
+        } else {
+          locationData = finish(locationData);
+          firebase.sendObject("locations", locationData, objID: jobData["location"]);
+        }
         populateLines();
       });
     });
