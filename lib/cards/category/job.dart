@@ -4,6 +4,7 @@ import 'package:intl/intl.dart';
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart' as url_launcher;
 import 'package:image_picker/image_picker.dart';
+import 'package:zoomable_image/zoomable_image.dart';
 import '../../firebase.dart' as firebase;
 import '../creatorCards.dart';
 import '../categoryCards.dart';
@@ -76,11 +77,11 @@ class _JobInfoCardState extends State<JobInfoCard> {
       setState((){
         Map<String, dynamic> finish(Map<String, dynamic> input){
           Map<String, dynamic> newData = new Map<String, dynamic>.from(input);
-        if (newData["photos"] != null){
-          newData["photos"].add(url);
-        } else {
-          newData["photos"] = <String>[url];
-        }
+          if (newData["photos"] != null){
+            newData["photos"].add(url);
+          } else {
+            newData["photos"] = <String>[url];
+          }
           return newData;
         }
 
@@ -104,18 +105,55 @@ class _JobInfoCardState extends State<JobInfoCard> {
         height: 200.0,
         child: new Stack(
           children: <Widget>[
-            // TODO: Make this a horizontally scrolling gallery
-            // TODO: Tap to enlarge
-            // Enlargement dialog should be responsive to rotation and pinch-zoom
-            // Use Job-specific first, then location.
             new Positioned.fill(
               child: (){
+                // TODO: Refactor to get URL list first
+                // Length 0 placeholder, Length 1 fitWidth, Length 2+ ListView
+                List<Widget> gallery = <Widget>[];
+                void addPhoto(String url){
+                  gallery.add(
+                    new GestureDetector(
+                      child: new Image.network(url, fit: BoxFit.fitHeight),
+                      onTap: () async {
+                        await showDialog(
+                          context: context,
+                          child: new ZoomableImage(
+                            new NetworkImage(url),
+                            scale: 10.0,
+                            onTap: (){
+                              Navigator.pop(context);
+                            },
+                          )
+                        );
+                      },
+                    )
+                  );
+                }
                 if (jobData["photos"] != null) {
-                  return new Image.network(jobData["photos"][0], fit: BoxFit.fitWidth);
-                } else if (locationData != null && locationData["photos"] != null) {
-                  return new Image.network(locationData["photos"][0], fit: BoxFit.fitWidth);
+                  print("Adding job photos");
+                  jobData["photos"].forEach(addPhoto);
+                }
+                if (locationData != null && locationData["photos"] != null) {
+                  print("Adding location photos");
+                  locationData["photos"].forEach(addPhoto);
+                }
+                if (gallery.length == 1){
+                  print("Only one in the gallery");
+                  return gallery[0]; // In this instance, it's using fitHeight instead of fitWidth.
+                } else if (gallery.length < 1){
+                  // TODO: Hook to goPhotos
+                  print("Nothing in the gallery");
+                  return new GestureDetector(
+                    child: new Image.asset('assets/placeholder.jpg', fit:BoxFit.fitWidth),
+                    onTap: goPhotos
+                  );
                 } else {
-                  return new Image.asset('assets/placeholder.jpg', fit: BoxFit.fitWidth);
+                  print("Gallery length: ${gallery.length}");
+                  return new ListView(
+                    scrollDirection: Axis.horizontal,
+                    shrinkWrap: true,
+                    children: gallery,
+                  );
                 }
               }(),
             ),

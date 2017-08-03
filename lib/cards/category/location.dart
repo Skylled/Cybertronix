@@ -5,6 +5,7 @@ import 'package:url_launcher/url_launcher.dart' as url_launcher;
 import 'package:share/share.dart' as share;
 import 'package:intl/intl.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:zoomable_image/zoomable_image.dart';
 import '../../firebase.dart' as firebase;
 import '../creatorCards.dart';
 import '../categoryCards.dart';
@@ -74,7 +75,31 @@ class _LocationInfoCardState extends State<LocationInfoCard> {
             new Positioned.fill(
               child: (){
                 if (locationData["photos"] != null){
-                  return new Image.network(locationData["photos"][0], fit: BoxFit.fitWidth);
+                  if (locationData["photos"].length == 1){
+                    return new Image.network(locationData["photos"][0], fit: BoxFit.fitWidth);
+                  } else {
+                    return new ListView(
+                      scrollDirection: Axis.horizontal,
+                      shrinkWrap: true,
+                      children: locationData["photos"].map((String url){
+                        return new GestureDetector(
+                          child: new Image.network(url, fit: BoxFit.fitHeight),
+                          onTap: () async {
+                            await showDialog(
+                              context: context,
+                              child: new ZoomableImage(
+                                new NetworkImage(url),
+                                scale: 10.0,
+                                onTap: (){
+                                  Navigator.pop(context);
+                                },
+                              ),
+                            );
+                          },
+                        );
+                      }),
+                    );
+                  }
                 } else {
                   return new Image.asset('assets/placeholder.jpg', fit: BoxFit.fitWidth);
                 }

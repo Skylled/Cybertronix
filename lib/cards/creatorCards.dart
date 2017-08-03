@@ -5,6 +5,7 @@ import 'creator/contact.dart';
 import 'creator/location.dart';
 import 'creator/package.dart';
 
+// TODO: Customer
 
 /// Opens a [Dialog] [Card] with a creator/editor for the given 
 /// [category]. [data] and [objID] are for pre-filling the editor.

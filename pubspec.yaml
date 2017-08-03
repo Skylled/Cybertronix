@@ -17,6 +17,7 @@ dependencies:
   firebase_database:
   meta: ^1.0.5
   path:
+  zoomable_image:
 
 # For information on the generic Dart part of this file, see the
 # following page: https://www.dartlang.org/tools/pub/pubspec

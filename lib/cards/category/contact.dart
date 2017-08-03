@@ -5,6 +5,7 @@ import 'package:url_launcher/url_launcher.dart' as url_launcher;
 import 'package:share/share.dart' as share;
 import 'package:meta/meta.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:zoomable_image/zoomable_image.dart';
 import '../../firebase.dart' as firebase;
 import '../creatorCards.dart';
 
@@ -43,6 +44,7 @@ class _ContactInfoCardState extends State<ContactInfoCard> {
   }
 
   Future<Null> goPhotos() async {
+    // Future: Display local copy instead of waiting for upload.
     File imageFile = await ImagePicker.pickImage();
     firebase.uploadPhoto(imageFile).then((String url){
       setState((){
@@ -82,9 +84,26 @@ class _ContactInfoCardState extends State<ContactInfoCard> {
             new Positioned.fill(
               child: (){
                 if (contactData["photos"] != null){
-                  return new Image.network(contactData["photos"][0], fit: BoxFit.fitWidth);
+                  return new GestureDetector(
+                    child: new Image.network(contactData["photos"].last, fit: BoxFit.fitWidth),
+                    onTap: () async {
+                      await showDialog(
+                        context: context,
+                        child: new ZoomableImage(
+                          new NetworkImage(contactData["photos"].last),
+                          scale: 10.0,
+                          onTap: (){
+                            Navigator.pop(context);
+                          },
+                        ),
+                      );
+                    },
+                  );
                 } else {
-                  return new Image.asset('assets/hey_ladies.jpg', fit: BoxFit.fitWidth);
+                  return new GestureDetector(
+                    child: new Image.asset('assets/hey_ladies.jpg', fit: BoxFit.fitWidth),
+                    onTap: goPhotos,
+                  );
                 }
               }(),
             ),
