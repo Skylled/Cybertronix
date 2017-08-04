@@ -107,52 +107,57 @@ class _JobInfoCardState extends State<JobInfoCard> {
           children: <Widget>[
             new Positioned.fill(
               child: (){
-                // TODO: Refactor to get URL list first
-                // Length 0 placeholder, Length 1 fitWidth, Length 2+ ListView
-                List<Widget> gallery = <Widget>[];
-                void addPhoto(String url){
-                  gallery.add(
-                    new GestureDetector(
-                      child: new Image.network(url, fit: BoxFit.fitHeight),
-                      onTap: () async {
-                        await showDialog(
-                          context: context,
-                          child: new ZoomableImage(
-                            new NetworkImage(url),
-                            scale: 10.0,
-                            onTap: (){
-                              Navigator.pop(context);
-                            },
-                          )
-                        );
-                      },
-                    )
-                  );
-                }
+                List<String> photos = <String>[];
+                
                 if (jobData["photos"] != null) {
-                  print("Adding job photos");
-                  jobData["photos"].forEach(addPhoto);
+                  photos.addAll(jobData["photos"]);
                 }
                 if (locationData != null && locationData["photos"] != null) {
-                  print("Adding location photos");
-                  locationData["photos"].forEach(addPhoto);
+                  photos.addAll(locationData["photos"]);
                 }
-                if (gallery.length == 1){
-                  print("Only one in the gallery");
-                  return gallery[0]; // In this instance, it's using fitHeight instead of fitWidth.
-                } else if (gallery.length < 1){
-                  // TODO: Hook to goPhotos
-                  print("Nothing in the gallery");
+                
+                if (photos.length < 1) {
                   return new GestureDetector(
-                    child: new Image.asset('assets/placeholder.jpg', fit:BoxFit.fitWidth),
+                    child: new Image.asset('assets/placeholder.jpg', fit: BoxFit.fitWidth),
                     onTap: goPhotos
                   );
+                } else if (photos.length == 1) {
+                  return new GestureDetector(
+                    child: new Image.network(photos[0], fit: BoxFit.fitWidth),
+                    onTap: () async {
+                      await showDialog(
+                        context: context,
+                        child: new ZoomableImage(
+                          new NetworkImage(photos[0]),
+                          scale: 10.0,
+                          onTap: (){
+                            Navigator.pop(context);
+                          },
+                        ),
+                      );
+                    }
+                  );
                 } else {
-                  print("Gallery length: ${gallery.length}");
                   return new ListView(
                     scrollDirection: Axis.horizontal,
                     shrinkWrap: true,
-                    children: gallery,
+                    children: photos.map((String url){
+                      return new GestureDetector(
+                        child: new Image.network(url, fit: BoxFit.fitHeight),
+                        onTap: () async {
+                          await showDialog(
+                            context: context,
+                            child: new ZoomableImage(
+                              new NetworkImage(url),
+                              scale: 10.0,
+                              onTap: (){
+                                Navigator.pop(context);
+                              },
+                            ),
+                          );
+                        }
+                      );
+                    }).toList(),
                   );
                 }
               }(),
