@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+// TODO: Tapping Data Browser from a subpage doesn't go back to home.
+
 /// Builds the same [Drawer] across the app, with
 /// the same few buttons to go to different pages
 Drawer buildDrawer(BuildContext context, String currentPage) {

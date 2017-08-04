@@ -80,7 +80,6 @@ class _LocationInfoCardState extends State<LocationInfoCard> {
                     return new GestureDetector(
                       child: new Image.network(photoList[0], fit: BoxFit.fitWidth),
                       onTap: () async {
-                        // TODO: Refactor to save space
                         await showDialog(
                           context: context,
                           child: new ZoomableImage(

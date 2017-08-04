@@ -5,6 +5,7 @@ import 'pages/category.dart';
 import 'firebase.dart' as firebase;
 
 // Upcoming features
+// TODO: Make a pretty looking "Today" page
 // TODO: Add copy support to all Category cards on long-press
 
 /// Cybertronix is a job management software; a work in progress.

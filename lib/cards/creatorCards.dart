@@ -4,8 +4,7 @@ import 'creator/job.dart';
 import 'creator/contact.dart';
 import 'creator/location.dart';
 import 'creator/package.dart';
-
-// TODO: Customer
+import 'creator/customer.dart';
 
 /// Opens a [Dialog] [Card] with a creator/editor for the given 
 /// [category]. [data] and [objID] are for pre-filling the editor.
@@ -29,6 +28,11 @@ Future<dynamic> showCreatorCard(BuildContext context, String category, {Map<Stri
         child: new LocationCreatorCard(locationData: data, locationID: objID),
       );
       break;
+    case "customers":
+      return await showDialog(
+        context: context,
+        child: new CustomerCreatorCard(),
+      );
     default:
       Scaffold.of(context).showSnackBar(new SnackBar(
         content: new Text("This category is not available yet.")

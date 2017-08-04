@@ -61,6 +61,7 @@ class _JobCreatorCardState extends State<JobCreatorCard> {
     return <CreatorItem<dynamic>>[
       new CreatorItem<String>( // Name
         name: "Title",
+        // TODO: For some reason, the text was filled!
         value: widget.jobData != null ? widget.jobData['name'] : '',
         hint: "(i.e. Pump test at CVS Amite)",
         valueToString: (String value) => value == '' ? "Please enter a name" : value,

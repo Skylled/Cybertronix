@@ -351,7 +351,7 @@ class _ContactCreatorCardState extends State<ContactCreatorCard> {
                 new FlatButton(
                   child: new Text("Save & Finish"),
                   textColor: Theme.of(context).accentColor,
-                  onPressed: () async {
+                  onPressed: (){
                     firebase.sendObject("contacts", currentData, objID: widget.contactID);
                     Navigator.pop(context, currentData);
                   },
