@@ -9,6 +9,7 @@ import 'package:zoomable_image/zoomable_image.dart';
 import '../../firebase.dart' as firebase;
 import '../creatorCards.dart';
 import '../categoryCards.dart';
+import '../../api.dart' as api;
 
 /// This card shows all the basic info about a location
 class LocationInfoCard extends StatefulWidget {
@@ -117,7 +118,10 @@ class _LocationInfoCardState extends State<LocationInfoCard> {
                     );
                   }
                 } else {
-                  return new Image.asset('assets/placeholder.jpg', fit: BoxFit.fitWidth);
+                  return new Image.network(
+                    'https://maps.googleapis.com/maps/api/streetview?size=600x600&location=${locationData["address"]}, ${locationData["city"]}, ${locationData["state"]}&key=${api.gmaps}',
+                    fit: BoxFit.fitWidth,
+                  );
                 }
               }(),
             ),
