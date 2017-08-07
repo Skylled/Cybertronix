@@ -129,6 +129,7 @@ class _LocationInfoCardState extends State<LocationInfoCard> {
               left: 8.0,
               bottom: 16.0,
               child: new Text(
+                // Future: Text wrapping.
                 locationData["name"],
                 style: new TextStyle(
                   color: Colors.white,
@@ -136,6 +137,15 @@ class _LocationInfoCardState extends State<LocationInfoCard> {
                   fontWeight: FontWeight.bold
                 )
               )
+            ),
+            new Positioned(
+              right: 8.0,
+              top: 8.0,
+              child: new IconButton(
+                icon: new Icon(Icons.share, color: Colors.white),
+                iconSize: 36.0,
+                onPressed: goShare,
+              ),
             )
           ]
         )

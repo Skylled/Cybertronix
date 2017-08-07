@@ -118,6 +118,15 @@ class _ContactInfoCardState extends State<ContactInfoCard> {
                   fontWeight: FontWeight.bold
                 )
               )
+            ),
+            new Positioned(
+              right: 8.0,
+              top: 8.0,
+              child: new IconButton(
+                icon: new Icon(Icons.share, color: Colors.white),
+                iconSize: 36.0,
+                onPressed: goShare,
+              ),
             )
           ]
         )
