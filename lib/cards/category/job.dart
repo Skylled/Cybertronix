@@ -255,7 +255,7 @@ class _JobInfoCardState extends State<JobInfoCard> {
   Future<Map<String, Map<String, dynamic>>> getUserData() async {
     if (jobData["users"] != null){
       Map<String, Map<String, dynamic>> users = new Map<String, Map<String, dynamic>>();
-      for (String userID in jobData["users"]){
+      for (String userID in jobData["users"].keys){
         users[userID] = await firebase.getObject("users", userID);
       }
       return users;
