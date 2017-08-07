@@ -72,7 +72,6 @@ class _LocationInfoCardState extends State<LocationInfoCard> {
         height: 200.0,
         child: new Stack(
           children: <Widget>[
-            // TODO: Add a share button.
             new Positioned.fill(
               child: (){
                 List<String> photoList = locationData["photos"];

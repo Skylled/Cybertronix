@@ -64,7 +64,7 @@ class _JobCreatorCardState extends State<JobCreatorCard> {
         // TODO: For some reason, the text was filled!
         value: widget.jobData != null ? widget.jobData['name'] : '',
         hint: "(i.e. Pump test at CVS Amite)",
-        valueToString: (String value) => value == '' ? "Please enter a name" : value,
+        valueToString: (String value) => value,
         builder: (CreatorItem<String> item){
           void close() {
             setState(() {
