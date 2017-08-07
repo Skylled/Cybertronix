@@ -353,20 +353,20 @@ class _JobCreatorCardState extends State<JobCreatorCard> {
           );
         }
       ),
-      new CreatorItem<List<String>>( // Users
+      new CreatorItem<Map<String, bool>>( // Users
         name: "Users",
         value: widget.jobData != null ? widget.jobData["users"] : <String>[],
         hint: "Which employees are assigned to this job?",
-        valueToString: (List<String> value) {
+        valueToString: (Map<String, bool> value) {
           if (value.length == 1){
-            return value.first;
+            return value.keys.first;
           } else if (value.length > 1) {
             return value.length.toString();
           } else {
             return "Select contacts";
           }
         },
-        builder: (CreatorItem<List<String>> item) {
+        builder: (CreatorItem<Map<String, bool>> item) {
           void close() {
             setState((){
               item.isExpanded = false;
@@ -379,36 +379,51 @@ class _JobCreatorCardState extends State<JobCreatorCard> {
                 return new CollapsibleBody(
                   onSave: () { Form.of(context).save(); close(); },
                   onCancel: () { Form.of(context).reset(); close(); },
-                  child: new FormField<List<String>>(
+                  child: new FormField<Map<String, bool>>(
                     initialValue: item.value,
-                    onSaved: (List<String> value){
+                    onSaved: (Map<String, bool> value){
                       item.value = value;
                       currentData["users"] = value;
                     },
-                    builder: (FormFieldState<List<String>> field) {
-                      Column x = new Column(
+                    builder: (FormFieldState<Map<String, bool>> field) {
+                      return new Column(
                         mainAxisSize: MainAxisSize.min,
                         crossAxisAlignment: CrossAxisAlignment.end,
-                        children: field.value.map((String userID) {
-                          return new AsyncChip(firebase.getObject("users", userID), (){
-                            field.onChanged(removeObj(field.value, userID));
-                          });
-                        }).toList(),
-                      );
-                      x.children.insert(0, new ListTile(
-                        title: new Text("Add a contact"),
-                        trailing: new Icon(Icons.add),
-                        onTap: () async {
-                          Map<String, dynamic> chosen = await pickFromCategory(
-                            context: context,
-                            category: "users",
+                        children: (){
+                          List<Widget> chips = new List<Widget>();
+                          chips.add(
+                            new ListTile(
+                              title: new Text("Add a contact"),
+                              trailing: new Icon(Icons.add),
+                              onTap: () async {
+                                Map<String, dynamic> chosen = await pickFromCategory(
+                                  context: context,
+                                  category: "users",
+                                );
+                                if (chosen != null){
+                                  field.onChanged((){
+                                    Map<String, bool> updated = new Map<String, bool>.from(field.value);
+                                    updated[chosen["id"]] = true;
+                                    return updated;
+                                  }());
+                                }
+                              },
+                            )
                           );
-                          if (chosen != null && !field.value.contains(chosen["id"])){
-                            field.onChanged(addObj(field.value, chosen["id"]));
-                          }
-                        },
-                      ));
-                      return x;
+                          field.value.keys.forEach((String userID){
+                            chips.add(
+                              new AsyncChip(firebase.getObject("users", userID), (){
+                                field.onChanged((){
+                                  Map<String, bool> updated = new Map<String, bool>.from(field.value);
+                                  updated.remove(userID);
+                                }());
+                              })
+                            );
+                          });
+
+                          return chips;
+                        }(),
+                      );
                     },
                   )
                 );

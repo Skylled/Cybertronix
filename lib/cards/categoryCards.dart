@@ -4,7 +4,7 @@ import 'category/contact.dart';
 import 'category/location.dart';
 import 'category/package.dart';
 
-// TODO: Customer
+// Future: Customer
 
 /// This pops up a [Dialog] [Card] with info about a particular object.
 void showCategoryCard(BuildContext context, String category, String objID,
