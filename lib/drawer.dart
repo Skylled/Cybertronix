@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 
-// TODO: Tapping Data Browser from a subpage doesn't go back to home.
-
 /// Builds the same [Drawer] across the app, with
 /// the same few buttons to go to different pages
 Drawer buildDrawer(BuildContext context, String currentPage) {
@@ -13,7 +11,7 @@ Drawer buildDrawer(BuildContext context, String currentPage) {
     }
   }
 
-  void goCreator(){
+  void goBrowse(){
     if (currentPage == "browse"){
       Navigator.pop(context);
     } else {
@@ -30,6 +28,7 @@ Drawer buildDrawer(BuildContext context, String currentPage) {
             color: Theme.of(context).primaryColor,
           ),
           child: new Center(
+            // TODO: Something fun here.
             child: new Text('TO-DO')
           ),
         ),
@@ -41,9 +40,9 @@ Drawer buildDrawer(BuildContext context, String currentPage) {
         ),
         new ListTile(
           leading: new Icon(Icons.widgets),
-          selected: (currentPage == "browse"),
+          selected: ((currentPage == "browse")|| (currentPage == "category")),
           title: new Text("Data Browser"),
-          onTap: goCreator
+          onTap: goBrowse
         )
       ],
     ),

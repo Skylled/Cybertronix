@@ -74,7 +74,7 @@ class _CategoryPageState extends State<CategoryPage>{
     return new Scaffold(
       key: _scaffoldKey,
       appBar: buildAppBar(),
-      drawer: buildDrawer(context, 'browse'),
+      drawer: buildDrawer(context, 'category'),
       floatingActionButton: buildFAB(),
       body: new ListView.builder(
         itemCount: buildObjs.length,
