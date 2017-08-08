@@ -316,6 +316,47 @@ class _LocationCreatorCardState extends State<LocationCreatorCard> {
             ),
           );
         }
+      ),
+      new CreatorItem<String>(
+        name: "Notes",
+        value: widget.locationData != null ? widget.locationData['notes'] : '',
+        hint: "(Anything special about this job?)",
+        valueToString: (String value) => value,
+        builder: (CreatorItem<String> item){
+          void close() {
+            setState((){
+              item.isExpanded = false;
+            });
+          }
+
+          return new Form(
+            child: new Builder(
+              builder: (BuildContext context){
+                return new CollapsibleBody(
+                  margin: const EdgeInsets.symmetric(horizontal: 16.0),
+                  onSave: (){ Form.of(context).save(); close(); },
+                  onCancel: () { Form.of(context).reset(); close(); },
+                  child: new Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                    child: new TextFormField(
+                      // TODO: Check if "Done" or "Enter" is shown.
+                      maxLines: null,
+                      controller: item.textController,
+                      decoration: new InputDecoration(
+                        hintText: item.hint,
+                        labelText: item.name,
+                      ),
+                      onSaved: (String value){
+                        item.value = value;
+                        currentData['notes'] = value;
+                      },
+                    ),
+                  ),
+                );
+              },
+            ),
+          );
+        }
       )
     ];
   }

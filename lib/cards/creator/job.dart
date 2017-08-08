@@ -61,7 +61,6 @@ class _JobCreatorCardState extends State<JobCreatorCard> {
     return <CreatorItem<dynamic>>[
       new CreatorItem<String>( // Name
         name: "Title",
-        // TODO: For some reason, the text was filled!
         value: widget.jobData != null ? widget.jobData['name'] : '',
         hint: "(i.e. Pump test at CVS Amite)",
         valueToString: (String value) => value,
@@ -431,9 +430,49 @@ class _JobCreatorCardState extends State<JobCreatorCard> {
             ),
           );
         }
+      ),
+      new CreatorItem<String>(
+        name: "Notes",
+        value: widget.jobData != null ? widget.jobData['notes'] : '',
+        hint: "(Anything special about this job?)",
+        valueToString: (String value) => value,
+        builder: (CreatorItem<String> item){
+          void close() {
+            setState((){
+              item.isExpanded = false;
+            });
+          }
+
+          return new Form(
+            child: new Builder(
+              builder: (BuildContext context){
+                return new CollapsibleBody(
+                  margin: const EdgeInsets.symmetric(horizontal: 16.0),
+                  onSave: (){ Form.of(context).save(); close(); },
+                  onCancel: () { Form.of(context).reset(); close(); },
+                  child: new Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                    child: new TextFormField(
+                      // TODO: Check if "Done" or "Enter" is shown.
+                      maxLines: null,
+                      controller: item.textController,
+                      decoration: new InputDecoration(
+                        hintText: item.hint,
+                        labelText: item.name,
+                      ),
+                      onSaved: (String value){
+                        item.value = value;
+                        currentData['notes'] = value;
+                      },
+                    ),
+                  ),
+                );
+              },
+            ),
+          );
+        }
       )
       // TODO: Billing [po, billed?]
-      // TODO: Notes
     ];
   }
 
