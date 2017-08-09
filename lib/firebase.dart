@@ -123,7 +123,7 @@ Map<String, dynamic> _scrub(Map<String, dynamic> data) {
 
 /// Writes a new object to a [category] or changes the object at [objID]
 /// to brand new data.
-void sendObject(String category, Map<String, dynamic> data, {String objID: null}) {
+void sendObject(String category, Map<String, dynamic> data, {String objID}) {
   DatabaseReference ref = _refs[category];
   if (objID != null) {
     ref.child(objID).set(_scrub(data));

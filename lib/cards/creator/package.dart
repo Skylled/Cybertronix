@@ -18,7 +18,7 @@ class PackageCreatorCard extends StatefulWidget {
   final Map<String, dynamic> packageData;
 
   /// Creates a pump package creator/editor in a Card
-  PackageCreatorCard({Map<String, dynamic> packageData: null}):
+  PackageCreatorCard({Map<String, dynamic> packageData}):
     this.packageData = packageData;
   
   @override

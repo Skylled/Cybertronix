@@ -10,7 +10,7 @@ import 'creator/customer.dart';
 
 /// Opens a [Dialog] [Card] with a creator/editor for the given 
 /// [category]. [data] and [objID] are for pre-filling the editor.
-Future<dynamic> showCreatorCard(BuildContext context, String category, {Map<String, dynamic> data: null, String objID: null}) async {
+Future<dynamic> showCreatorCard(BuildContext context, String category, {Map<String, dynamic> data, String objID}) async {
   switch (category){
     case "jobs":
       return await showDialog(
@@ -44,7 +44,7 @@ Future<dynamic> showCreatorCard(BuildContext context, String category, {Map<Stri
 
 /// Opens a [Dialog] [Card] with a Creator/Editor for a package.
 /// [packageData] is for prefilling the editor.
-Future<Map<String, dynamic>> awaitPackage(BuildContext context, {Map<String, dynamic> packageData: null}) async {
+Future<Map<String, dynamic>> awaitPackage(BuildContext context, {Map<String, dynamic> packageData}) async {
   Map<String, dynamic> newPackageData = <String, dynamic>{};
   if (packageData == null) {
     await showDialog(
