@@ -339,7 +339,6 @@ class _LocationCreatorCardState extends State<LocationCreatorCard> {
                   child: new Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 16.0),
                     child: new TextFormField(
-                      // TODO: Check if "Done" or "Enter" is shown.
                       maxLines: null,
                       controller: item.textController,
                       decoration: new InputDecoration(

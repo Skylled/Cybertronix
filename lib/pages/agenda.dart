@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'dart:async';
 import '../cards/categoryCards.dart';
+import '../cards/creatorCards.dart';
 import '../drawer.dart';
 import '../firebase.dart' as firebase;
 
@@ -29,7 +30,10 @@ class _AgendaPageState extends State<AgendaPage> {
     return new FloatingActionButton(
       tooltip: 'Add todo job',
       child: new Icon(Icons.add),
-      onPressed: null
+      onPressed: () async {
+        await showCreatorCard(context, "jobs");
+        await buildAgenda();
+      }
     );
   }
 

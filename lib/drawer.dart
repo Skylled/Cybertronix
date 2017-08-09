@@ -22,14 +22,14 @@ Drawer buildDrawer(BuildContext context, String currentPage) {
   return new Drawer(
     child: new ListView(
       children: <Widget>[
+        // TODO: Something fun here.
         new DrawerHeader(
           decoration: new BoxDecoration(
             shape: BoxShape.rectangle,
             color: Theme.of(context).primaryColor,
           ),
           child: new Center(
-            // TODO: Something fun here.
-            child: new Text('TO-DO')
+            child: new Text('Cybertronix')
           ),
         ),
         new ListTile(

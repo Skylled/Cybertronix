@@ -6,6 +6,7 @@ import 'firebase.dart' as firebase;
 
 // Upcoming features
 // TODO: Make a pretty looking "Today" page
+// TODO: Generate CreatorCard boilerplate from a JSON or something.
 // TODO: Add copy support to all Category cards on long-press
 
 /// Cybertronix is a job management software; a work in progress.

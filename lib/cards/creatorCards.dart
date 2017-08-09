@@ -6,6 +6,8 @@ import 'creator/location.dart';
 import 'creator/package.dart';
 import 'creator/customer.dart';
 
+// TODO: This should probably size down according to necessity
+
 /// Opens a [Dialog] [Card] with a creator/editor for the given 
 /// [category]. [data] and [objID] are for pre-filling the editor.
 Future<dynamic> showCreatorCard(BuildContext context, String category, {Map<String, dynamic> data: null, String objID: null}) async {
