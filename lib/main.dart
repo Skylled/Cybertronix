@@ -9,6 +9,9 @@ import 'firebase.dart' as firebase;
 // TODO: Generate CreatorCard boilerplate from a JSON or something.
 // TODO: Add copy support to all Category cards on long-press
 
+// Wishlist
+// Future: I'd like CategoryCards to pop up from the bottom, maybe.
+
 /// Cybertronix is a job management software; a work in progress.
 class CybertronixApp extends StatefulWidget {
   @override

@@ -26,14 +26,16 @@ class SelectorDialog extends StatefulWidget {
 }
 
 class _SelectorDialogState extends State<SelectorDialog> {
-  List<ListTile> objectList = <ListTile>[];
+  bool returned;
   List<Map<String, dynamic>> objList = <Map<String, dynamic>>[];
 
   @override
   void initState(){
     super.initState();
+    returned = false;
     firebase.getCategory(widget.category).then((Map<String, Map<String, dynamic>> objects){
       setState((){
+        returned = true;
         objects.forEach((String id, Map<String, dynamic> data){
           Map<String, dynamic> obj = new Map<String, dynamic>.from(data);
           objList.add(obj);
@@ -55,6 +57,8 @@ class _SelectorDialogState extends State<SelectorDialog> {
     Navigator.pop(context);
   }
 
+  // TODO: Pin `actions` to the bottom.
+
   Widget build(BuildContext context){
     final Widget actions = new ButtonTheme.bar(
       child: new ButtonBar(
@@ -74,21 +78,36 @@ class _SelectorDialogState extends State<SelectorDialog> {
       padding: const EdgeInsets.fromLTRB(8.0, 28.0, 8.0, 12.0),
       child: new Card(
         child: new Column(
-          children: <Widget>[
-            new ListView.builder(
-              shrinkWrap: true,
-              itemBuilder: (BuildContext context, int index){
-                return new ListTile(
-                  title: new Text(objList[index]["name"]),
-                  onTap: (){
-                    Navigator.pop(context, objList[index]);
-                  },
-                  selected: (widget.initialObjects.contains(objList[index]["id"]))
-                );
-              },
-            ),
-            actions,
-          ],
+          children: (){
+            List<Widget> items = <Widget>[];
+            if (objList.length < 1){
+              if (returned){
+                items.add(new ListTile(
+                  title: new Text("No results found.")
+                ));
+              } else {
+                items.add(new ListTile(
+                  title: new Text("Loading...")
+                ));
+              }
+            } else {
+              items.add(new ListView.builder(
+                shrinkWrap: true,
+                itemCount: objList.length,
+                itemBuilder: (BuildContext context, int index){
+                  return new ListTile(
+                    title: new Text(objList[index]["name"]),
+                    onTap: (){
+                      Navigator.pop(context, objList[index]);
+                    },
+                    selected: (widget.initialObjects.contains(objList[index]["id"]))
+                  );
+                },
+              ));
+            }
+            items.add(actions);
+            return items;
+          }(),
         )
       )
     );

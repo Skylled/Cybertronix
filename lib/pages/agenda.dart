@@ -6,6 +6,9 @@ import '../cards/creatorCards.dart';
 import '../drawer.dart';
 import '../firebase.dart' as firebase;
 
+// TODO: When popped back to this page, refresh.
+// TODO: Pull-down refresh action.
+
 /// A two week summary page of upcoming jobs
 /// 
 /// Something of a to-do list, organized by date and time.
