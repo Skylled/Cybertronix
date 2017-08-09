@@ -61,7 +61,7 @@ class _JobCreatorCardState extends State<JobCreatorCard> {
     return <CreatorItem<dynamic>>[
       new CreatorItem<String>( // Name
         name: "Title",
-        value: widget.jobData != null ? widget.jobData['name'] : '',
+        value: (widget.jobData != null && widget.jobData['name'] != null) ? widget.jobData['name'] : '',
         hint: "(i.e. Pump test at CVS Amite)",
         valueToString: (String value) => value,
         builder: (CreatorItem<String> item){
@@ -100,7 +100,7 @@ class _JobCreatorCardState extends State<JobCreatorCard> {
       ),
       new CreatorItem<DateTime>( // When
         name: "Date & time",
-        value: widget.jobData != null ? DateTime.parse(widget.jobData["datetime"]) : new DateTime.now(),
+        value: (widget.jobData != null && widget.jobData["datetime"] != null) ? DateTime.parse(widget.jobData["datetime"]) : new DateTime.now(),
         hint: "When is the job?",
         valueToString: (DateTime dt) => fullfmt.format(dt),
         builder: (CreatorItem<DateTime> item) {
@@ -289,16 +289,17 @@ class _JobCreatorCardState extends State<JobCreatorCard> {
       ),
       new CreatorItem<List<String>>( // Contacts
         name: "Contacts",
-        value: widget.jobData != null ? widget.jobData['contacts'] : <String>[],
+        value: (widget.jobData != null && widget.jobData['contacts'] != null) ? widget.jobData['contacts'] : <String>[],
         hint: "Who is involved with this job?",
         valueToString: (List<String> value) {
-          if (value.length == 1){
-            return value.first;
-          } else if (value.length > 1) {
-            return value.length.toString();
-          } else {
-            return "Select contacts";
+          if (value != null){
+            if (value.length == 1){
+              return value.first;
+            } else if (value.length > 1) {
+              return value.length.toString();
+            }
           }
+          return "Select contacts";
         },
         builder: (CreatorItem<List<String>> item){
           void close() {
@@ -320,30 +321,39 @@ class _JobCreatorCardState extends State<JobCreatorCard> {
                       currentData["contacts"] = value;
                     },
                     builder: (FormFieldState<List<String>> field){
-                      Column x =  new Column(
+                      return new Column(
                         mainAxisSize: MainAxisSize.min,
                         crossAxisAlignment: CrossAxisAlignment.end,
-                        children: field.value.map((String contactID){
-                          return new AsyncChip(firebase.getObject("contacts", contactID), (){
-                            field.onChanged(removeObj(field.value, contactID));
-                          });
-                        }).toList()
-                      );
-                      x.children.insert(0, new ListTile(
-                        title: new Text("Add a contact"),
-                        trailing: new Icon(Icons.add),
-                        onTap: () async {
-                          Map<String, dynamic> chosen = await pickFromCategory(
-                            context: context,
-                            category: "contacts",
-                            initialObjects: field.value
+                        children: (){
+                          List<Widget> chips = new List<Widget>();
+                          chips.add(
+                            new ListTile(
+                              title: new Text("Add a contact"),
+                              trailing: new Icon(Icons.add),
+                              onTap: () async {
+                                Map<String, dynamic> chosen = await pickFromCategory(
+                                  context: context,
+                                  category: "contacts",
+                                  initialObjects: field.value,
+                                );
+                                if (chosen != null && !field.value.contains(chosen["id"])){
+                                  field.onChanged(addObj(field.value, chosen["id"]));
+                                }
+                              },
+                            ),
                           );
-                          if (chosen != null && !field.value.contains(chosen["id"])){
-                            field.onChanged(addObj(field.value, chosen["id"]));
-                          }
-                        }
-                      ));
-                      return x;
+                          field.value.forEach((String contactID){
+                            chips.add(
+                              new AsyncChip(
+                                firebase.getObject("contacts", contactID), (){
+                                  field.onChanged(removeObj(field.value, contactID));
+                                },
+                              ),
+                            );
+                          });
+                          return chips;
+                        }(),
+                      );
                     }
                   ),
                 );
@@ -354,16 +364,17 @@ class _JobCreatorCardState extends State<JobCreatorCard> {
       ),
       new CreatorItem<Map<String, bool>>( // Users
         name: "Users",
-        value: widget.jobData != null ? widget.jobData["users"] : <String>[],
+        value: (widget.jobData != null && widget.jobData["users"] != null) ? widget.jobData["users"] : <String, bool>{},
         hint: "Which employees are assigned to this job?",
         valueToString: (Map<String, bool> value) {
-          if (value.length == 1){
-            return value.keys.first;
-          } else if (value.length > 1) {
-            return value.length.toString();
-          } else {
-            return "Select contacts";
+          if (value != null){
+            if (value.length == 1){
+              return value.keys.first;
+            } else if (value.length > 1) {
+              return value.length.toString();
+            }
           }
+          return "Select users";
         },
         builder: (CreatorItem<Map<String, bool>> item) {
           void close() {
@@ -392,7 +403,7 @@ class _JobCreatorCardState extends State<JobCreatorCard> {
                           List<Widget> chips = new List<Widget>();
                           chips.add(
                             new ListTile(
-                              title: new Text("Add a contact"),
+                              title: new Text("Add a user"),
                               trailing: new Icon(Icons.add),
                               onTap: () async {
                                 Map<String, dynamic> chosen = await pickFromCategory(
@@ -431,9 +442,9 @@ class _JobCreatorCardState extends State<JobCreatorCard> {
           );
         }
       ),
-      new CreatorItem<String>(
+      new CreatorItem<String>( // Notes
         name: "Notes",
-        value: widget.jobData != null ? widget.jobData['notes'] : '',
+        value: (widget.jobData != null && widget.jobData['notes'] != null) ? widget.jobData['notes'] : '',
         hint: "(Anything special about this job?)",
         valueToString: (String value) => value,
         builder: (CreatorItem<String> item){
