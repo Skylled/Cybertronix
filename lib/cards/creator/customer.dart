@@ -15,17 +15,32 @@ class _CustomerCreatorCardState extends State<CustomerCreatorCard> {
       padding: const EdgeInsets.symmetric(horizontal: 8.0),
       child: new Center(
         child: new Card(
-          child: new ListView(
+          child: new Column(
+            mainAxisSize: MainAxisSize.min,
             children: <Widget>[
-              // Maybe this should be a TextFormField?
-              new TextField(
-                decoration: new InputDecoration(
-                  hintText: "(e.g. S&S Sprinkler)",
-                  labelText: "Company name",
+              new Center(
+                child: new Padding(
+                  padding: const EdgeInsets.only(top: 8.0),
+                  child: new Text(
+                    "New Customer",
+                    style: new TextStyle(
+                      fontSize: 18.0
+                    ),
+                  ),
                 ),
-                onChanged: (String value){
-                  currentName = value;
-                },
+              ),
+              // Maybe this should be a TextFormField?
+              new Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                child: new TextField(
+                  decoration: new InputDecoration(
+                    hintText: "(e.g. S&S Sprinkler)",
+                    labelText: "Company name",
+                  ),
+                  onChanged: (String value){
+                    currentName = value;
+                  },
+                ),
               ),
               new ButtonBar(
                 children: <Widget>[
