@@ -19,7 +19,7 @@ class PackageCreatorCard extends StatefulWidget {
 
   /// Creates a pump package creator/editor in a Card
   PackageCreatorCard({Map<String, dynamic> packageData}):
-    this.packageData = packageData != null ? packageData : <String, dynamic>{"power": "Diesel"};
+    this.packageData = packageData ?? <String, dynamic>{"power": "Diesel"};
   
   @override
   _PackageCreatorCardState createState() => new _PackageCreatorCardState();
@@ -81,7 +81,7 @@ class _PackageCreatorCardState extends State<PackageCreatorCard> {
                           onChanged: (String input){
                             field.onChanged(replace("Manufacturer", input));
                           },
-                          value: field.value["manufacturer"] != null ? field.value["manufacturer"] : "Metron",
+                          value: field.value["manufacturer"] ?? "Metron",
                           hint: new Text("Manufacturer")
                         ));
                         items.add(new TextField( // Model #
@@ -123,7 +123,7 @@ class _PackageCreatorCardState extends State<PackageCreatorCard> {
                               field.onChanged(replace("starting", input));
                             },
                             hint: new Text("Starting type"),
-                            value: field.value["starting"] != null ? field.value["starting"] : "Across the line"
+                            value: field.value["starting"] ?? "Across the line"
                           ));
                           items.add(new DropdownButton<String>( // Phase
                             items: <String>["Three", "Single"].map((String phase){
@@ -132,7 +132,7 @@ class _PackageCreatorCardState extends State<PackageCreatorCard> {
                             onChanged: (String input){
                               field.onChanged(replace("phase", input));
                             },
-                            value: field.value["phase"] != null ? field.value["phase"] : "Three"
+                            value: field.value["phase"] ?? "Three"
                           ));
                           items.add(new TextField( // Horsepower
                             controller: new TextEditingController(text: field.value["hp"] != null ? field.value["hp"].toString() : null),
@@ -221,7 +221,7 @@ class _PackageCreatorCardState extends State<PackageCreatorCard> {
         name: "Transfer Switch",
         value: widget.packageData["tswitch"] ?? new Map<String, dynamic>(),
         hint: "Is there a transfer switch in place?",
-        valueToString: (Map<String, dynamic> value) => value["manufacturer"] != null ? value["manufacturer"] : "No transfer switch",
+        valueToString: (Map<String, dynamic> value) => value["manufacturer"] ?? "No transfer switch",
         builder: (CreatorItem<Map<String, dynamic>> item){
           void close(){
             setState((){
@@ -294,7 +294,7 @@ class _PackageCreatorCardState extends State<PackageCreatorCard> {
         name: "Pump",
         value: widget.packageData["pump"] ?? new Map<String, dynamic>(),
         hint: "What kind of pump is in use?",
-        valueToString: (Map<String, dynamic> value) => value["manufacturer"] != null ? value["manufacturer"] : "Enter pump data",
+        valueToString: (Map<String, dynamic> value) => value["manufacturer"] ?? "Enter pump data",
         builder: (CreatorItem<Map<String, dynamic>> item){
           void close(){
             setState((){
@@ -396,7 +396,7 @@ class _PackageCreatorCardState extends State<PackageCreatorCard> {
         name: "Motor",
         value: widget.packageData["motor"] ?? new Map<String, dynamic>(),
         hint: "What motor is on-site?",
-        valueToString: (Map<String, dynamic> value) => value["manufacturer"] != null ? value["manufacturer"] : "Enter motor data",
+        valueToString: (Map<String, dynamic> value) => value["manufacturer"] ?? "Enter motor data",
         builder: (CreatorItem<Map<String, dynamic>> item){
           void close(){
             setState((){
@@ -495,7 +495,7 @@ class _PackageCreatorCardState extends State<PackageCreatorCard> {
                             onChanged: (String input){
                               field.onChanged(replace("phase", input));
                             },
-                            value: field.value["phase"] != null ? field.value["phase"] : "Three"
+                            value: field.value["phase"] ?? "Three"
                           ));
                         } else { // Diesel
                           items.add(new DropdownButton<int>( // Battery voltage
@@ -515,7 +515,7 @@ class _PackageCreatorCardState extends State<PackageCreatorCard> {
                             onChanged: (String input){
                               field.onChanged(replace("ground", input));
                             },
-                            value: field.value["ground"] != null ? field.value["ground"] : "Negative",
+                            value: field.value["ground"] ?? "Negative",
                             hint: new Text("Grounding type")
                           ));
                         }
@@ -581,7 +581,7 @@ class _PackageCreatorCardState extends State<PackageCreatorCard> {
                           onChanged: (String input){
                             field.onChanged(replace("Manufacturer", input));
                           },
-                          value: field.value["manufacturer"] != null ? field.value["manufacturer"] : "Metron",
+                          value: field.value["manufacturer"] ?? "Metron",
                           hint: new Text("Manufacturer")
                         ),
                         new TextField( // Model #
@@ -629,7 +629,7 @@ class _PackageCreatorCardState extends State<PackageCreatorCard> {
                           onChanged: (String input){
                             field.onChanged(replace("phase", input));
                           },
-                          value: field.value["phase"] != null ? field.value["phase"] : "Three"
+                          value: field.value["phase"] ?? "Three"
                         ),
                         new TextField( // Start pressure
                           controller: new TextEditingController(text: field.value["start"] != null ? field.value["start"].toString() : null),
@@ -677,7 +677,7 @@ class _PackageCreatorCardState extends State<PackageCreatorCard> {
       name: "Jockey Pump",
       value: widget.packageData["jockeypump"] ?? new Map<String, dynamic>(),
       hint: "What kind of jockey pump is in use?",
-      valueToString: (Map<String, dynamic> value) => value["manufacturer"] != null ? value["manufacturer"] : "Enter jockey pump data",
+      valueToString: (Map<String, dynamic> value) => value["manufacturer"] ?? "Enter jockey pump data",
       builder: (CreatorItem<Map<String, dynamic>> item){
         void close(){
           setState((){
@@ -761,7 +761,7 @@ class _PackageCreatorCardState extends State<PackageCreatorCard> {
                           onChanged: (String input){
                             field.onChanged(replace("phase", input));
                           },
-                          value: field.value["phase"] != null ? field.value["phase"] : "Three"
+                          value: field.value["phase"] ?? "Three"
                         ),
                       ],
                     );

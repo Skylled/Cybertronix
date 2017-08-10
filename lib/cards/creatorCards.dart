@@ -71,6 +71,6 @@ Future<Map<String, dynamic>> awaitPackage(BuildContext context, {Map<String, dyn
   }
   return await showDialog(
     context: context,
-    child: new PackageCreatorCard(packageData: packageData != null ? packageData : newPackageData)
+    child: new PackageCreatorCard(packageData: packageData ?? newPackageData)
   );
 }
