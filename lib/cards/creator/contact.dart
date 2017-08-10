@@ -236,7 +236,7 @@ class _ContactCreatorCardState extends State<ContactCreatorCard> {
                               },
                               value: (){
                                 if (field.value.length > 1){
-                                  if (field.value != null) {
+                                  if (field.value[1] != null) {
                                     return field.value[1]["type"];
                                   }
                                 }
