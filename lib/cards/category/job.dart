@@ -5,9 +5,11 @@ import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart' as url_launcher;
 import 'package:image_picker/image_picker.dart';
 import 'package:zoomable_image/zoomable_image.dart';
+
 import '../../firebase.dart' as firebase;
 import '../creatorCards.dart';
 import '../categoryCards.dart';
+import '../../api.dart' as api;
 
 /// A Material Card with a job's info
 /// 
@@ -117,6 +119,16 @@ class _JobInfoCardState extends State<JobInfoCard> {
                 }
                 
                 if (photos.length < 1) {
+                  if (locationData != null &&
+                       (locationData["address"] != null &&
+                        locationData["city"] != null &&
+                        locationData["state"] != null)
+                      ){
+                        return new Image.network(
+                          'https://maps.googleapis.com/maps/api/streetview?size=600x600&location=${locationData["address"]}, ${locationData["city"]}, ${locationData["state"]}&key=${api.gmaps}',
+                          fit: BoxFit.fitWidth,
+                        );
+                      }
                   return new GestureDetector(
                     child: new Image.asset('assets/placeholder.jpg', fit: BoxFit.fitWidth),
                     onTap: goPhotos
