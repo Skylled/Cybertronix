@@ -19,7 +19,7 @@ class PackageCreatorCard extends StatefulWidget {
 
   /// Creates a pump package creator/editor in a Card
   PackageCreatorCard({Map<String, dynamic> packageData}):
-    this.packageData = packageData;
+    this.packageData = packageData != null ? packageData : <String, dynamic>{"power": "Diesel"};
   
   @override
   _PackageCreatorCardState createState() => new _PackageCreatorCardState();
@@ -31,7 +31,7 @@ class _PackageCreatorCardState extends State<PackageCreatorCard> {
 
   void initState(){
     super.initState();
-    currentData = widget.packageData != null ? new Map<String, dynamic>.from(widget.packageData) : <String, dynamic>{"power": "Diesel"};
+    currentData = new Map<String, dynamic>.from(widget.packageData);
     _items = getPackageItems();
   }
 
@@ -39,7 +39,7 @@ class _PackageCreatorCardState extends State<PackageCreatorCard> {
     List<CreatorItem<dynamic>> packageItems = <CreatorItem<dynamic>>[];
     packageItems.add(new CreatorItem<Map<String, dynamic>>( // Panel
         name: "Panel",
-        value: widget.packageData["panel"] != null ? widget.packageData["panel"] : new Map<String, dynamic>(),
+        value: widget.packageData["panel"] ?? new Map<String, dynamic>(),
         hint: "What kind of panel is in use?",
         valueToString: (Map<String, dynamic> value) => (value["manufacturer"] == null) && (value["model"] == null) ?
                                                        "Enter panel data" :
@@ -219,7 +219,7 @@ class _PackageCreatorCardState extends State<PackageCreatorCard> {
     if (widget.packageData["power"] == "Electric"){
       packageItems.add(new CreatorItem<Map<String, dynamic>>( // Transfer Switch
         name: "Transfer Switch",
-        value: widget.packageData["tswitch"] != null ? widget.packageData["tswitch"] : new Map<String, dynamic>(),
+        value: widget.packageData["tswitch"] ?? new Map<String, dynamic>(),
         hint: "Is there a transfer switch in place?",
         valueToString: (Map<String, dynamic> value) => value["manufacturer"] != null ? value["manufacturer"] : "No transfer switch",
         builder: (CreatorItem<Map<String, dynamic>> item){
@@ -292,7 +292,7 @@ class _PackageCreatorCardState extends State<PackageCreatorCard> {
     }
     packageItems.add(new CreatorItem<Map<String, dynamic>>( // Pump
         name: "Pump",
-        value: widget.packageData["pump"] != null ? widget.packageData["pump"] : new Map<String, dynamic>(),
+        value: widget.packageData["pump"] ?? new Map<String, dynamic>(),
         hint: "What kind of pump is in use?",
         valueToString: (Map<String, dynamic> value) => value["manufacturer"] != null ? value["manufacturer"] : "Enter pump data",
         builder: (CreatorItem<Map<String, dynamic>> item){
@@ -394,7 +394,7 @@ class _PackageCreatorCardState extends State<PackageCreatorCard> {
       ));
     packageItems.add(new CreatorItem<Map<String, dynamic>>( // Motor
         name: "Motor",
-        value: widget.packageData["motor"] != null ? widget.packageData["motor"] : new Map<String, dynamic>(),
+        value: widget.packageData["motor"] ?? new Map<String, dynamic>(),
         hint: "What motor is on-site?",
         valueToString: (Map<String, dynamic> value) => value["manufacturer"] != null ? value["manufacturer"] : "Enter motor data",
         builder: (CreatorItem<Map<String, dynamic>> item){
@@ -537,7 +537,7 @@ class _PackageCreatorCardState extends State<PackageCreatorCard> {
       ));
     packageItems.add(new CreatorItem<Map<String, dynamic>>( // Jockey Panel
       name: "Jockey Panel",
-      value: widget.packageData["jockeypanel"] != null ? widget.packageData["jockeypanel"] : new Map<String, dynamic>(),
+      value: widget.packageData["jockeypanel"] ?? new Map<String, dynamic>(),
       hint: "What kind of jockey panel is installed?",
       valueToString: (Map<String, dynamic> value) => (value["manufacturer"] == null) && (value["model"] == null) ?
                                                      "Enter jockey panel data" :
@@ -675,7 +675,7 @@ class _PackageCreatorCardState extends State<PackageCreatorCard> {
       ));
     packageItems.add(new CreatorItem<Map<String, dynamic>>( // Jockey Pump
       name: "Jockey Pump",
-      value: widget.packageData["jockeypump"] != null ? widget.packageData["jockeypump"] : new Map<String, dynamic>(),
+      value: widget.packageData["jockeypump"] ?? new Map<String, dynamic>(),
       hint: "What kind of jockey pump is in use?",
       valueToString: (Map<String, dynamic> value) => value["manufacturer"] != null ? value["manufacturer"] : "Enter jockey pump data",
       builder: (CreatorItem<Map<String, dynamic>> item){

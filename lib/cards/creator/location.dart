@@ -13,7 +13,9 @@ class LocationCreatorCard extends StatefulWidget {
   final String locationID;
 
   /// Creates a Location creator/editor in a Card
-  LocationCreatorCard({this.locationData, this.locationID});
+  LocationCreatorCard({Map<String, dynamic> locationData, String locationID}):
+    this.locationID = locationID,
+    this.locationData = locationData ?? <String, dynamic>{};
   
   @override
   _LocationCreatorCardState createState() => new _LocationCreatorCardState();
@@ -33,7 +35,7 @@ class _LocationCreatorCardState extends State<LocationCreatorCard> {
     return <CreatorItem<dynamic>>[
       new CreatorItem<String>( // Name
         name: "Name",
-        value: widget.locationData != null ? widget.locationData["name"] : '',
+        value: widget.locationData["name"] ?? '',
         hint: "(i.e. Cargill Avery Island)",
         valueToString: (String value) => value,
         builder: (CreatorItem<String> item){
@@ -72,10 +74,9 @@ class _LocationCreatorCardState extends State<LocationCreatorCard> {
       ),
       new CreatorItem<Map<String, String>>( // Street Address
         name: "Street Address",
-        value: widget.locationData != null ? <String, String>{"address": widget.locationData["address"],
-                                              "city": widget.locationData['city'],
-                                              "state": widget.locationData['state']}
-                                           : <String, String>{},
+        value: <String, String>{"address": widget.locationData["address"],
+                                "city": widget.locationData['city'],
+                                "state": widget.locationData['state']},
         hint: "The street address for the location",
         valueToString: (Map<String, String> addressInfo){
           if (addressInfo["address"] == null || addressInfo["city"] == null || addressInfo["state"] == null){
@@ -166,7 +167,7 @@ class _LocationCreatorCardState extends State<LocationCreatorCard> {
       ),
       new CreatorItem<List<Map<String, dynamic>>>( // Packages
         name: "Packages",
-        value: widget.locationData != null ? widget.locationData["packages"] : <Map<String, dynamic>>[],
+        value: widget.locationData["packages"] ?? <Map<String, dynamic>>[],
         hint: "What kind of equipment is on-site?",
         valueToString: (List<Map<String, dynamic>> value) {
           if (value.length == 1) {
@@ -261,7 +262,7 @@ class _LocationCreatorCardState extends State<LocationCreatorCard> {
       ),
       new CreatorItem<List<String>>( // Contacts
         name: "Contacts",
-        value: widget.locationData != null ? widget.locationData['contacts'] : <String>[],
+        value: widget.locationData["contacts"] ?? <String>[],
         hint: "Who is involved with this job?",
         valueToString: (List<String> value) => value.length.toString(),
         builder: (CreatorItem<List<String>> item){
@@ -326,10 +327,10 @@ class _LocationCreatorCardState extends State<LocationCreatorCard> {
           );
         }
       ),
-      new CreatorItem<String>(
+      new CreatorItem<String>( // Notes
         name: "Notes",
-        value: widget.locationData != null ? widget.locationData['notes'] : '',
-        hint: "(Anything special about this job?)",
+        value: widget.locationData["notes"] ?? '',
+        hint: "(Anything special about this place?)",
         valueToString: (String value) => value,
         builder: (CreatorItem<String> item){
           void close() {

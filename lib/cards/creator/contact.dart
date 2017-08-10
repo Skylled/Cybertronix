@@ -12,7 +12,9 @@ class ContactCreatorCard extends StatefulWidget {
   final String contactID;
 
   /// Creates a Contact creator/editor in a Card
-  ContactCreatorCard({this.contactData, this.contactID});
+  ContactCreatorCard({Map<String, dynamic> contactData, String contactID}):
+    this.contactID = contactID,
+    this.contactData = contactData ?? <String, dynamic>{};
   
   @override
   _ContactCreatorCardState createState() => new _ContactCreatorCardState();
@@ -32,7 +34,7 @@ class _ContactCreatorCardState extends State<ContactCreatorCard> {
     return <CreatorItem<dynamic>>[
       new CreatorItem<String>( // Name
         name: "Name",
-        value: widget.contactData != null ? widget.contactData["name"] : '',
+        value: widget.contactData["name"] ?? '',
         hint: "John Smith",
         valueToString: (String value) => value,
         builder: (CreatorItem<String> item){
@@ -78,8 +80,8 @@ class _ContactCreatorCardState extends State<ContactCreatorCard> {
       ),
       new CreatorItem<String>( // Company
         name: "Company",
-        value: widget.contactData != null ? widget.contactData["company"] : '',
-        hint: "ex: S&S Sprinkler",
+        value: widget.contactData["company"] ?? '',
+        hint: "ex: Turner Industries",
         valueToString: (String value) => value,
         builder: (CreatorItem<String> item){
           void close() {
@@ -118,14 +120,7 @@ class _ContactCreatorCardState extends State<ContactCreatorCard> {
       // [{"number": "555-555-5555", "type": "cell"},]
       new CreatorItem<List<Map<String, String>>>(
         name: "Phone numbers",
-        value: (){
-          if (widget.contactData != null){
-            if (widget.contactData["phoneNumbers"] != null){
-              return widget.contactData["phoneNumbers"];
-            }
-          }
-          return new List<Map<String, String>>();
-        }(),
+        value: widget.contactData["phoneNumbers"] ?? new List<Map<String, String>>(),
         hint: "Work: 555-555-5555",
         valueToString: (List<Map<String, String>> value){
           if (value != null) {
@@ -281,7 +276,7 @@ class _ContactCreatorCardState extends State<ContactCreatorCard> {
       ),
       new CreatorItem<String>( // Email address
         name: "Email Address",
-        value: widget.contactData != null ? widget.contactData["email"] : '',
+        value: widget.contactData["email"] ?? '',
         hint: "name@company.com",
         valueToString: (String value) => value,
         builder: (CreatorItem<String> item){
@@ -320,8 +315,8 @@ class _ContactCreatorCardState extends State<ContactCreatorCard> {
       ),
       new CreatorItem<String>(
         name: "Notes",
-        value: widget.contactData != null ? widget.contactData['notes'] : '',
-        hint: "(Anything special about this job?)",
+        value: widget.contactData['notes'] ?? '',
+        hint: "(Anything to note about this person?)",
         valueToString: (String value) => value,
         builder: (CreatorItem<String> item){
           void close() {

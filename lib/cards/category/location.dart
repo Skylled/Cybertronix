@@ -11,6 +11,48 @@ import '../creatorCards.dart';
 import '../categoryCards.dart';
 import '../../api.dart' as api;
 
+class PreviousJobsTile extends StatefulWidget {
+  final String locationID;
+
+  PreviousJobsTile(this.locationID);
+
+  @override
+  _PreviousJobsTileState createState() => new _PreviousJobsTileState();
+}
+
+class _PreviousJobsTileState extends State<PreviousJobsTile> {
+  List<ListTile> tiles = <ListTile>[new ListTile(title: new Text("Loading..."))];
+
+  @override
+  void initState(){
+    super.initState();
+    firebase.findJobs("location", widget.locationID)
+      .then((Map<String, Map<String, dynamic>> results){
+        setState((){
+          tiles.clear();
+          DateFormat datefmt = new DateFormat("M/d/y");
+          results.forEach((String jobID, Map<String, dynamic> jobData){
+            DateTime date = DateTime.parse(jobData["datetime"]);
+            tiles.add(new ListTile(
+              title: new Text("${datefmt.format(date)} - ${jobData['name']}"),
+              onTap: (){
+                showCategoryCard(context, "jobs", jobID, data: jobData);
+              },
+            ));
+          });
+        });
+      });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return new ExpansionTile(
+      title: new Text("Jobs"),
+      children: new List<ListTile>.from(tiles),
+    );
+  }
+}
+
 /// This card shows all the basic info about a location
 class LocationInfoCard extends StatefulWidget {
   /// The Firebase ID of the location loaded
@@ -203,29 +245,7 @@ class _LocationInfoCardState extends State<LocationInfoCard> {
       ));
     }
     cardLines.add(new Divider());
-    // This doesn't have to be async. Just adding some responsiveness.
-    // This query could be huge.
-    List<Widget> prevJobs = <Widget>[new ListTile(title: new Text("Loading..."))];
-    firebase.findJobs("location", widget.locationID)
-    .then((Map<String, Map<String, dynamic>> results){
-      setState((){
-        prevJobs.clear();
-        DateFormat datefmt = new DateFormat("M/d/y");
-        results.forEach((String jobID, Map<String, dynamic> jobData){
-          DateTime date = DateTime.parse(jobData["datetime"]);
-          prevJobs.add(new ListTile(
-            title: new Text("${datefmt.format(date)} ${jobData['name']}"),
-            onTap: (){
-              showCategoryCard(context, "jobs", jobID, data: jobData);
-            }
-          ));
-        });
-      });
-    });
-    cardLines.add(new ExpansionTile(
-      title: new Text("Jobs"),
-      children: new List<Widget>.from(prevJobs)
-    ));
+    cardLines.add(new PreviousJobsTile(widget.locationID));
     cardLines.add(new ButtonTheme.bar(
       child: new ButtonBar(
         children: <Widget>[

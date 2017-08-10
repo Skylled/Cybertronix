@@ -12,7 +12,9 @@ class JobCreatorCard extends StatefulWidget {
   final String jobID;
 
   /// Creates a job creator/editor in a Card
-  JobCreatorCard({this.jobData, this.jobID});
+  JobCreatorCard({Map<String, dynamic> jobData, String jobID}):
+    this.jobID = jobID,
+    this.jobData = jobData ?? <String, dynamic>{};
 
   @override
   _JobCreatorCardState createState() => new _JobCreatorCardState();
@@ -61,7 +63,7 @@ class _JobCreatorCardState extends State<JobCreatorCard> {
     return <CreatorItem<dynamic>>[
       new CreatorItem<String>( // Name
         name: "Title",
-        value: (widget.jobData != null && widget.jobData['name'] != null) ? widget.jobData['name'] : '',
+        value: widget.jobData['name'] ?? '',
         hint: "(i.e. Pump test at CVS Amite)",
         valueToString: (String value) => value,
         builder: (CreatorItem<String> item){
@@ -100,7 +102,7 @@ class _JobCreatorCardState extends State<JobCreatorCard> {
       ),
       new CreatorItem<DateTime>( // When
         name: "Date & time",
-        value: (widget.jobData != null && widget.jobData["datetime"] != null) ? DateTime.parse(widget.jobData["datetime"]) : new DateTime.now(),
+        value: widget.jobData["datetime"] != null ? DateTime.parse(widget.jobData["datetime"]) : new DateTime.now(),
         hint: "When is the job?",
         valueToString: (DateTime dt) => fullfmt.format(dt),
         builder: (CreatorItem<DateTime> item) {
@@ -170,7 +172,7 @@ class _JobCreatorCardState extends State<JobCreatorCard> {
       ),
       new CreatorItem<String>( // Location
         name: "Location",
-        value: widget.jobData != null ? widget.jobData["location"] : null,
+        value: widget.jobData["location"],
         hint: "Where is the job?",
         valueToString: (String locationID) {
           if (locationID != null){
@@ -230,7 +232,7 @@ class _JobCreatorCardState extends State<JobCreatorCard> {
       ),
       new CreatorItem<String>( // Customer
         name: "Customer",
-        value: widget.jobData != null ? widget.jobData["customer"] : null,
+        value: widget.jobData["customer"],
         hint: "Who is this job for?",
         valueToString: (String customerID) {
           if (customerID != null){
@@ -289,7 +291,7 @@ class _JobCreatorCardState extends State<JobCreatorCard> {
       ),
       new CreatorItem<List<String>>( // Contacts
         name: "Contacts",
-        value: (widget.jobData != null && widget.jobData['contacts'] != null) ? widget.jobData['contacts'] : <String>[],
+        value: widget.jobData['contacts'] ?? <String>[],
         hint: "Who is involved with this job?",
         valueToString: (List<String> value) {
           if (value != null){
@@ -364,7 +366,7 @@ class _JobCreatorCardState extends State<JobCreatorCard> {
       ),
       new CreatorItem<Map<String, bool>>( // Users
         name: "Users",
-        value: (widget.jobData != null && widget.jobData["users"] != null) ? widget.jobData["users"] : <String, bool>{},
+        value: widget.jobData["users"] ?? <String, bool>{},
         hint: "Which employees are assigned to this job?",
         valueToString: (Map<String, bool> value) {
           if (value != null){
@@ -444,7 +446,7 @@ class _JobCreatorCardState extends State<JobCreatorCard> {
       ),
       new CreatorItem<String>( // Notes
         name: "Notes",
-        value: (widget.jobData != null && widget.jobData['notes'] != null) ? widget.jobData['notes'] : '',
+        value: widget.jobData['notes'] ?? '',
         hint: "(Anything special about this job?)",
         valueToString: (String value) => value,
         builder: (CreatorItem<String> item){

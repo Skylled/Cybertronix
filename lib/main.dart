@@ -6,6 +6,8 @@ import 'firebase.dart' as firebase;
 
 // Upcoming features
 // TODO: Make a pretty looking "Today" page
+// TODO: Job names are redundant.
+// New format: $date $action $location
 // TODO: Generate CreatorCard boilerplate from a JSON or something.
 // TODO: Add copy support to all Category cards on long-press
 
