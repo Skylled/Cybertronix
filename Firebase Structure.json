@@ -146,7 +146,6 @@
             "address": "300 W Oak St",
             "city": "Amite",
             "state": "LA",
-            "zipcode": "70422",
             "jobs": [], // Redundancy for easy querying
             "recurring": { // More redundancy
                 "annual": 1

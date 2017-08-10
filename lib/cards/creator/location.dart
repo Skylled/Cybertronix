@@ -35,7 +35,7 @@ class _LocationCreatorCardState extends State<LocationCreatorCard> {
         name: "Name",
         value: widget.locationData != null ? widget.locationData["name"] : '',
         hint: "(i.e. Cargill Avery Island)",
-        valueToString: (String value) => value == '' ? "Please enter a name" : value,
+        valueToString: (String value) => value,
         builder: (CreatorItem<String> item){
           void close() {
             setState((){
@@ -94,28 +94,34 @@ class _LocationCreatorCardState extends State<LocationCreatorCard> {
           return new Form(
             child: new Builder(
               builder: (BuildContext context){
+                String _address;
+                String _city;
+                String _state;
                 return new CollapsibleBody(
-                  onSave: (){ Form.of(context).save(); close(); },
-                  onCancel: (){ Form.of(context).save(); close(); },
+                  onSave: (){
+                    Form.of(context).save();
+                    close();
+                  },
+                  onCancel: (){
+                    Form.of(context).reset();
+                    close();
+                  },
                   child: new FormField<Map<String, String>>(
                     initialValue: item.value,
                     onSaved: (Map<String, String> value){
+                      value["address"] = _address;
+                      value["city"] = _city;
+                      value["state"] = _state;
                       item.value = value;
                       currentData["address"] = value["address"];
                       currentData["city"] = value["city"];
                       currentData["state"] = value["state"];
                     },
                     builder: (FormFieldState<Map<String, String>> field){
-                      List<DropdownMenuItem<String>> states;
+                      List<DropdownMenuItem<String>> states = <DropdownMenuItem<String>>[];
                       <String>["LA", "MS", "AL", "TX", "FL", "AK", "TN"].forEach((String st){
                         states.add(new DropdownMenuItem<String>(value: st, child: new Text(st)));
                       });
-
-                      Map<String, String> _changeAddress(String key, String value){
-                        Map<String, String> result = new Map<String, String>.from(field.value);
-                        result[key] = value;
-                        return result;
-                      }
 
                       return new Column(
                         mainAxisSize: MainAxisSize.min,
@@ -127,8 +133,8 @@ class _LocationCreatorCardState extends State<LocationCreatorCard> {
                               hintText: "(e.g. 1515 Poydras St)",
                               labelText: "Street address"
                             ),
-                            onChanged: (String value) {
-                              field.onChanged(_changeAddress("address", value));
+                            onChanged: (String value){
+                              _address = value;
                             },
                           ),
                           new TextField(
@@ -138,13 +144,16 @@ class _LocationCreatorCardState extends State<LocationCreatorCard> {
                               labelText: "City"
                             ),
                             onChanged: (String value){
-                              field.onChanged(_changeAddress("city", value));
+                              _city = value;
                             },
                           ),
-                          new DropdownButton<String>(items: states,
-                          onChanged: (String value){
-                            field.onChanged(_changeAddress("state", value));
-                          })
+                          new Align(
+                            alignment: FractionalOffset.centerRight,
+                            child: new DropdownButton<String>(items: states,
+                            onChanged: (String value){
+                              _state = value;
+                            }),
+                          ),
                         ],
                       );
                     },
@@ -157,7 +166,7 @@ class _LocationCreatorCardState extends State<LocationCreatorCard> {
       ),
       new CreatorItem<List<Map<String, dynamic>>>( // Packages
         name: "Packages",
-        value: widget.locationData != null ? widget.locationData["packages"] : <String>[],
+        value: widget.locationData != null ? widget.locationData["packages"] : <Map<String, dynamic>>[],
         hint: "What kind of equipment is on-site?",
         valueToString: (List<Map<String, dynamic>> value) {
           if (value.length == 1) {

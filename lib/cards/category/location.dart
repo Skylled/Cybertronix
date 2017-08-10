@@ -61,7 +61,7 @@ class _LocationInfoCardState extends State<LocationInfoCard> {
 
   void goShare(){
     String shareString = "${locationData['name']}\n${locationData['address']}";
-    shareString += "\n${locationData['city']}, ${locationData['state']} ${locationData['zipcode']}";
+    shareString += "\n${locationData['city']}, ${locationData['state']}";
     share.share(shareString);
   }
 
@@ -150,7 +150,7 @@ class _LocationInfoCardState extends State<LocationInfoCard> {
         )
       )
     );
-    String subtitle = "${locationData['city']}, ${locationData['state']} ${locationData['zipcode']}";
+    String subtitle = "${locationData['city']}, ${locationData['state']}";
     cardLines.add(
       new ListTile(
         title: new Text(locationData["address"]),
