@@ -22,7 +22,6 @@ class CategoryPage extends StatefulWidget{
 class _CategoryPageState extends State<CategoryPage>{
   _CategoryPageState();
 
-  final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
   List<Map<String, dynamic>> objects = <Map<String, dynamic>>[];
 
   @override
@@ -72,7 +71,6 @@ class _CategoryPageState extends State<CategoryPage>{
     // See: buildFAB
     List<Map<String, dynamic>> buildObjs = new List<Map<String, dynamic>>.from(objects);
     return new Scaffold(
-      key: _scaffoldKey,
       appBar: buildAppBar(),
       drawer: buildDrawer(context, 'category'),
       floatingActionButton: buildFAB(),

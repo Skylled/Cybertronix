@@ -10,11 +10,12 @@ import '../cards/creatorCards.dart';
 /// [Navigator.pop]s with the newly selected data.
 class SelectorDialog extends StatefulWidget {
   /// Opens a dialog to select an object from a category
-  const SelectorDialog({
+  SelectorDialog({
     Key key,
     this.category,
-    this.initialObjects,
-  }) : super(key: key);
+    List<String> initialObjects,
+  }) : this.initialObjects = initialObjects ?? <String>[],
+       super(key: key);
 
   /// The category in Firebase to select from
   final String category;

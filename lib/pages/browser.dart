@@ -10,7 +10,6 @@ class BrowserPage extends StatefulWidget {
 }
 
 class _BrowserPageState extends State<BrowserPage>{
-  final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
 
   @override
   void initState() {
@@ -60,7 +59,6 @@ class _BrowserPageState extends State<BrowserPage>{
 
   Widget build(BuildContext context) {
     return new Scaffold(
-      key: _scaffoldKey,
       appBar: buildAppBar(),
       drawer: buildDrawer(context, 'browse'),
       body: buildBody()

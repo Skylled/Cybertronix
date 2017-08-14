@@ -19,7 +19,6 @@ class AgendaPage extends StatefulWidget {
 }
 
 class _AgendaPageState extends State<AgendaPage> {
-  final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
   List<Widget> agenda = <Widget>[];
   Future<Map<String, Map<String, Map<String, dynamic>>>> agendaData = firebase.getAgendaData();
 
@@ -106,7 +105,6 @@ class _AgendaPageState extends State<AgendaPage> {
   @override
   Widget build(BuildContext context) {
     return new Scaffold(
-      key: _scaffoldKey,
       appBar: buildAppBar(),
       floatingActionButton: buildFloatingActionButton(),
       drawer: buildDrawer(context, 'agenda'),

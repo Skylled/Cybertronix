@@ -313,7 +313,7 @@ class _ContactCreatorCardState extends State<ContactCreatorCard> {
           );
         }
       ),
-      new CreatorItem<String>(
+      new CreatorItem<String>( // Notes
         name: "Notes",
         value: widget.contactData['notes'] ?? '',
         hint: "(Anything to note about this person?)",
