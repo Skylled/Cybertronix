@@ -97,9 +97,9 @@ class _LocationCreatorCardState extends State<LocationCreatorCard> {
           return new Form(
             child: new Builder(
               builder: (BuildContext context){
-                String _address;
-                String _city;
-                String _state;
+                String _address = widget.locationData["address"];
+                String _city = widget.locationData["city"];
+                String _state = widget.locationData["state"];
                 return new CollapsibleBody(
                   onSave: (){
                     Form.of(context).save();
@@ -152,10 +152,12 @@ class _LocationCreatorCardState extends State<LocationCreatorCard> {
                           ),
                           new Align(
                             alignment: FractionalOffset.centerRight,
-                            child: new DropdownButton<String>(items: states,
-                            onChanged: (String value){
-                              _state = value;
-                            }),
+                            child: new DropdownButton<String>(
+                              items: states,
+                              onChanged: (String value){
+                                _state = value;
+                              },
+                            ),
                           ),
                         ],
                       );
