@@ -50,7 +50,7 @@ class _DataPageState extends State<DataPage> {
       ),
       drawer: buildDrawer(context, 'category'),
       body: new ListView(
-        children: children,
+        children: new List<Widget>.from(children),
       )
     );
   }

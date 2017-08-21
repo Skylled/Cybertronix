@@ -315,9 +315,8 @@ class _JobInfoCardState extends State<JobInfoCard> {
       child: new Card(
         child: new Column(
           children: <Widget>[
-            new ListView(
+            new Column(
               children: new List<Widget>.from(cardLines),
-              shrinkWrap: true,
             ),
             new ButtonTheme.bar(
               child: new ButtonBar(
