@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'dart:async';
-import '../cards/categoryCards.dart';
 import '../cards/creatorCards.dart';
 import '../drawer.dart';
 import '../firebase.dart' as firebase;
@@ -79,7 +78,7 @@ class _AgendaPageState extends State<AgendaPage> {
               subJobs.add(new ListTile(
                 title: new Text('${time.format(jdt)}, ${job["name"]}'),
                 onTap: () {
-                  showCategoryCard(context, "jobs", id, data: job);
+                  Navigator.pushNamed(context, '/browse/jobs/$id');
                 }
               ));
             });

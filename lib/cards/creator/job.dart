@@ -140,7 +140,6 @@ class _JobCreatorCardState extends State<JobCreatorCard> {
                                 lastDate: new DateTime(2068)
                               );
                               if (chosen != null && (chosen.year != field.value.year || chosen.month != field.value.month || chosen.day != field.value.day)){
-                                print("I'm supposed to change here!");
                                 field.onChanged(replaceDate(field.value, chosen));
                               }
                             }

@@ -8,7 +8,6 @@ import 'package:image_picker/image_picker.dart';
 import 'package:zoomable_image/zoomable_image.dart';
 import '../../firebase.dart' as firebase;
 import '../creatorCards.dart';
-import '../categoryCards.dart';
 import '../../api.dart' as api;
 
 class PreviousJobsTile extends StatefulWidget {
@@ -36,7 +35,7 @@ class _PreviousJobsTileState extends State<PreviousJobsTile> {
             tiles.add(new ListTile(
               title: new Text("${datefmt.format(date)} - ${jobData['name']}"),
               onTap: (){
-                showCategoryCard(context, "jobs", jobID, data: jobData);
+                Navigator.of(context).pushNamed('/browse/jobs/$jobID');
               },
             ));
           });
@@ -218,32 +217,14 @@ class _LocationInfoCardState extends State<LocationInfoCard> {
               title: new Text(contactData["name"]),
               trailing: trailing,
               onTap: () {
-                showCategoryCard(context, "contacts", contactID, data: contactData);
+                Navigator.of(context).pushNamed('/browse/contacts/$contactID');
               }
             ));
           });
         });
       });
     }
-    if (locationData["packages"] != null){
-      // Firebase lists cannot be length 0
-      cardLines.add(new Divider());
-      List<Widget> packageLines = <Widget>[];
-
-      locationData["packages"].forEach((Map<String, dynamic> package){
-        Map<String, dynamic> panel = package["panel"];
-        String title = "${panel != null ? panel['manufacturer'] : ''} ${package['power']}";
-        packageLines.add(new ListTile(
-          title: new Text(title),
-          onTap: (){ showPackageCard(context, package); },
-        ));
-      });
-
-      cardLines.add(new ExpansionTile(
-        title: new Text("Packages"),
-        children: packageLines,
-      ));
-    }
+    
     cardLines.add(new Divider());
     cardLines.add(new PreviousJobsTile(widget.locationID));
     cardLines.add(new ButtonTheme.bar(

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'pages/agenda.dart';
 import 'pages/browser.dart';
 import 'pages/category.dart';
+import 'pages/data.dart';
 import 'firebase.dart' as firebase;
 
 // Upcoming features
@@ -21,15 +22,6 @@ class CybertronixApp extends StatefulWidget {
 }
 
 class _CybertronixAppState extends State<CybertronixApp> {
-  final List<String> _classes = <String>[
-    'annuals',
-    'contacts',
-    'customers',
-    'jobs',
-    'locations',
-    'monthlies',
-    'packages'
-  ];
 
   @override
   void initState() {
@@ -41,16 +33,16 @@ class _CybertronixAppState extends State<CybertronixApp> {
     final List<String> path = settings.name.split('/');
     if (path[0] != '') return null;
     if (path[1] == "browse") {
-      return new MaterialPageRoute<Null>(
+      if (path.length == 4){
+        return new MaterialPageRoute<Null>(
           settings: settings,
-          builder: (BuildContext context) => new CategoryPage(path[2]));
-    }
-    if (_classes.contains(path[1])) {
-      /*return new MaterialPageRoute<Null>(
+          builder: (BuildContext context) => new DataPage(path[2], path[3]),
+        );
+      }
+      return new MaterialPageRoute<Null>(
         settings: settings,
-        builder: (BuildContext context) => new DataPage(class: path[1], id: path[2])
-      );*/
-      return null;
+        builder: (BuildContext context) => new CategoryPage(path[2])
+      );
     }
     return null;
   }

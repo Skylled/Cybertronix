@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:flutter/foundation.dart';
 import '../firebase.dart' as firebase;
 import '../cards/creatorCards.dart';
 
@@ -46,9 +47,11 @@ class _SelectorDialogState extends State<SelectorDialog> {
   }
 
   Future<Null> _onAdd() async {
-    dynamic res = await showCreatorCard(context, widget.category);
+    Map<String, dynamic> res = await showCreatorCard(context, widget.category);
     // If the Creator Card popped with data,
     if (res != null){
+      debugPrint("Got data from showCreatorCard");
+      debugPrint(res.toString());
       // Pop that data further up the chain.
       Navigator.pop(context, res);
     }

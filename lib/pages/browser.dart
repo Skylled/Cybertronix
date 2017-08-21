@@ -18,7 +18,7 @@ class _BrowserPageState extends State<BrowserPage>{
 
   Widget buildAppBar(){
     return new AppBar(
-      title: new Text("Browser")
+      title: new Text("Data Browser")
     );
   }
 

@@ -8,7 +8,6 @@ import 'package:zoomable_image/zoomable_image.dart';
 
 import '../../firebase.dart' as firebase;
 import '../creatorCards.dart';
-import '../categoryCards.dart';
 import '../../api.dart' as api;
 
 /// A Material Card with a job's info
@@ -213,8 +212,7 @@ class _JobInfoCardState extends State<JobInfoCard> {
             },
           ),
           onTap: () {
-            showCategoryCard(context, "locations", jobData["location"],
-                data: locationData);
+            Navigator.of(context).pushNamed('/browse/locations/${jobData["location"]}');
           },
         ),
       );
@@ -235,7 +233,7 @@ class _JobInfoCardState extends State<JobInfoCard> {
             title: new Text(contact["name"]),
             trailing: trailing,
             onTap: (){
-              showCategoryCard(context, "contacts", contactID, data: contact);
+              Navigator.of(context).pushNamed('/browse/contacts/$contactID');
             },
           )
         );

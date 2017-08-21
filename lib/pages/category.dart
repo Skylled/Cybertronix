@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import '../drawer.dart';
 import '../cards/creatorCards.dart';
-import '../cards/categoryCards.dart';
 import '../firebase.dart' as firebase;
 
 /// This is a page that lists all items in a category.
@@ -10,7 +9,7 @@ import '../firebase.dart' as firebase;
 /// slaps it in a [ListView]
 class CategoryPage extends StatefulWidget{
   /// A page that lists all items in a category.
-  const CategoryPage(this.category);
+  CategoryPage(this.category);
   
   /// The category to load objects from.
   final String category;
@@ -80,7 +79,7 @@ class _CategoryPageState extends State<CategoryPage>{
           return new ListTile(
             title: new Text(buildObjs[index]["name"]),
             onTap: (){
-              showCategoryCard(context, widget.category, buildObjs[index]["id"], data: buildObjs[index]);
+              Navigator.of(context).pushNamed('/browse/${widget.category}/${buildObjs[index]["id"]}');
             },
           );
         },
