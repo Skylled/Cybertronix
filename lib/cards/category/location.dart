@@ -227,22 +227,6 @@ class _LocationInfoCardState extends State<LocationInfoCard> {
     
     cardLines.add(new Divider());
     cardLines.add(new PreviousJobsTile(widget.locationID));
-    cardLines.add(new ButtonTheme.bar(
-      child: new ButtonBar(
-        children: <Widget>[
-          new FlatButton(
-            child: new Text("Add a photo"),
-            onPressed: goPhotos,
-          ),
-          new FlatButton(
-            child: new Text("Edit info"),
-            onPressed: (){
-              goEdit(context);
-            }
-          )
-        ]
-      )
-    ));
   }
 
   @override

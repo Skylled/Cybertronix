@@ -22,8 +22,11 @@ class _DataPageState extends State<DataPage> {
     super.initState();
     children = <Widget>[
       new Center(
-        child: new CircularProgressIndicator(
-          value: null,
+        child: new Padding(
+          padding: const EdgeInsets.symmetric(vertical: 8.0),
+          child: new CircularProgressIndicator(
+            value: null,
+          ),
         ),
       ),
     ];
@@ -49,9 +52,33 @@ class _DataPageState extends State<DataPage> {
         title: new Text("Data Browser")
       ),
       drawer: buildDrawer(context, 'category'),
+      persistentFooterButtons: (){
+        List<Widget> footer = <Widget>[];
+        footer.add(
+          new FlatButton(
+            child: new Text("Add a photo"),
+            onPressed: (){},
+          )
+        );
+        footer.add(
+          new FlatButton(
+            child: new Text("Edit info"),
+            onPressed: (){},
+          )
+        );
+        if (widget.category == "jobs"){
+          footer.add(
+            new FlatButton(
+              child: new Text("Reports"),
+              onPressed: (){},
+            )
+          );
+        }
+        return footer;
+      }(),
       body: new ListView(
         children: new List<Widget>.from(children),
-      )
+      ),
     );
   }
 }

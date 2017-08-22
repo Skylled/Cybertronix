@@ -314,31 +314,7 @@ class _JobInfoCardState extends State<JobInfoCard> {
       padding: const EdgeInsets.fromLTRB(8.0, 28.0, 8.0, 12.0),
       child: new Card(
         child: new Column(
-          children: <Widget>[
-            new Column(
-              children: new List<Widget>.from(cardLines),
-            ),
-            new ButtonTheme.bar(
-              child: new ButtonBar(
-                children: <Widget>[
-                  new FlatButton(
-                    child: new Text("Add a photo"),
-                    onPressed: goPhotos
-                  ),
-                  new FlatButton(
-                    child: new Text('Edit info'),
-                    onPressed: () {
-                      goEdit(context);
-                    },
-                  ),
-                  new FlatButton(
-                    child: new Text('Reports'),
-                    onPressed: () {},
-                  ),
-                ],
-              ),
-            ),
-          ],
+          children: new List<Widget>.from(cardLines),
         ),
       ),
     );

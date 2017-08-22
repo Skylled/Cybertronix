@@ -6,10 +6,12 @@ import 'pages/data.dart';
 import 'firebase.dart' as firebase;
 
 // Upcoming features
+// TODO: I need Back buttons. Everywhere.
 // TODO: Make a pretty looking "Today" page
 // TODO: Job names are redundant.
 // New format: $date $action $location
 // TODO: Add copy support to all Category cards on long-press
+// TODO: I want a photo manager window.
 
 // Wishlist
 // Future: I'd like CategoryCards to pop up from the bottom, maybe.
