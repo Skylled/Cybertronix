@@ -2,7 +2,6 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';
 import '../firebase.dart' as firebase;
-import '../cards/creatorCards.dart';
 
 /// This [Dialog] loads a list of objects from a
 /// category in Firebase, with the [initialObjects]
@@ -47,7 +46,7 @@ class _SelectorDialogState extends State<SelectorDialog> {
   }
 
   Future<Null> _onAdd() async {
-    Map<String, dynamic> res = await showCreatorCard(context, widget.category);
+    Map<String, dynamic> res = await Navigator.of(context).pushNamed('/create/${widget.category}');
     // If the Creator Card popped with data,
     if (res != null){
       debugPrint("Got data from showCreatorCard");

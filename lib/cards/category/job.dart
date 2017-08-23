@@ -7,7 +7,6 @@ import 'package:image_picker/image_picker.dart';
 import 'package:zoomable_image/zoomable_image.dart';
 
 import '../../firebase.dart' as firebase;
-import '../creatorCards.dart';
 import '../../api.dart' as api;
 
 /// A Material Card with a job's info
@@ -34,7 +33,7 @@ class _JobInfoCardState extends State<JobInfoCard> {
   Map<String, Map<String, dynamic>> contactData;
 
   void goEdit(BuildContext context) {
-    showCreatorCard(context, "jobs", data: jobData, objID: widget.jobID).then((dynamic x){
+    Navigator.of(context).pushNamed('/create/jobs/${widget.jobID}').then((dynamic x){
       if (x is Map){
         jobData = x;
         List<Future<dynamic>> futures = <Future<dynamic>>[getLocationData(), getContactData(), getUserData()];

@@ -7,7 +7,6 @@ import 'package:meta/meta.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:zoomable_image/zoomable_image.dart';
 import '../../firebase.dart' as firebase;
-import '../creatorCards.dart';
 
 /// A Material Card with a contact's info
 /// 
@@ -33,7 +32,7 @@ class _ContactInfoCardState extends State<ContactInfoCard> {
   Map<String, dynamic> contactData;
 
   void goEdit(BuildContext context){
-    showCreatorCard(context, "contacts", data: contactData, objID: widget.contactID).then((dynamic x){
+    Navigator.of(context).pushNamed('/create/contacts/${widget.contactID}').then((dynamic x){
       if (x is Map){
         setState((){
           contactData = x;

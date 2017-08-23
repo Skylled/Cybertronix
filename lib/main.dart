@@ -3,6 +3,7 @@ import 'pages/agenda.dart';
 import 'pages/browser.dart';
 import 'pages/category.dart';
 import 'pages/data.dart';
+import 'pages/creator.dart';
 import 'firebase.dart' as firebase;
 
 // Upcoming features
@@ -35,7 +36,7 @@ class _CybertronixAppState extends State<CybertronixApp> {
     final List<String> path = settings.name.split('/');
     if (path[0] != '') return null;
     if (path[1] == "browse") {
-      if (path.length == 4){
+      if (path.length == 4) {
         return new MaterialPageRoute<Null>(
           settings: settings,
           builder: (BuildContext context) => new DataPage(path[2], path[3]),
@@ -44,6 +45,11 @@ class _CybertronixAppState extends State<CybertronixApp> {
       return new MaterialPageRoute<Null>(
         settings: settings,
         builder: (BuildContext context) => new CategoryPage(path[2])
+      );
+    } else if (path[1] == "create") {
+      return new MaterialPageRoute<Null>(
+        settings: settings,
+        builder: (BuildContext context) => new CreatorPage(path[2], path[3]),
       );
     }
     return null;

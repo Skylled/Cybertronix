@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import '../../firebase.dart' as firebase;
 import 'components.dart';
 
 /// This [Card] opens in a dialog, and lets you create a 
@@ -10,12 +9,13 @@ class ContactCreatorCard extends StatefulWidget {
   final Map<String, dynamic> contactData;
   /// The ID of an existing contact to edit (Optional)
   final String contactID;
+  
+  final Function(Map<String, dynamic>) changeData;
 
   /// Creates a Contact creator/editor in a Card
-  ContactCreatorCard({Map<String, dynamic> contactData, String contactID}):
-    this.contactID = contactID,
+  ContactCreatorCard(this.changeData, {Map<String, dynamic> contactData, this.contactID}):
     this.contactData = contactData ?? <String, dynamic>{};
-  
+
   @override
   _ContactCreatorCardState createState() => new _ContactCreatorCardState();
 }
@@ -27,6 +27,7 @@ class _ContactCreatorCardState extends State<ContactCreatorCard> {
   void initState(){
     super.initState();
     currentData = widget.contactData != null ? new Map<String, dynamic>.from(widget.contactData) : <String, dynamic>{};
+    widget.changeData(currentData);
     _items = getContactItems();
   }
 
@@ -62,6 +63,7 @@ class _ContactCreatorCardState extends State<ContactCreatorCard> {
                       onSaved: (String value){
                         item.value = value;
                         currentData['name'] = value;
+                        widget.changeData(currentData);
                       },
                       validator: (String value){
                         if (value.length > 0){
@@ -108,6 +110,7 @@ class _ContactCreatorCardState extends State<ContactCreatorCard> {
                       onSaved: (String value){
                         item.value = value;
                         currentData['company'] = value;
+                        widget.changeData(currentData);
                       }
                     ),
                   ),
@@ -154,6 +157,7 @@ class _ContactCreatorCardState extends State<ContactCreatorCard> {
                           } else {
                             currentData['phoneNumbers'][0]["number"] = value;
                           }
+                          widget.changeData(currentData);
                         }
                       )
                     ],
@@ -194,6 +198,7 @@ class _ContactCreatorCardState extends State<ContactCreatorCard> {
                       onSaved: (String value){
                         item.value = value;
                         currentData['email'] = value;
+                        widget.changeData(currentData);
                       }
                     ),
                   ),
@@ -235,6 +240,7 @@ class _ContactCreatorCardState extends State<ContactCreatorCard> {
                       onSaved: (String value){
                         item.value = value;
                         currentData['notes'] = value;
+                        widget.changeData(currentData);
                       },
                     ),
                   ),
@@ -267,24 +273,8 @@ class _ContactCreatorCardState extends State<ContactCreatorCard> {
                 );
               }).toList()
             ),
-            new ButtonBar(
-              children: <Widget>[
-                new FlatButton(
-                  child: new Text("Cancel"),
-                  onPressed: (){ Navigator.pop(context); },
-                ),
-                new FlatButton(
-                  child: new Text("Save & Finish"),
-                  textColor: Theme.of(context).accentColor,
-                  onPressed: (){
-                    firebase.sendObject("contacts", currentData, objID: widget.contactID);
-                    Navigator.pop(context, currentData);
-                  },
-                )
-              ],
-            )
           ],
-        )
+        ),
       ),
     ));
   }

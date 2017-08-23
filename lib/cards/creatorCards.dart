@@ -1,76 +1,51 @@
 import 'package:flutter/material.dart';
-import 'dart:async';
 import 'creator/job.dart';
 import 'creator/contact.dart';
 import 'creator/location.dart';
-import 'creator/package.dart';
 import 'creator/customer.dart';
+import 'creator/package/panel.dart';
+import 'creator/package/pump.dart';
+import 'creator/package/motor.dart';
+import 'creator/package/jockey.dart';
 
-// TODO: This should probably size down according to necessity
+// TODO MAJOR: Remove the finishing buttons from all cards, and move that to CreatorPage
 
-/// Opens a [Dialog] [Card] with a creator/editor for the given 
-/// [category]. [data] and [objID] are for pre-filling the editor.
-Future<dynamic> showCreatorCard(BuildContext context, String category, {Map<String, dynamic> data, String objID}) async {
+Widget getCreatorCard(String category, Function(Map<String, dynamic>) changeData, {String objID, Map<String, dynamic> data}){
   switch (category){
     case "jobs":
-      return await showDialog(
-        context: context,
-        child: new JobCreatorCard(jobData: data, jobID: objID),
-      );
-      break;
+      return new JobCreatorCard(jobData: data, jobID: objID);
     case "contacts":
-      return await showDialog(
-        context: context,
-        child: new ContactCreatorCard(contactData: data, contactID: objID),
-      );
-      break;
+      return new ContactCreatorCard(changeData, contactData: data, contactID: objID);
     case "locations":
-      return await showDialog(
-        context: context,
-        child: new LocationCreatorCard(locationData: data, locationID: objID),
-      );
-      break;
+      return new LocationCreatorCard(locationData: data, locationID: objID);
     case "customers":
-      return await showDialog(
-        context: context,
-        child: new CustomerCreatorCard(),
-      );
+      return new CustomerCreatorCard();
     default:
-      Scaffold.of(context).showSnackBar(new SnackBar(
-        content: new Text("This category is not available yet.")
-      ));
+      return null;
   }
 }
 
-/// Opens a [Dialog] [Card] with a Creator/Editor for a package.
-/// [packageData] is for prefilling the editor.
-Future<Map<String, dynamic>> awaitPackage(BuildContext context, {Map<String, dynamic> packageData}) async {
-  Map<String, dynamic> newPackageData = <String, dynamic>{};
-  if (packageData == null) {
-    await showDialog(
-      barrierDismissible: false,
-      context: context,
-      child: new SimpleDialog(
-        title: new Text("Electric or Diesel?"),
-        children: <Widget>[
-          new SimpleDialogOption(
-            child: new Text("Electric"),
-            onPressed: (){
-              newPackageData["power"] = "Electric";
-            },
-          ),
-          new SimpleDialogOption(
-            child: new Text("Diesel"),
-            onPressed: (){
-              newPackageData["power"] = "Diesel";
-            },
-          )
-        ],
-      )
-    );
+Widget getComponentCard(String component, String power, Function(String, Map<String, dynamic>) changeData, {Map<String, dynamic> componentData}){
+  switch(component){
+    case "panel":
+      if (power == "Diesel"){
+        return new DieselPanelCreatorCard(componentData, changeData);
+      }
+      return new ElectricPanelCreatorCard(componentData, changeData);
+    case "pump":
+      return new PumpCreatorCard(componentData, changeData);
+    case "motor":
+      if (power == "Diesel"){
+        return new DieselMotorCreatorCard(componentData, changeData);
+      }
+      return new ElectricMotorCreatorCard(componentData, changeData);
+    case "jockeypanel":
+      return new JockeyPanelCreatorCard(componentData, changeData);
+    case "jockeypump":
+      return new JockeyPumpCreatorCard(componentData, changeData);
+    case "tswitch":
+      return new TransferSwitchCreatorCard(componentData, changeData);
+    default:
+      return null;
   }
-  return await showDialog(
-    context: context,
-    child: new PackageCreatorCard(packageData: packageData ?? newPackageData)
-  );
 }

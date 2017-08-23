@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../firebase.dart' as firebase;
 import 'components.dart';
-import '../creatorCards.dart';
 
 // TODO MAJOR: Something wrong when hitting Save and Finish on this when called from a JobCreatorCard.
 // Path: JobCreatorCard -> SelectorDialog -> LocationCreatorCard
@@ -166,101 +165,6 @@ class _LocationCreatorCardState extends State<LocationCreatorCard> {
                   )
                 );
               },
-            )
-          );
-        }
-      ),
-      new CreatorItem<List<Map<String, dynamic>>>( // Packages
-        name: "Packages",
-        value: widget.locationData["packages"] ?? <Map<String, dynamic>>[],
-        hint: "What kind of equipment is on-site?",
-        valueToString: (List<Map<String, dynamic>> value) {
-          if (value.length == 1) {
-            return "${value.first["panel"]["manufacturer"]} ${value.first["power"]}";
-          } else if (value.length > 1) {
-            return value.length.toString();
-          } else {
-            return "Add a package";
-          }
-        },
-        builder: (CreatorItem<List<Map<String, dynamic>>> item){
-          void close(){
-            setState((){
-              item.isExpanded = false;
-            });
-          }
-          return new Form(
-            child: new Builder(
-              builder: (BuildContext context) {
-                return new CollapsibleBody(
-                  onSave: () { Form.of(context).save(); close(); },
-                  onCancel: () { Form.of(context).reset(); close(); },
-                  child: new FormField<List<Map<String, dynamic>>>(
-                    initialValue: item.value,
-                    onSaved: (List<Map<String, dynamic>> value) {
-                      item.value = value;
-                      currentData["packages"] = value;
-                    },
-                    builder: (FormFieldState<List<Map<String, dynamic>>> field){
-                      List<Map<String, dynamic>> addPackage(Map<String, dynamic> package){
-                        List<Map<String, dynamic>> updated = new List<Map<String, dynamic>>.from(field.value);
-                        updated.add(package);
-                        return updated;
-                      }
-
-                      List<Map<String, dynamic>> changePackage(int index, Map<String, dynamic> package){
-                        List<Map<String, dynamic>> updated = new List<Map<String, dynamic>>.from(field.value);
-                        updated[index] = package;
-                        return updated;
-                      }
-
-                      List<Map<String, dynamic>> removePackage(int index){
-                        List<Map<String, dynamic>> updated = new List<Map<String, dynamic>>.from(field.value);
-                        updated.removeAt(index);
-                        return updated;
-                      }
-
-                      List<ListTile> packageList = new List<ListTile>();
-                      for (int i in new Iterable<int>.generate(field.value.length)){
-                        packageList.add(
-                          new ListTile(
-                            title: new Text("${field.value[i]["panel"]["manufacturer"]} ${field.value[i]["power"]}"),
-                            onTap: () async {
-                              Map<String, dynamic> newPackageData = await awaitPackage(context, packageData: field.value[i]);
-                              if (newPackageData != null && newPackageData != field.value[i]){
-                                field.onChanged(changePackage(i, newPackageData));
-                              }
-                            },
-                            trailing: new IconButton(
-                              icon: new Icon(Icons.remove),
-                              onPressed: (){
-                                field.onChanged(removePackage(i));
-                              },
-                            )
-                          )
-                        );
-                      }
-
-                      packageList.insert(0, new ListTile(
-                        title: new Text("Add a package"),
-                        trailing: new Icon(Icons.add),
-                        onTap: () async {
-                          Map<String, dynamic> newPackage = await awaitPackage(context);
-                          if (newPackage != null){
-                            field.onChanged(addPackage(newPackage));
-                          }
-                        }
-                      ));
-
-                      return new Column(
-                        mainAxisSize: MainAxisSize.min,
-                        crossAxisAlignment: CrossAxisAlignment.end,
-                        children: packageList,
-                      );
-                    }
-                  )
-                );
-              }
             )
           );
         }

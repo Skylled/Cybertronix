@@ -7,7 +7,6 @@ import 'package:intl/intl.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:zoomable_image/zoomable_image.dart';
 import '../../firebase.dart' as firebase;
-import '../creatorCards.dart';
 import '../../api.dart' as api;
 
 class PreviousJobsTile extends StatefulWidget {
@@ -72,7 +71,7 @@ class _LocationInfoCardState extends State<LocationInfoCard> {
   List<Widget> cardLines = <Widget>[];
 
   void goEdit(BuildContext context){
-    showCreatorCard(context, "locations", data: locationData, objID: widget.locationID).then((dynamic x){
+    Navigator.of(context).pushNamed('/create/locations/${widget.locationID}').then((dynamic x){
       if (x is Map){
         setState((){
           locationData = x;

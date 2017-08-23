@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import '../drawer.dart';
-import '../cards/creatorCards.dart';
 import '../firebase.dart' as firebase;
 
 /// This is a page that lists all items in a category.
@@ -58,7 +57,7 @@ class _CategoryPageState extends State<CategoryPage>{
     return new FloatingActionButton(
       child: new Icon(Icons.add),
       onPressed: (){
-        showCreatorCard(context, widget.category).then((dynamic x){
+        Navigator.of(context).pushNamed('/create/${widget.category}}').then((dynamic x){
           generateObjects();
         });
       }

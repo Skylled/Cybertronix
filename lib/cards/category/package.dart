@@ -24,6 +24,7 @@ class PackageInfoCard extends StatelessWidget{
     "hp": "HP",
     "starting": "Starting Type",
     "volts": "AC Volts",
+    "amps": "Amps",
     "phase": "Phase",
     "rpm": "RPM",
     "ground": "Ground",
