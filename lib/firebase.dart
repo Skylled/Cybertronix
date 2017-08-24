@@ -32,8 +32,9 @@ final FirebaseMessaging firebaseMessaging = new FirebaseMessaging();
 Future<String> uploadPhoto(File imageFile) async {
   // Future: Make a thumbnail and a full-scale, upload both
   // Needs a paid plan, due to file sizes.
+  String uid = (await auth.currentUser()).uid;
   String fileName = path.basename(imageFile.path);
-  String filePath = "images/${auth.currentUser.uid}/$fileName";
+  String filePath = "images/$uid/$fileName";
   StorageReference ref = FirebaseStorage.instance.ref().child(filePath);
   image_lib.Image original = image_lib.decodeImage(imageFile.readAsBytesSync());
   image_lib.Image rescale = image_lib.copyResize(original, 750);
@@ -70,7 +71,7 @@ Future<bool> ensureLoggedIn() async {
   if (auth.currentUser == null) {
     return false;
   } else {
-    firebaseMessaging.subscribeToTopic(auth.currentUser.uid);
+    firebaseMessaging.subscribeToTopic((await auth.currentUser()).uid);
     return true;
   }
 }
