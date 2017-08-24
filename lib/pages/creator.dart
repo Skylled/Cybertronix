@@ -10,7 +10,7 @@ class CreatorPage extends StatefulWidget {
   final String category;
   final String objID;
 
-  CreatorPage(this.category, this.objID);
+  CreatorPage(this.category, [this.objID]);
 
   @override
   _CreatorPageState createState() => new _CreatorPageState();

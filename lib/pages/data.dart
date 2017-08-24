@@ -57,13 +57,18 @@ class _DataPageState extends State<DataPage> {
         footer.add(
           new FlatButton(
             child: new Text("Add a photo"),
-            onPressed: (){},
+            onPressed: (){
+              // TODO: Hook into photo window.
+            },
           )
         );
         footer.add(
           new FlatButton(
             child: new Text("Edit info"),
-            onPressed: (){},
+            onPressed: (){
+              Navigator.of(context).pushNamed('/create/${widget.category}/${widget.objID}');
+              // TODO: Refresh.
+            },
           )
         );
         if (widget.category == "jobs"){
