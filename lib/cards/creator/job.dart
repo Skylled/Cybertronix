@@ -491,7 +491,7 @@ class _JobCreatorCardState extends State<JobCreatorCard> {
     return(new Container(
       padding: const EdgeInsets.fromLTRB(8.0, 28.0, 8.0, 12.0),
       child: new Card(
-        child: new ListView(
+        child: new Column(
           children: <Widget>[
             new ExpansionPanelList(
               expansionCallback: (int index, bool isExpanded) {
