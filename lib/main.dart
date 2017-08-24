@@ -47,10 +47,17 @@ class _CybertronixAppState extends State<CybertronixApp> {
         builder: (BuildContext context) => new CategoryPage(path[2])
       );
     } else if (path[1] == "create") {
-      return new MaterialPageRoute<Null>(
-        settings: settings,
-        builder: (BuildContext context) => new CreatorPage(path[2], path[3]),
-      );
+      if (path.length > 3){
+        return new MaterialPageRoute<Null>(
+          settings: settings,
+          builder: (BuildContext context) => new CreatorPage(path[2], path[3]),
+        );
+      } else {
+        return new MaterialPageRoute<Null>(
+          settings: settings,
+          builder: (BuildContext context) => new CreatorPage(path[2]),
+        );
+      }
     }
     return null;
   }
