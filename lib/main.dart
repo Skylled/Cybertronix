@@ -4,6 +4,7 @@ import 'pages/browser.dart';
 import 'pages/category.dart';
 import 'pages/data.dart';
 import 'pages/creator.dart';
+import 'pages/selector.dart';
 import 'firebase.dart' as firebase;
 
 // Upcoming features
@@ -58,6 +59,11 @@ class _CybertronixAppState extends State<CybertronixApp> {
           builder: (BuildContext context) => new CreatorPage(path[2]),
         );
       }
+    } else if (path[1] == "select") {
+      return new MaterialPageRoute<Null>(
+        settings: settings,
+        builder: (BuildContext context) => new SelectorPage(path[2])
+      );
     }
     return null;
   }

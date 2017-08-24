@@ -1,6 +1,6 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
-import '../../dialogs/selector.dart';
+import '../../pages/selector.dart';
 
 /// Takes a [DateTime] and replaces its time with one from a [TimeOfDay]
 DateTime replaceTimeOfDay(DateTime dt, TimeOfDay tod){
@@ -65,17 +65,15 @@ class _AsyncChipState extends State<AsyncChip>{
   }
 }
 
-/// Open a [SelectorDialog] to pick an object.
+/// Open a [SelectorPage] to pick an object.
 Future<Map<String, dynamic>> pickFromCategory({
   BuildContext context,
   String category,
   List<String> initialObjects,
 }) async {
-  return await showDialog(
-    context: context,
-    child: new SelectorDialog(
-      category: category,
-      initialObjects: initialObjects
+  return await Navigator.of(context).push(
+    new MaterialPageRoute<Null>(
+      builder: (BuildContext context) => new SelectorPage(category, initialObjects)
     )
   );
 }

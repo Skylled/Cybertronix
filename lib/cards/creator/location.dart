@@ -3,7 +3,6 @@ import '../../firebase.dart' as firebase;
 import 'components.dart';
 
 // TODO MAJOR: Something wrong when hitting Save and Finish on this when called from a JobCreatorCard.
-// Path: JobCreatorCard -> SelectorDialog -> LocationCreatorCard
 
 /// This [Card] opens in a dialog, and lets you create a 
 /// new Location, or, if fed in data and an ID, edit an existing

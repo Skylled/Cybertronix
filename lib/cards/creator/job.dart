@@ -214,8 +214,11 @@ class _JobCreatorCardState extends State<JobCreatorCard> {
                                 initialObjects: <String>[field.value],
                               );
                               if (chosen != null && chosen["id"] != field.value){
+                                debugPrint("Chosen was okay.");
                                 locationName = chosen["name"];
                                 field.onChanged(chosen["id"]);
+                              } else {
+                                debugPrint("Chosen was not okay!");
                               }
                             }
                           )
@@ -492,20 +495,20 @@ class _JobCreatorCardState extends State<JobCreatorCard> {
       padding: const EdgeInsets.fromLTRB(8.0, 28.0, 8.0, 12.0),
       child: new Card(
         child: new ExpansionPanelList(
-              expansionCallback: (int index, bool isExpanded) {
-                setState((){
-                  _items[index].isExpanded = !isExpanded;
-                });
-              },
-              children: _items.map((CreatorItem<dynamic> item){
-                return new ExpansionPanel(
-                  isExpanded: item.isExpanded,
-                  headerBuilder: item.headerBuilder,
-                  body: item.builder(item)
-                );
+          expansionCallback: (int index, bool isExpanded) {
+            setState((){
+              _items[index].isExpanded = !isExpanded;
+            });
+          },
+          children: _items.map((CreatorItem<dynamic> item){
+            return new ExpansionPanel(
+              isExpanded: item.isExpanded,
+              headerBuilder: item.headerBuilder,
+              body: item.builder(item)
+            );
           }).toList(),
-            ),
-                ),
+        ),
+      ),
     ));
   }
 }

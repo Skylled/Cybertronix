@@ -7,18 +7,20 @@ import '../firebase.dart' as firebase;
 /// 
 /// It pulls the data using [firebase.getCategory] and
 /// slaps it in a [ListView]
-class CategoryPage extends StatefulWidget{
+class SelectorPage extends StatefulWidget{
   /// A page that lists all items in a category.
-  CategoryPage(this.category);
+  SelectorPage(this.category, [List<String> initialObjects]):
+    this.initialObjects = initialObjects ?? <String>[];
   
   /// The category to load objects from.
   final String category;
+  final List<String> initialObjects;
 
   @override
-  _CategoryPageState createState() => new _CategoryPageState();
+  _SelectorPageState createState() => new _SelectorPageState();
 }
 
-class _CategoryPageState extends State<CategoryPage>{
+class _SelectorPageState extends State<SelectorPage>{
   List<Map<String, dynamic>> objects = <Map<String, dynamic>>[];
 
   @override
@@ -40,7 +42,8 @@ class _CategoryPageState extends State<CategoryPage>{
 
   Widget buildAppBar(){
     return new AppBar(
-      title: new Text(capitalize(widget.category)),
+      title: new Text("Select a ${capitalize(widget.category).substring(0, widget.category.length - 2)}"),
+      // locations -> Locations -> Location
       actions: <Widget>[
         new IconButton(
           icon: new Icon(Icons.search),
@@ -56,8 +59,13 @@ class _CategoryPageState extends State<CategoryPage>{
     return new FloatingActionButton(
       child: new Icon(Icons.add),
       onPressed: (){
-        Navigator.of(context).pushNamed('/create/${widget.category}}').then((dynamic x){
-          generateObjects();
+        Navigator.of(context).pushNamed('/create/${widget.category}}').then((Map<String, dynamic> res){
+          if (res != null) { // If CreatorPage popped with data
+            debugPrint("Got data from CreatorPage");
+            debugPrint(res.toString());
+            // Pop that data further up the chain.
+            Navigator.of(context).pop(res);
+          }
         });
       }
     );
@@ -69,7 +77,7 @@ class _CategoryPageState extends State<CategoryPage>{
     List<Map<String, dynamic>> buildObjs = new List<Map<String, dynamic>>.from(objects);
     return new Scaffold(
       appBar: buildAppBar(),
-      drawer: buildDrawer(context, 'category'),
+      drawer: buildDrawer(context, 'selector'),
       floatingActionButton: buildFAB(),
       body: new ListView.builder(
         itemCount: buildObjs.length,
@@ -77,8 +85,9 @@ class _CategoryPageState extends State<CategoryPage>{
           return new ListTile(
             title: new Text(buildObjs[index]["name"]),
             onTap: (){
-              Navigator.of(context).pushNamed('/browse/${widget.category}/${buildObjs[index]["id"]}');
+              Navigator.of(context).pop(buildObjs[index]);
             },
+            selected: widget.initialObjects.contains(buildObjs[index]["id"]),
           );
         },
       ),
