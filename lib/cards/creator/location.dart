@@ -283,40 +283,20 @@ class _LocationCreatorCardState extends State<LocationCreatorCard> {
     return(new Container(
       padding: const EdgeInsets.fromLTRB(8.0, 28.0, 8.0, 12.0),
       child: new Card(
-        child: new Column(
-          children: <Widget>[
-            new ExpansionPanelList(
-              expansionCallback: (int index, bool isExpanded){
-                setState((){
-                  _items[index].isExpanded = !isExpanded;
-                });
-              },
-              children: _items.map((CreatorItem<dynamic> item){
-                return new ExpansionPanel(
-                  isExpanded: item.isExpanded,
-                  headerBuilder: item.headerBuilder,
-                  body: item.builder(item)
-                );
-              }).toList()
-            ),
-            new ButtonBar(
-              children: <Widget>[
-                new FlatButton(
-                  child: new Text("Cancel"),
-                  onPressed: (){ Navigator.pop(context); },
-                ),
-                new FlatButton(
-                  child: new Text("Save & Finish"),
-                  textColor: Theme.of(context).accentColor,
-                  onPressed: () async {
-                    firebase.sendObject("locations", currentData, objID: widget.locationID);
-                    Navigator.pop(context, currentData);
-                  },
-                )
-              ],
-            )
-          ]
-        )
+        child: new ExpansionPanelList(
+          expansionCallback: (int index, bool isExpanded){
+            setState((){
+              _items[index].isExpanded = !isExpanded;
+            });
+          },
+          children: _items.map((CreatorItem<dynamic> item){
+            return new ExpansionPanel(
+              isExpanded: item.isExpanded,
+              headerBuilder: item.headerBuilder,
+              body: item.builder(item)
+            );
+          }).toList()
+        ),
       )
     ));
   }

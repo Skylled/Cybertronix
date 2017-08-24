@@ -257,23 +257,19 @@ class _ContactCreatorCardState extends State<ContactCreatorCard> {
     return(new Container(
       padding: const EdgeInsets.fromLTRB(8.0, 28.0, 8.0, 12.0),
       child: new Card(
-        child: new Column(
-          children: <Widget>[
-            new ExpansionPanelList(
-              expansionCallback: (int index, bool isExpanded){
-                setState((){
-                  _items[index].isExpanded = !isExpanded;
-                });
-              },
-              children: _items.map((CreatorItem<dynamic> item){
-                return new ExpansionPanel(
-                  isExpanded: item.isExpanded,
-                  headerBuilder: item.headerBuilder,
-                  body: item.builder(item)
-                );
-              }).toList()
-            ),
-          ],
+        child: new ExpansionPanelList(
+          expansionCallback: (int index, bool isExpanded){
+            setState((){
+              _items[index].isExpanded = !isExpanded;
+            });
+          },
+          children: _items.map((CreatorItem<dynamic> item){
+            return new ExpansionPanel(
+              isExpanded: item.isExpanded,
+              headerBuilder: item.headerBuilder,
+              body: item.builder(item)
+            );
+          }).toList()
         ),
       ),
     ));

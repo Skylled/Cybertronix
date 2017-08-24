@@ -491,9 +491,7 @@ class _JobCreatorCardState extends State<JobCreatorCard> {
     return(new Container(
       padding: const EdgeInsets.fromLTRB(8.0, 28.0, 8.0, 12.0),
       child: new Card(
-        child: new Column(
-          children: <Widget>[
-            new ExpansionPanelList(
+        child: new ExpansionPanelList(
               expansionCallback: (int index, bool isExpanded) {
                 setState((){
                   _items[index].isExpanded = !isExpanded;
@@ -505,27 +503,9 @@ class _JobCreatorCardState extends State<JobCreatorCard> {
                   headerBuilder: item.headerBuilder,
                   body: item.builder(item)
                 );
-              }).toList()
+          }).toList(),
             ),
-            new ButtonBar(
-              children: <Widget>[
-                new FlatButton(
-                  child: new Text("Cancel"),
-                  onPressed: (){ Navigator.pop(context); }
                 ),
-                new FlatButton(
-                  child: new Text("Save & Finish"),
-                  textColor: Theme.of(context).accentColor,
-                  onPressed: () async {
-                     firebase.sendObject("jobs", currentData, objID: widget.jobID);
-                     Navigator.pop(context, currentData);
-                  }
-                )
-              ]
-            )
-          ]
-        )
-      )
     ));
   }
 }
