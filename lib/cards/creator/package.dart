@@ -16,9 +16,10 @@ import 'components.dart';
 class PackageCreatorCard extends StatefulWidget {
   /// The data of an existing package to be edited (Optional)
   final Map<String, dynamic> packageData;
+  final Function(int, String, Map<String, dynamic>) changePackageData;
 
   /// Creates a pump package creator/editor in a Card
-  PackageCreatorCard({Map<String, dynamic> packageData}):
+  PackageCreatorCard({Map<String, dynamic> packageData, this.changePackageData}):
     this.packageData = packageData ?? <String, dynamic>{"power": "Diesel"};
   
   @override
@@ -774,6 +775,23 @@ class _PackageCreatorCardState extends State<PackageCreatorCard> {
       },
       ));
     return packageItems;
+  }
+
+  Widget _build(BuildContext build){
+    return new Card(
+      child: new ListView(
+        children: <Widget>[
+          new ExpansionPanelList(
+            expansionCallback: (int index, bool isExpanded){
+              setState((){
+                _items[index].isExpanded = !isExpanded;
+              });
+            },
+            children: _items.map((CreatorItem<dynamic> item){}).toList(),
+          )
+        ],
+      ),
+    );
   }
 
   Widget build(BuildContext build){

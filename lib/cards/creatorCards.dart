@@ -13,11 +13,11 @@ import 'creator/package/jockey.dart';
 Widget getCreatorCard(String category, Function(Map<String, dynamic>) changeData, {String objID, Map<String, dynamic> data}){
   switch (category){
     case "jobs":
-      return new JobCreatorCard(jobData: data, jobID: objID);
+      return new JobCreatorCard(changeData, jobData: data, jobID: objID);
     case "contacts":
       return new ContactCreatorCard(changeData, contactData: data, contactID: objID);
     case "locations":
-      return new LocationCreatorCard(locationData: data, locationID: objID);
+      return new LocationCreatorCard(changeData, locationData: data, locationID: objID);
     case "customers":
       return new CustomerCreatorCard();
     default:

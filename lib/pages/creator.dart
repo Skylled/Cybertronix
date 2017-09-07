@@ -29,6 +29,7 @@ class _CreatorPageState extends State<CreatorPage> {
   @override
   void initState(){
     super.initState();
+    currentData = <String, dynamic>{};
     if (widget.objID != null){
       children = <Widget>[
         new Center(
@@ -48,7 +49,7 @@ class _CreatorPageState extends State<CreatorPage> {
           if (widget.category == "locations"){
             if (data["packages"] != null){
               data["packages"].forEach((Map<String, Map<String, dynamic>> packageData){
-                children.add(null); // TODO MAJOR: I need a lot of cards!
+                //children.add(null); // TODO MAJOR: I need a lot of cards!
               });
             }
           }
@@ -56,7 +57,8 @@ class _CreatorPageState extends State<CreatorPage> {
       });
     } else {
       children = <Widget>[
-        getCreatorCard(widget.category, changeData)
+        getCreatorCard(widget.category, changeData),
+        getCreatorCard("contacts", changeData)
       ];
       if (widget.category == "locations"){
         children.add(

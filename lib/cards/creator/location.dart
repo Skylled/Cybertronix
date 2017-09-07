@@ -13,9 +13,10 @@ class LocationCreatorCard extends StatefulWidget {
   /// The ID of an existing Location to edit (Optional)
   final String locationID;
 
+  final Function(Map<String, dynamic>) changeData;
+
   /// Creates a Location creator/editor in a Card
-  LocationCreatorCard({Map<String, dynamic> locationData, String locationID}):
-    this.locationID = locationID,
+  LocationCreatorCard(this.changeData, {Map<String, dynamic> locationData, this.locationID}):
     this.locationData = locationData ?? <String, dynamic>{};
   
   @override
@@ -29,8 +30,11 @@ class _LocationCreatorCardState extends State<LocationCreatorCard> {
   void initState(){
     super.initState();
     currentData = widget.locationData != null ? new Map<String, dynamic>.from(widget.locationData) : <String, dynamic> {};
+
     _items = getLocationItems();
   }
+
+  // TODO: Add changeData calls.
 
   List<CreatorItem<dynamic>> getLocationItems(){
     return <CreatorItem<dynamic>>[
@@ -274,7 +278,7 @@ class _LocationCreatorCardState extends State<LocationCreatorCard> {
             ),
           );
         }
-      )
+      ),
     ];
   }
 
@@ -296,7 +300,7 @@ class _LocationCreatorCardState extends State<LocationCreatorCard> {
             );
           }).toList()
         ),
-      )
+      ),
     ));
   }
 }

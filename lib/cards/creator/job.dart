@@ -11,8 +11,10 @@ class JobCreatorCard extends StatefulWidget {
   /// The ID of an existing job to edit (Optional)
   final String jobID;
 
+  final Function(Map<String, dynamic>) changeData;
+
   /// Creates a job creator/editor in a Card
-  JobCreatorCard({Map<String, dynamic> jobData, String jobID}):
+  JobCreatorCard(this.changeData, {Map<String, dynamic> jobData, String jobID}):
     this.jobID = jobID,
     this.jobData = jobData ?? <String, dynamic>{};
 
@@ -58,6 +60,8 @@ class _JobCreatorCardState extends State<JobCreatorCard> {
     }
     _items = getJobItems();
   }
+
+  // TODO: Add changeData calls.
 
   List<CreatorItem<dynamic>> getJobItems() {
     return <CreatorItem<dynamic>>[
