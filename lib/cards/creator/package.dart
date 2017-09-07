@@ -814,21 +814,6 @@ class _PackageCreatorCardState extends State<PackageCreatorCard> {
                 );
               }).toList(),
             ),
-            new ButtonBar(
-              children: <Widget>[
-                new FlatButton(
-                  child: new Text("Cancel"),
-                  onPressed: (){ Navigator.pop(context); },
-                ),
-                new FlatButton(
-                  child: new Text("Save & Finish"),
-                  textColor: Theme.of(context).accentColor,
-                  onPressed: () {
-                    Navigator.pop(context, currentData);
-                  },
-                )
-              ],
-            )
           ],
         )
       )

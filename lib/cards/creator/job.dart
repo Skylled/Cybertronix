@@ -61,8 +61,6 @@ class _JobCreatorCardState extends State<JobCreatorCard> {
     _items = getJobItems();
   }
 
-  // TODO: Add changeData calls.
-
   List<CreatorItem<dynamic>> getJobItems() {
     return <CreatorItem<dynamic>>[
       new CreatorItem<String>( // Name
@@ -95,6 +93,7 @@ class _JobCreatorCardState extends State<JobCreatorCard> {
                       onSaved: (String value) {
                         item.value = value;
                         currentData['name'] = value;
+                        widget.changeData(currentData);
                       }
                     ),
                   ),
@@ -127,6 +126,7 @@ class _JobCreatorCardState extends State<JobCreatorCard> {
                     onSaved: (DateTime value) {
                       item.value = value;
                       currentData["datetime"] = value.toIso8601String();
+                      widget.changeData(currentData);
                     },
                     builder: (FormFieldState<DateTime> field){
                       return new Column(
@@ -202,6 +202,7 @@ class _JobCreatorCardState extends State<JobCreatorCard> {
                     onSaved: (String value) {
                       item.value = value;
                       currentData["location"] = value;
+                      widget.changeData(currentData);
                     },
                     builder: (FormFieldState<String> field){
                       return new Column(
@@ -265,6 +266,7 @@ class _JobCreatorCardState extends State<JobCreatorCard> {
                     onSaved: (String value){
                       item.value = value;
                       currentData["customer"] = value;
+                      widget.changeData(currentData);
                     },
                     builder: (FormFieldState<String> field){
                       return new Column(
@@ -327,6 +329,7 @@ class _JobCreatorCardState extends State<JobCreatorCard> {
                     onSaved: (List<String> value) {
                       item.value = value;
                       currentData["contacts"] = value;
+                      widget.changeData(currentData);
                     },
                     builder: (FormFieldState<List<String>> field){
                       return new Column(
@@ -402,6 +405,7 @@ class _JobCreatorCardState extends State<JobCreatorCard> {
                     onSaved: (Map<String, bool> value){
                       item.value = value;
                       currentData["users"] = value;
+                      widget.changeData(currentData);
                     },
                     builder: (FormFieldState<Map<String, bool>> field) {
                       return new Column(
@@ -481,6 +485,7 @@ class _JobCreatorCardState extends State<JobCreatorCard> {
                       onSaved: (String value){
                         item.value = value;
                         currentData['notes'] = value;
+                        widget.changeData(currentData);
                       },
                     ),
                   ),

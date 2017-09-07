@@ -2,8 +2,6 @@ import 'package:flutter/material.dart';
 import '../../firebase.dart' as firebase;
 import 'components.dart';
 
-// TODO MAJOR: Something wrong when hitting Save and Finish on this when called from a JobCreatorCard.
-
 /// This [Card] opens in a dialog, and lets you create a 
 /// new Location, or, if fed in data and an ID, edit an existing
 /// Location.
@@ -33,8 +31,6 @@ class _LocationCreatorCardState extends State<LocationCreatorCard> {
 
     _items = getLocationItems();
   }
-
-  // TODO: Add changeData calls.
 
   List<CreatorItem<dynamic>> getLocationItems(){
     return <CreatorItem<dynamic>>[
@@ -68,6 +64,7 @@ class _LocationCreatorCardState extends State<LocationCreatorCard> {
                       onSaved: (String value){
                         item.value = value;
                         currentData['name'] = value;
+                        widget.changeData(currentData);
                       },
                     )
                   ),
@@ -122,6 +119,7 @@ class _LocationCreatorCardState extends State<LocationCreatorCard> {
                       currentData["address"] = value["address"];
                       currentData["city"] = value["city"];
                       currentData["state"] = value["state"];
+                      widget.changeData(currentData);
                     },
                     builder: (FormFieldState<Map<String, String>> field){
                       List<DropdownMenuItem<String>> states = <DropdownMenuItem<String>>[];
@@ -206,6 +204,7 @@ class _LocationCreatorCardState extends State<LocationCreatorCard> {
                     onSaved: (List<String> value) {
                       item.value = value;
                       currentData["contacts"] = value;
+                      widget.changeData(currentData);
                     },
                     builder: (FormFieldState<List<String>> field){
                       Column col =  new Column(
@@ -270,6 +269,7 @@ class _LocationCreatorCardState extends State<LocationCreatorCard> {
                       onSaved: (String value){
                         item.value = value;
                         currentData['notes'] = value;
+                        widget.changeData(currentData);
                       },
                     ),
                   ),

@@ -8,8 +8,6 @@ import 'creator/package/pump.dart';
 import 'creator/package/motor.dart';
 import 'creator/package/jockey.dart';
 
-// TODO MAJOR: Remove the finishing buttons from all cards, and move that to CreatorPage
-
 Widget getCreatorCard(String category, Function(Map<String, dynamic>) changeData, {String objID, Map<String, dynamic> data}){
   switch (category){
     case "jobs":
