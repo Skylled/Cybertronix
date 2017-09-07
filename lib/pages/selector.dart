@@ -42,7 +42,7 @@ class _SelectorPageState extends State<SelectorPage>{
 
   Widget buildAppBar(){
     return new AppBar(
-      title: new Text("Select a ${capitalize(widget.category).substring(0, widget.category.length - 2)}"),
+      title: new Text("Select a ${capitalize(widget.category).substring(0, widget.category.length - 1)}"),
       // locations -> Locations -> Location
       actions: <Widget>[
         new IconButton(
