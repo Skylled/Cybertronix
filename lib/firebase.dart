@@ -168,3 +168,21 @@ Future<Map<String, Map<String, Map<String, dynamic>>>> getAgendaData() async {
   }
   return agendaData;
 }
+
+Future<List<Map<String, dynamic>>> getTodayData() async {
+  List<Map<String, dynamic>> todaysJobs = new List<Map<String, Map<String, dynamic>>>();
+  DatabaseReference ref = _refs["jobs"];
+  DateTime today = new DateTime.now();
+  DateTime midnight = new DateTime(today.year, today.month, today.day);
+  DateTime endOfDay = new DateTime(today.year, today.month, today.day, 23, 59);
+  DataSnapshot snap = await ref.orderByChild("datetime")
+                               .startAt(midnight.toIso8601String())
+                               .endAt(endOfDay.toIso8601String())
+                               .once();
+  if (snap.value != null) {
+    snap.value.forEach((String id, Map<String, dynamic> job){
+      todaysJobs.add(job);
+    });
+  }
+  return todaysJobs;
+}

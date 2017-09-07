@@ -28,9 +28,9 @@ class PackageInfoCard extends StatelessWidget{
     "phase": "Phase",
     "rpm": "RPM",
     "ground": "Ground",
-    "shutoff": "Shutoff", // TODO: here and down
-    "rated": "Rated",
-    "over": "Over",
+    "shutoff": "Shutoff pressure",
+    "rated": "Rated pressure",
+    "over": "150% pressure",
   };
 
   /// This function takes a sub-object from the main Firebase object
