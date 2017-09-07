@@ -31,9 +31,7 @@ class _BrowserPageState extends State<BrowserPage>{
             onPressed: () {
               Navigator.pushNamed(context, '/browse/${category.toLowerCase()}');
             },
-            // TODO: Watch flutter/flutter#11475
-            // iconSize: 60.0
-            iconSize: 40.0
+            iconSize: 60.0
           ),
           new Text(category)
         ]

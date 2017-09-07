@@ -4,7 +4,6 @@ import 'pages/browser.dart';
 import 'pages/category.dart';
 import 'pages/data.dart';
 import 'pages/creator.dart';
-import 'pages/selector.dart';
 import 'firebase.dart' as firebase;
 
 // Upcoming features
@@ -33,7 +32,7 @@ class _CybertronixAppState extends State<CybertronixApp> {
     firebase.initDatabase();
   }
 
-  Route<Null> _getRoute(RouteSettings settings) {
+  Route<dynamic> _getRoute(RouteSettings settings) {
     final List<String> path = settings.name.split('/');
     if (path[0] != '') return null;
     if (path[1] == "browse") {
@@ -49,21 +48,18 @@ class _CybertronixAppState extends State<CybertronixApp> {
       );
     } else if (path[1] == "create") {
       if (path.length > 3){
-        return new MaterialPageRoute<Null>(
+        return new MaterialPageRoute<Map<String, dynamic>>(
           settings: settings,
           builder: (BuildContext context) => new CreatorPage(path[2], path[3]),
+          fullscreenDialog: true,
         );
       } else {
-        return new MaterialPageRoute<Null>(
+        return new MaterialPageRoute<Map<String, dynamic>>(
           settings: settings,
           builder: (BuildContext context) => new CreatorPage(path[2]),
+          fullscreenDialog: true,
         );
       }
-    } else if (path[1] == "select") {
-      return new MaterialPageRoute<Null>(
-        settings: settings,
-        builder: (BuildContext context) => new SelectorPage(path[2])
-      );
     }
     return null;
   }

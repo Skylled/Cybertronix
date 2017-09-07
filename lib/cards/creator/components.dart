@@ -72,8 +72,9 @@ Future<Map<String, dynamic>> pickFromCategory({
   List<String> initialObjects,
 }) async {
   return await Navigator.of(context).push(
-    new MaterialPageRoute<Null>(
-      builder: (BuildContext context) => new SelectorPage(category, initialObjects)
+    new MaterialPageRoute<Map<String, dynamic>>(
+      builder: (BuildContext context) => new SelectorPage(category, initialObjects),
+      fullscreenDialog: true,
     )
   );
 }
