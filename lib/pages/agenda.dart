@@ -76,8 +76,9 @@ class _AgendaPageState extends State<AgendaPage> {
             setState((){
               subJobs.add(new ListTile(
                 title: new Text('${time.format(jdt)}, ${job["name"]}'),
-                onTap: () {
-                  Navigator.pushNamed(context, '/browse/jobs/$id');
+                onTap: () async {
+                  await Navigator.pushNamed(context, '/browse/jobs/$id');
+                  await buildAgenda();
                 }
               ));
             });
@@ -107,8 +108,13 @@ class _AgendaPageState extends State<AgendaPage> {
       floatingActionButton: buildFloatingActionButton(),
       drawer: buildDrawer(context, 'agenda'),
       body: new Center(
-        child: new ListView(
-          children: new List<Widget>.from(agenda)
+        child: new RefreshIndicator(
+          onRefresh: () async {
+            await buildAgenda();
+          },
+          child: new ListView(
+            children: new List<Widget>.from(agenda)
+          ),
         ),
       ),
     );

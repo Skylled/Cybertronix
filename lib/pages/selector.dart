@@ -72,8 +72,6 @@ class _SelectorPageState extends State<SelectorPage>{
   }
 
   Widget build(BuildContext context){
-    // TODO: Make sure this object has the correct length upon regeneration
-    // See: buildFAB
     List<Map<String, dynamic>> buildObjs = new List<Map<String, dynamic>>.from(objects);
     return new Scaffold(
       appBar: buildAppBar(),
