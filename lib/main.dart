@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'pages/agenda.dart';
 import 'pages/browser.dart';
 import 'pages/category.dart';
-import 'pages/data.dart';
 import 'pages/creator.dart';
-import 'firebase.dart' as firebase;
+import 'pages/data.dart';
+import 'pages/login.dart';
 
 // Upcoming features
 // TODO: I need Back buttons. Everywhere.
@@ -29,7 +29,6 @@ class _CybertronixAppState extends State<CybertronixApp> {
   @override
   void initState() {
     super.initState();
-    firebase.initDatabase();
   }
 
   Route<dynamic> _getRoute(RouteSettings settings) {
@@ -71,7 +70,7 @@ class _CybertronixAppState extends State<CybertronixApp> {
         brightness: Brightness.light,
         primarySwatch: Colors.deepOrange,
       ),
-      home: new AgendaPage(),
+      home: new LoginPage(),
       routes: <String, WidgetBuilder>{
         '/agenda': (BuildContext context) => new AgendaPage(),
         '/browse': (BuildContext context) => new BrowserPage()

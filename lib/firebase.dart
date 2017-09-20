@@ -60,7 +60,7 @@ Future<bool> ensureLoggedIn() async {
     print('User declined to log in.');
     return false;
   }
-  if (auth.currentUser == null) {
+  if (await auth.currentUser() == null) {
     GoogleSignInAuthentication credentials =
     await googleSignIn.currentUser.authentication;
     await auth.signInWithGoogle(
@@ -68,30 +68,39 @@ Future<bool> ensureLoggedIn() async {
       accessToken: credentials.accessToken,
     );
   }
-  if (auth.currentUser == null) {
+  FirebaseUser fUser = await auth.currentUser();
+  if (fUser == null) {
+    print("fUser is null");
     return false;
   } else {
-    firebaseMessaging.subscribeToTopic((await auth.currentUser()).uid);
+    initDatabase();
+    firebaseMessaging.subscribeToTopic(fUser.uid);
     return true;
   }
 }
 
 Map<String, DatabaseReference> _refs;
 
+bool initialized = false;
+
 /// Initializes the database with a maximum 50MB cache, and
 /// tells the underlying implementation to cache all categories.
 void initDatabase(){
-  firebaseMessaging.requestNotificationPermissions();
+  if (!initialized){
+    firebaseMessaging.requestNotificationPermissions();
 
-  _refs = new Map<String, DatabaseReference>();
-  FirebaseDatabase.instance.setPersistenceEnabled(true);
-  FirebaseDatabase.instance.setPersistenceCacheSizeBytes(50000000);
+    _refs = new Map<String, DatabaseReference>();
+    FirebaseDatabase.instance.setPersistenceEnabled(true);
+    FirebaseDatabase.instance.setPersistenceCacheSizeBytes(50000000);
 
-  <String>["annuals", "contacts", "customers",
-           "jobs", "locations", "monthlies", "users"].forEach((String category){
-    _refs[category] = FirebaseDatabase.instance.reference().child(category);
-    _refs[category].keepSynced(true);
-  });
+    <String>["annuals", "contacts", "customers",
+            "jobs", "locations", "monthlies", "users"].forEach((String category){
+      _refs[category] = FirebaseDatabase.instance.reference().child(category);
+      _refs[category].keepSynced(true);
+    });
+
+    initialized = true;
+  }
 }
 
 /// Retrieves all the objects from a given [category],

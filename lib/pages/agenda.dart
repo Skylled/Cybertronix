@@ -4,9 +4,6 @@ import 'dart:async';
 import '../drawer.dart';
 import '../firebase.dart' as firebase;
 
-// TODO: When popped back to this page, refresh.
-// TODO: Pull-down refresh action.
-
 /// A two week summary page of upcoming jobs
 /// 
 /// Something of a to-do list, organized by date and time.
@@ -18,7 +15,7 @@ class AgendaPage extends StatefulWidget {
 
 class _AgendaPageState extends State<AgendaPage> {
   List<Widget> agenda = <Widget>[];
-  Future<Map<String, Map<String, Map<String, dynamic>>>> agendaData = firebase.getAgendaData();
+  
 
   Widget buildAppBar(){
     return new AppBar(
@@ -39,25 +36,7 @@ class _AgendaPageState extends State<AgendaPage> {
 
   Future<Null> buildAgenda() async {
     agenda = <Widget>[]; // Always start from fresh.
-    try {
-      if (! await firebase.ensureLoggedIn()){
-        agenda.add(new ListTile(
-          title: new Text("Working offline. Tap to login."),
-          onTap: () async {
-            buildAgenda();
-          },
-        ));
-      }
-    } catch (e) {
-      print("Caught login exception: $e");
-      agenda.add(new ListTile(
-        title: new Text("Working offline. Tap to login."),
-        onTap: () async {
-          buildAgenda();
-        }
-      ));
-    }
-    agendaData.then((Map<String, Map<String, Map<String, dynamic>>> value) {
+    firebase.getAgendaData().then((Map<String, Map<String, Map<String, dynamic>>> value) {
       value.forEach((String day, Map<String, Map<String, dynamic>> jobs) {
         DateTime date = DateTime.parse(day);
         DateFormat formatter = new DateFormat('EEEE, MMMM d');
