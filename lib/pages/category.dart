@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:strings/strings.dart';
+import 'package:intl/intl.dart';
 import '../drawer.dart';
 import '../firebase.dart' as firebase;
 
@@ -28,7 +29,7 @@ class _CategoryPageState extends State<CategoryPage>{
   }
 
   void generateObjects(){
-    firebase.getCategory(widget.category).then((Map<String, Map<String, dynamic>> objs){
+    firebase.getCategory(widget.category, sortBy: widget.category == "jobs" ? "datetime" : "name").then((Map<String, Map<String, dynamic>> objs){
       setState((){
         objects = <Map<String, dynamic>>[];
         objs.forEach((String id, Map<String, dynamic> data){
@@ -75,12 +76,43 @@ class _CategoryPageState extends State<CategoryPage>{
         itemCount: buildObjs.length,
         itemBuilder: (BuildContext context, int index){
           return new ListTile(
+            leading: (){
+              switch(widget.category){
+                case 'jobs':
+                  return new JobLeadIcon(buildObjs[index]);
+                case 'contacts':
+                  // Future: Load contact images into a CircleAvatar?
+                default:
+                  return null;
+              }
+            }(),
             title: new Text(buildObjs[index]["name"]),
             onTap: (){
               Navigator.of(context).pushNamed('/browse/${widget.category}/${buildObjs[index]["id"]}');
             },
           );
         },
+      ),
+    );
+  }
+}
+
+class JobLeadIcon extends StatelessWidget{
+  final Map<String, dynamic> jobData;
+
+  JobLeadIcon(this.jobData);
+
+  Widget build(BuildContext context){
+    DateFormat month = new DateFormat.MMMM();
+    DateFormat day = new DateFormat.d();
+    DateTime dt = DateTime.parse(jobData["datetime"]);
+    return new Padding(
+      padding: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 4.0),
+      child: new Column(
+        children: <Widget>[
+          new Text(month.format(dt).substring(0, 3)),
+          new Text(day.format(dt)),
+        ],
       ),
     );
   }

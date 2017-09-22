@@ -242,7 +242,7 @@ class _JobInfoCardState extends State<JobInfoCard> {
     if (userData != null) {
       cardLines.add(new Divider());
       List<Widget> assigned = <Widget>[];
-      userData.forEach(
+      userData.forEach( // TODO: Investigate null user value
         (String userID, Map<String, dynamic> user){
           assigned.add(
             new ListTile(
