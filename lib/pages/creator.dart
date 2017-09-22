@@ -4,8 +4,6 @@ import '../drawer.dart';
 import '../firebase.dart' as firebase;
 import '../cards/creatorCards.dart';
 
-// TODO: Need a onWillPop or something, to prevent accidentally leaving forms unsaved.
-
 class CreatorPage extends StatefulWidget {
   final String category;
   final String objID;
@@ -62,7 +60,7 @@ class _CreatorPageState extends State<CreatorPage> {
       ];
       if (widget.category == "locations"){
         children.add(
-          new ListTile( // TODO: See if there might be a better option.
+          new ListTile(
             title: new Text("Add a package"),
             trailing: new Icon(Icons.add),
             onTap: (){
@@ -95,8 +93,28 @@ class _CreatorPageState extends State<CreatorPage> {
         ),
       ],
       drawer: buildDrawer(context, 'creator'),
-      body: new ListView(
-        children: new List<Widget>.from(children),
+      body: new WillPopScope(
+        onWillPop: () async {
+          await showDialog<bool>(
+            context: context,
+            child: new SimpleDialog(
+              title: new Text("Are you sure you'd like to close? Your changes will not be saved."),
+              children: <Widget>[
+                new SimpleDialogOption(
+                  onPressed: (){ Navigator.pop(context, true); },
+                  child: new Text("Yes"),
+                ),
+                new SimpleDialogOption(
+                  onPressed: (){ Navigator.pop(context, false); },
+                  child: new Text("No"),
+                ),
+              ],
+            ),
+          );
+        },
+        child: new ListView(
+          children: new List<Widget>.from(children),
+        ),
       ),
     );
   }

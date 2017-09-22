@@ -1,9 +1,6 @@
 import 'package:flutter/material.dart';
 import '../firebase.dart' as firebase;
 
-// TODO: Test offline capability to login.
-// TODO: If offline test fails, make a "view offline" option available
-
 class LoginPage extends StatefulWidget {
   @override
   _LoginPageState createState() => new _LoginPageState();
