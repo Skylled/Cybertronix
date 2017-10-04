@@ -5,10 +5,10 @@ import '../firebase.dart' as firebase;
 import '../cards/creatorCards.dart';
 
 class CreatorPage extends StatefulWidget {
-  final String category;
+  final String collection;
   final String objID;
 
-  CreatorPage(this.category, [this.objID]);
+  CreatorPage(this.collection, [this.objID]);
 
   @override
   _CreatorPageState createState() => new _CreatorPageState();
@@ -39,12 +39,12 @@ class _CreatorPageState extends State<CreatorPage> {
           ),
         ),
       ];
-      firebase.getObject(widget.category, widget.objID).then((Map<String, dynamic> data){
+      firebase.getObject(widget.collection, widget.objID).then((Map<String, dynamic> data){
         currentData = data;
         setState((){
           children.clear();
-          children.add(getCreatorCard(widget.category, changeData, objID: widget.objID, data: data));
-          if (widget.category == "locations"){
+          children.add(getCreatorCard(widget.collection, changeData, objID: widget.objID, data: data));
+          if (widget.collection == "locations"){
             if (data["packages"] != null){
               data["packages"].forEach((Map<String, Map<String, dynamic>> packageData){
                 //children.add(null); // TODO MAJOR: I need a lot of cards!
@@ -55,10 +55,10 @@ class _CreatorPageState extends State<CreatorPage> {
       });
     } else {
       children = <Widget>[
-        getCreatorCard(widget.category, changeData),
+        getCreatorCard(widget.collection, changeData),
         getCreatorCard("contacts", changeData)
       ];
-      if (widget.category == "locations"){
+      if (widget.collection == "locations"){
         children.add(
           new ListTile(
             title: new Text("Add a package"),
@@ -76,7 +76,7 @@ class _CreatorPageState extends State<CreatorPage> {
   Widget build(BuildContext context) {
     return new Scaffold(
       appBar: new AppBar(
-        title: new Text("${capitalize(widget.category)} Creator")
+        title: new Text("${capitalize(widget.collection)} Creator")
       ),
       persistentFooterButtons: <Widget>[
         new FlatButton(

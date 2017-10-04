@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import '../drawer.dart';
 
-/// A page showing the different categories available to browse
+/// A page showing the different collections available to browse
 /// 
 /// Currently: Jobs, Locations, Customers, Contacts, Annual tests, and Monthly tests
 class BrowserPage extends StatefulWidget {
@@ -22,18 +22,18 @@ class _BrowserPageState extends State<BrowserPage>{
     );
   }
 
-  GridTile buildIconTile(String category, IconData icon){
+  GridTile buildIconTile(String collection, IconData icon){
     return new GridTile(
       child: new Column( 
         children: <Widget>[
           new IconButton(
             icon: new Icon(icon),
             onPressed: () {
-              Navigator.pushNamed(context, '/browse/${category.toLowerCase()}');
+              Navigator.pushNamed(context, '/browse/${collection.toLowerCase()}');
             },
             iconSize: 60.0
           ),
-          new Text(category)
+          new Text(collection)
         ]
       ),
     );

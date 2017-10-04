@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'pages/agenda.dart';
 import 'pages/browser.dart';
-import 'pages/category.dart';
+import 'pages/collection.dart';
 import 'pages/creator.dart';
 import 'pages/data.dart';
 import 'pages/login.dart';
@@ -14,7 +14,7 @@ import 'pages/login.dart';
 // TODO: I need to make sure I verify required fields.
 
 // Wishlist
-// Future: I'd like CategoryCards to pop up from the bottom, maybe.
+// Future: I'd like CollectionCards to pop up from the bottom, maybe.
 // Future: Generate CreatorCard boilerplate from a JSON or something.
 
 /// Cybertronix is a job management software; a work in progress.
@@ -42,7 +42,7 @@ class _CybertronixAppState extends State<CybertronixApp> {
       }
       return new MaterialPageRoute<Null>(
         settings: settings,
-        builder: (BuildContext context) => new CategoryPage(path[2])
+        builder: (BuildContext context) => new CollectionPage(path[2])
       );
     } else if (path[1] == "create") {
       if (path.length > 3){

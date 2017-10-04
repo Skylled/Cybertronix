@@ -220,9 +220,9 @@ class _LocationCreatorCardState extends State<LocationCreatorCard> {
                         title: new Text("Add a contact"),
                         trailing: new Icon(Icons.add),
                         onTap: () async {
-                          Map<String, dynamic> chosen = await pickFromCategory(
+                          Map<String, dynamic> chosen = await pickFromCollection(
                             context: context,
-                            category: "contacts",
+                            collection: "contacts",
                           );
                           if (chosen != null && !field.value.contains(chosen["id"])){
                             field.onChanged(addContact(field.value, chosen["id"]));

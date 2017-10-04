@@ -213,9 +213,9 @@ class _JobCreatorCardState extends State<JobCreatorCard> {
                             title: new Text(item.valueToString(field.value)),
                             trailing: new Icon(Icons.create),
                             onTap: () async {
-                              Map<String, dynamic> chosen = await pickFromCategory(
+                              Map<String, dynamic> chosen = await pickFromCollection(
                                 context: context,
-                                category: "locations",
+                                collection: "locations",
                                 initialObjects: <String>[field.value],
                               );
                               if (chosen != null && chosen["id"] != field.value){
@@ -277,9 +277,9 @@ class _JobCreatorCardState extends State<JobCreatorCard> {
                             title: new Text(item.valueToString(item.value)),
                             trailing: new Icon(Icons.create),
                             onTap: () async {
-                              Map<String, dynamic> chosen = await pickFromCategory(
+                              Map<String, dynamic> chosen = await pickFromCollection(
                                 context: context,
-                                category: "customers",
+                                collection: "customers",
                                 initialObjects: <String>[field.value],
                               );
                               if (chosen != null && chosen["id"] != field.value){
@@ -342,9 +342,9 @@ class _JobCreatorCardState extends State<JobCreatorCard> {
                               title: new Text("Add a contact"),
                               trailing: new Icon(Icons.add),
                               onTap: () async {
-                                Map<String, dynamic> chosen = await pickFromCategory(
+                                Map<String, dynamic> chosen = await pickFromCollection(
                                   context: context,
-                                  category: "contacts",
+                                  collection: "contacts",
                                   initialObjects: field.value,
                                 );
                                 if (chosen != null && !field.value.contains(chosen["id"])){
@@ -418,9 +418,9 @@ class _JobCreatorCardState extends State<JobCreatorCard> {
                               title: new Text("Add a user"),
                               trailing: new Icon(Icons.add),
                               onTap: () async {
-                                Map<String, dynamic> chosen = await pickFromCategory(
+                                Map<String, dynamic> chosen = await pickFromCollection(
                                   context: context,
-                                  category: "users",
+                                  collection: "users",
                                 );
                                 if (chosen != null){
                                   field.onChanged((){

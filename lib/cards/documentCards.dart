@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
-import 'category/job.dart';
-import 'category/contact.dart';
-import 'category/location.dart';
+import 'document/job.dart';
+import 'document/contact.dart';
+import 'document/location.dart';
 
 // Future: Customer
 
-Widget getCategoryCard(String category, String objID, {Map<String, dynamic> data}){
-  switch(category) {
+Widget getDocumentCard(String collection, String objID, {Map<String, dynamic> data}){
+  switch(collection) {
     case 'jobs':
       return new JobInfoCard(objID, jobData: data);
     case "contacts":

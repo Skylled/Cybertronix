@@ -4,22 +4,22 @@ import 'package:intl/intl.dart';
 import '../drawer.dart';
 import '../firebase.dart' as firebase;
 
-/// This is a page that lists all items in a category.
+/// This is a page that lists all items in a collection.
 /// 
 /// It pulls the data using [firebase.getCategory] and
 /// slaps it in a [ListView]
-class CategoryPage extends StatefulWidget{
-  /// A page that lists all items in a category.
-  CategoryPage(this.category);
+class CollectionPage extends StatefulWidget{
+  /// A page that lists all items in a collection.
+  CollectionPage(this.collection);
   
-  /// The category to load objects from.
-  final String category;
+  /// The collection to load objects from.
+  final String collection;
 
   @override
-  _CategoryPageState createState() => new _CategoryPageState();
+  _CollectionPageState createState() => new _CollectionPageState();
 }
 
-class _CategoryPageState extends State<CategoryPage>{
+class _CollectionPageState extends State<CollectionPage>{
   List<Map<String, dynamic>> objects = <Map<String, dynamic>>[];
 
   @override
@@ -29,7 +29,7 @@ class _CategoryPageState extends State<CategoryPage>{
   }
 
   void generateObjects(){
-    firebase.getCategory(widget.category, sortBy: widget.category == "jobs" ? "datetime" : "name").then((Map<String, Map<String, dynamic>> objs){
+    firebase.getCategory(widget.collection, sortBy: widget.collection == "jobs" ? "datetime" : "name").then((Map<String, Map<String, dynamic>> objs){
       setState((){
         objects = <Map<String, dynamic>>[];
         objs.forEach((String id, Map<String, dynamic> data){
@@ -41,7 +41,7 @@ class _CategoryPageState extends State<CategoryPage>{
 
   Widget buildAppBar(){
     return new AppBar(
-      title: new Text(capitalize(widget.category)),
+      title: new Text(capitalize(widget.collection)),
       actions: <Widget>[
         new IconButton(
           icon: new Icon(Icons.search),
@@ -57,7 +57,7 @@ class _CategoryPageState extends State<CategoryPage>{
     return new FloatingActionButton(
       child: new Icon(Icons.add),
       onPressed: (){
-        Navigator.of(context).pushNamed('/create/${widget.category}}').then((dynamic x){
+        Navigator.of(context).pushNamed('/create/${widget.collection}}').then((dynamic x){
           generateObjects();
         });
       }
@@ -70,14 +70,14 @@ class _CategoryPageState extends State<CategoryPage>{
     List<Map<String, dynamic>> buildObjs = new List<Map<String, dynamic>>.from(objects);
     return new Scaffold(
       appBar: buildAppBar(),
-      drawer: buildDrawer(context, 'category'),
+      drawer: buildDrawer(context, 'collection'),
       floatingActionButton: buildFAB(),
       body: new ListView.builder(
         itemCount: buildObjs.length,
         itemBuilder: (BuildContext context, int index){
           return new ListTile(
             leading: (){
-              switch(widget.category){
+              switch(widget.collection){
                 case 'jobs':
                   return new JobLeadIcon(buildObjs[index]);
                 case 'contacts':
@@ -88,7 +88,7 @@ class _CategoryPageState extends State<CategoryPage>{
             }(),
             title: new Text(buildObjs[index]["name"]),
             onTap: (){
-              Navigator.of(context).pushNamed('/browse/${widget.category}/${buildObjs[index]["id"]}');
+              Navigator.of(context).pushNamed('/browse/${widget.collection}/${buildObjs[index]["id"]}');
             },
           );
         },

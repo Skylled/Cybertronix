@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import '../drawer.dart';
 import '../firebase.dart' as firebase;
-import '../cards/categoryCards.dart';
-import '../cards/category/package.dart';
+import '../cards/documentCards.dart';
+import '../cards/document/package.dart';
 
 class DataPage extends StatefulWidget {
-  final String category;
+  final String collection;
   final String objID;
 
-  DataPage(this.category, this.objID);
+  DataPage(this.collection, this.objID);
 
   @override
   _DataPageState createState() => new _DataPageState();
@@ -30,11 +30,11 @@ class _DataPageState extends State<DataPage> {
         ),
       ),
     ];
-    firebase.getObject(widget.category, widget.objID).then((Map<String, dynamic> data){
+    firebase.getObject(widget.collection, widget.objID).then((Map<String, dynamic> data){
       setState((){
         children.clear();
-        children.add(getCategoryCard(widget.category, widget.objID, data: data));
-        if (widget.category == "locations"){
+        children.add(getDocumentCard(widget.collection, widget.objID, data: data));
+        if (widget.collection == "locations"){
           if (data["packages"] != null){
             data["packages"].forEach((Map<String, dynamic> packageData){
               children.add(new PackageInfoCard(packageData));
@@ -51,7 +51,7 @@ class _DataPageState extends State<DataPage> {
       appBar: new AppBar(
         title: new Text("Data Browser")
       ),
-      drawer: buildDrawer(context, 'category'),
+      drawer: buildDrawer(context, 'collection'),
       persistentFooterButtons: (){
         List<Widget> footer = <Widget>[];
         footer.add(
@@ -66,12 +66,12 @@ class _DataPageState extends State<DataPage> {
           new FlatButton(
             child: new Text("Edit info"),
             onPressed: (){
-              Navigator.of(context).pushNamed('/create/${widget.category}/${widget.objID}');
+              Navigator.of(context).pushNamed('/create/${widget.collection}/${widget.objID}');
               // TODO: Refresh.
             },
           )
         );
-        if (widget.category == "jobs"){
+        if (widget.collection == "jobs"){
           footer.add(
             new FlatButton(
               child: new Text("Reports"),

@@ -66,14 +66,14 @@ class _AsyncChipState extends State<AsyncChip>{
 }
 
 /// Open a [SelectorPage] to pick an object.
-Future<Map<String, dynamic>> pickFromCategory({
+Future<Map<String, dynamic>> pickFromCollection({
   BuildContext context,
-  String category,
+  String collection,
   List<String> initialObjects,
 }) async {
   return await Navigator.of(context).push(
     new MaterialPageRoute<Map<String, dynamic>>(
-      builder: (BuildContext context) => new SelectorPage(category, initialObjects),
+      builder: (BuildContext context) => new SelectorPage(collection, initialObjects),
       fullscreenDialog: true,
     )
   );

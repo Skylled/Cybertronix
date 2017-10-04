@@ -8,8 +8,8 @@ import 'creator/package/pump.dart';
 import 'creator/package/motor.dart';
 import 'creator/package/jockey.dart';
 
-Widget getCreatorCard(String category, Function(Map<String, dynamic>) changeData, {String objID, Map<String, dynamic> data}){
-  switch (category){
+Widget getCreatorCard(String collection, Function(Map<String, dynamic>) changeData, {String objID, Map<String, dynamic> data}){
+  switch (collection){
     case "jobs":
       return new JobCreatorCard(changeData, jobData: data, jobID: objID);
     case "contacts":

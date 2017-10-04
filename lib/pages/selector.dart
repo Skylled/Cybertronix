@@ -3,17 +3,17 @@ import 'package:strings/strings.dart';
 import '../drawer.dart';
 import '../firebase.dart' as firebase;
 
-/// This is a page that lists all items in a category.
+/// This is a page that lists all items in a collection.
 /// 
 /// It pulls the data using [firebase.getCategory] and
 /// slaps it in a [ListView]
 class SelectorPage extends StatefulWidget{
-  /// A page that lists all items in a category.
-  SelectorPage(this.category, [List<String> initialObjects]):
+  /// A page that lists all items in a collection.
+  SelectorPage(this.collection, [List<String> initialObjects]):
     this.initialObjects = initialObjects ?? <String>[];
   
-  /// The category to load objects from.
-  final String category;
+  /// The collection to load objects from.
+  final String collection;
   final List<String> initialObjects;
 
   @override
@@ -30,7 +30,7 @@ class _SelectorPageState extends State<SelectorPage>{
   }
 
   void generateObjects(){
-    firebase.getCategory(widget.category).then((Map<String, Map<String, dynamic>> objs){
+    firebase.getCategory(widget.collection).then((Map<String, Map<String, dynamic>> objs){
       setState((){
         objects = <Map<String, dynamic>>[];
         objs.forEach((String id, Map<String, dynamic> data){
@@ -42,7 +42,7 @@ class _SelectorPageState extends State<SelectorPage>{
 
   Widget buildAppBar(){
     return new AppBar(
-      title: new Text("Select a ${capitalize(widget.category).substring(0, widget.category.length - 1)}"),
+      title: new Text("Select a ${capitalize(widget.collection).substring(0, widget.collection.length - 1)}"),
       // locations -> Locations -> Location
       actions: <Widget>[
         new IconButton(
@@ -59,7 +59,7 @@ class _SelectorPageState extends State<SelectorPage>{
     return new FloatingActionButton(
       child: new Icon(Icons.add),
       onPressed: (){
-        Navigator.of(context).pushNamed('/create/${widget.category}}').then((Map<String, dynamic> res){
+        Navigator.of(context).pushNamed('/create/${widget.collection}}').then((Map<String, dynamic> res){
           if (res != null) { // If CreatorPage popped with data
             debugPrint("Got data from CreatorPage");
             debugPrint(res.toString());
