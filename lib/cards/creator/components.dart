@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:firebase_firestore/firebase_firestore.dart';
 import '../../pages/selector.dart';
 
 /// Takes a [DateTime] and replaces its time with one from a [TimeOfDay]
@@ -66,13 +67,13 @@ class _AsyncChipState extends State<AsyncChip>{
 }
 
 /// Open a [SelectorPage] to pick an object.
-Future<Map<String, dynamic>> pickFromCollection({
+Future<DocumentSnapshot> pickFromCollection({
   BuildContext context,
   String collection,
-  List<String> initialObjects,
+  List<DocumentReference> initialObjects,
 }) async {
   return await Navigator.of(context).push(
-    new MaterialPageRoute<Map<String, dynamic>>(
+    new MaterialPageRoute<DocumentSnapshot>(
       builder: (BuildContext context) => new SelectorPage(collection, initialObjects),
       fullscreenDialog: true,
     )

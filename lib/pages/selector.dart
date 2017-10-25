@@ -106,7 +106,6 @@ class _JobLeadIcon extends StatelessWidget{
     DateFormat month = new DateFormat.MMMM();
     DateFormat day = new DateFormat.d();
     DateTime dt = jobData["datetime"];
-    // TODO: Make sure datetime db objects become datetime dart objects
     return new Padding(
       padding: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 4.0),
       child: new Column(
