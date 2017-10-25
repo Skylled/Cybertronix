@@ -1,20 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:strings/strings.dart';
+import 'package:firebase_firestore/firebase_firestore.dart';
 import '../drawer.dart';
-import '../firebase.dart' as firebase;
 
-/// This is a page that lists all items in a collection.
-/// 
-/// It pulls the data using [firebase.getCategory] and
-/// slaps it in a [ListView]
+/// This is a page that lists all items in a collection,
+/// for selection purposes.
 class SelectorPage extends StatefulWidget{
   /// A page that lists all items in a collection.
-  SelectorPage(this.collection, [List<String> initialObjects]):
-    this.initialObjects = initialObjects ?? <String>[];
+  SelectorPage(this.collection, [List<DocumentReference> initialObjects]):
+    this.initialObjects = initialObjects ?? <DocumentReference>[];
   
   /// The collection to load objects from.
   final String collection;
-  final List<String> initialObjects;
+
+  /// A list of objects already selected from this list.
+  final List<DocumentReference> initialObjects;
 
   @override
   _SelectorPageState createState() => new _SelectorPageState();
@@ -23,27 +23,9 @@ class SelectorPage extends StatefulWidget{
 class _SelectorPageState extends State<SelectorPage>{
   List<Map<String, dynamic>> objects = <Map<String, dynamic>>[];
 
-  @override
-  void initState() {
-    super.initState();
-    generateObjects();
-  }
-
-  void generateObjects(){
-    firebase.getCategory(widget.collection).then((Map<String, Map<String, dynamic>> objs){
-      setState((){
-        objects = <Map<String, dynamic>>[];
-        objs.forEach((String id, Map<String, dynamic> data){
-          objects.add(data);
-        });
-      });
-    });
-  }
-
   Widget buildAppBar(){
     return new AppBar(
-      title: new Text("Select a ${capitalize(widget.collection).substring(0, widget.collection.length - 1)}"),
-      // locations -> Locations -> Location
+      title: new Text("Select from ${capitalize(widget.collection)}"),
       actions: <Widget>[
         new IconButton(
           icon: new Icon(Icons.search),
@@ -72,20 +54,41 @@ class _SelectorPageState extends State<SelectorPage>{
   }
 
   Widget build(BuildContext context){
-    List<Map<String, dynamic>> buildObjs = new List<Map<String, dynamic>>.from(objects);
+    String sort;
+    switch (widget.collection){
+      case "jobs":
+        sort = "datetime";
+        break;
+      default:
+        sort = "name";
+        break;
+    }
+
     return new Scaffold(
       appBar: buildAppBar(),
       drawer: buildDrawer(context, 'selector'),
       floatingActionButton: buildFAB(),
-      body: new ListView.builder(
-        itemCount: buildObjs.length,
-        itemBuilder: (BuildContext context, int index){
-          return new ListTile(
-            title: new Text(buildObjs[index]["name"]),
-            onTap: (){
-              Navigator.of(context).pop(buildObjs[index]);
-            },
-            selected: widget.initialObjects.contains(buildObjs[index]["id"]),
+      body: new StreamBuilder<QuerySnapshot>(
+        stream: Firestore.instance.collection(widget.collection).orderBy(sort).snapshots,
+        builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot){
+          if (!snapshot.hasData) return new Text("Loading...");
+          return new ListView(
+            children: snapshot.data.documents.map((DocumentSnapshot document) {
+              return new ListTile(
+                leading: (){
+                  switch (widget.collection){
+                    case 'jobs':
+                      return new _JobLeadIcon(document);
+                    default:
+                      return null;
+                  }
+                }(),
+                title: new Text(document["name"]),
+                onTap: (){
+                  Navigator.of(context).pop(document);
+                },
+              );
+            }).toList(),
           );
         },
       ),

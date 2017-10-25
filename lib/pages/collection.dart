@@ -58,15 +58,25 @@ class DocumentListView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context){
+    String sort;
+    switch (collection){
+      case "jobs":
+        sort = "datetime";
+        break;
+      default:
+        sort = "name";
+        break;
+    }
+
     return new StreamBuilder<QuerySnapshot>(
-      stream: Firestore.instance.collection(collection).snapshots,
+      stream: Firestore.instance.collection(collection).orderBy(sort).snapshots,
       builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
         if (!snapshot.hasData) return new Text("Loading...");
         return new ListView(
           children: snapshot.data.documents.map((DocumentSnapshot document) {
             return new ListTile(
               leading: (){
-                switch(collection){
+                switch (collection){
                   case 'jobs':
                     return new _JobLeadIcon(document);
                   default:
