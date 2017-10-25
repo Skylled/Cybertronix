@@ -1,44 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:strings/strings.dart';
 import 'package:intl/intl.dart';
+import 'package:firebase_firestore/firebase_firestore.dart';
 import '../drawer.dart';
-import '../firebase.dart' as firebase;
+import '../pages/data.dart';
 
 /// This is a page that lists all items in a collection.
-/// 
-/// It pulls the data using [firebase.getCategory] and
-/// slaps it in a [ListView]
-class CollectionPage extends StatefulWidget{
-  /// A page that lists all items in a collection.
+class CollectionPage extends StatefulWidget {
   CollectionPage(this.collection);
-  
-  /// The collection to load objects from.
+
   final String collection;
 
   @override
   _CollectionPageState createState() => new _CollectionPageState();
 }
 
-class _CollectionPageState extends State<CollectionPage>{
-  List<Map<String, dynamic>> objects = <Map<String, dynamic>>[];
-
-  @override
-  void initState() {
-    super.initState();
-    generateObjects();
-  }
-
-  void generateObjects(){
-    firebase.getCategory(widget.collection, sortBy: widget.collection == "jobs" ? "datetime" : "name").then((Map<String, Map<String, dynamic>> objs){
-      setState((){
-        objects = <Map<String, dynamic>>[];
-        objs.forEach((String id, Map<String, dynamic> data){
-          objects.add(data);
-        });
-      });
-    });
-  }
-
+class _CollectionPageState extends State<CollectionPage> {
   Widget buildAppBar(){
     return new AppBar(
       title: new Text(capitalize(widget.collection)),
@@ -46,7 +23,8 @@ class _CollectionPageState extends State<CollectionPage>{
         new IconButton(
           icon: new Icon(Icons.search),
           onPressed: (){
-            // Future: Implement Elastic Search?
+            // Future: Elastic Search?
+            // TODO: See if FireStore can do a basic name search
           },
         ),
       ],
@@ -56,56 +34,71 @@ class _CollectionPageState extends State<CollectionPage>{
   Widget buildFAB(){
     return new FloatingActionButton(
       child: new Icon(Icons.add),
-      onPressed: (){
-        Navigator.of(context).pushNamed('/create/${widget.collection}}').then((dynamic x){
-          generateObjects();
-        });
-      }
+      onPressed: () async {
+        await Navigator.of(context).pushNamed('/create/${widget.collection}');
+      },
     );
   }
 
-  Widget build(BuildContext context){
-    // TODO: Make sure this object has the correct length upon regeneration
-    // See: buildFAB
-    List<Map<String, dynamic>> buildObjs = new List<Map<String, dynamic>>.from(objects);
+  @override
+  Widget build(BuildContext context) {
     return new Scaffold(
       appBar: buildAppBar(),
       drawer: buildDrawer(context, 'collection'),
       floatingActionButton: buildFAB(),
-      body: new ListView.builder(
-        itemCount: buildObjs.length,
-        itemBuilder: (BuildContext context, int index){
-          return new ListTile(
-            leading: (){
-              switch(widget.collection){
-                case 'jobs':
-                  return new JobLeadIcon(buildObjs[index]);
-                case 'contacts':
-                  // Future: Load contact images into a CircleAvatar?
-                default:
-                  return null;
-              }
-            }(),
-            title: new Text(buildObjs[index]["name"]),
-            onTap: (){
-              Navigator.of(context).pushNamed('/browse/${widget.collection}/${buildObjs[index]["id"]}');
-            },
-          );
-        },
-      ),
+      body: new DocumentListView(widget.collection)
     );
   }
 }
 
-class JobLeadIcon extends StatelessWidget{
-  final Map<String, dynamic> jobData;
+class DocumentListView extends StatelessWidget {
+  DocumentListView(this.collection);
 
-  JobLeadIcon(this.jobData);
+  final String collection;
+
+  @override
+  Widget build(BuildContext context){
+    return new StreamBuilder<QuerySnapshot>(
+      stream: Firestore.instance.collection(collection).snapshots,
+      builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
+        if (!snapshot.hasData) return new Text("Loading...");
+        return new ListView(
+          children: snapshot.data.documents.map((DocumentSnapshot document) {
+            return new ListTile(
+              leading: (){
+                switch(collection){
+                  case 'jobs':
+                    return new _JobLeadIcon(document);
+                  default:
+                    return null;
+                }
+              }(),
+              title: new Text(document["name"]),
+              onTap: (){
+                Navigator.of(context).push(
+                  new MaterialPageRoute<Null>(
+                    builder: (BuildContext context) => new DataPage(collection, document)
+                  )
+                );
+              },
+            );
+          }).toList(),
+        );
+      },
+    );
+  }
+}
+
+class _JobLeadIcon extends StatelessWidget{
+  final DocumentSnapshot jobData;
+
+  _JobLeadIcon(this.jobData);
 
   Widget build(BuildContext context){
     DateFormat month = new DateFormat.MMMM();
     DateFormat day = new DateFormat.d();
-    DateTime dt = DateTime.parse(jobData["datetime"]);
+    DateTime dt = jobData["datetime"];
+    // TODO: Make sure datetime db objects become datetime dart objects
     return new Padding(
       padding: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 4.0),
       child: new Column(

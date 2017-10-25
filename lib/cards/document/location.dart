@@ -6,145 +6,138 @@ import 'package:share/share.dart' as share;
 import 'package:intl/intl.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:zoomable_image/zoomable_image.dart';
+import 'package:firebase_firestore/firebase_firestore.dart';
 import '../../firebase.dart' as firebase;
 import '../../api.dart' as api;
+import '../../pages/data.dart';
 
-class PreviousJobsTile extends StatefulWidget {
-  final String locationID;
 
-  PreviousJobsTile(this.locationID);
+class NPreviousJobsTile extends StatefulWidget {
+  final DocumentReference locationRef;
+
+  NPreviousJobsTile(this.locationRef);
 
   @override
-  _PreviousJobsTileState createState() => new _PreviousJobsTileState();
+  _NPreviousJobsTileState createState() => new _NPreviousJobsTileState();
 }
 
-class _PreviousJobsTileState extends State<PreviousJobsTile> {
-  List<ListTile> tiles = <ListTile>[new ListTile(title: new Text("Loading..."))];
-
-  @override
-  void initState(){
-    super.initState();
-    firebase.findJobs("location", widget.locationID)
-      .then((Map<String, Map<String, dynamic>> results){
-        setState((){
-          tiles.clear();
-          DateFormat datefmt = new DateFormat("M/d/y");
-          results.forEach((String jobID, Map<String, dynamic> jobData){
-            DateTime date = DateTime.parse(jobData["datetime"]);
-            tiles.add(new ListTile(
-              title: new Text("${datefmt.format(date)} - ${jobData['name']}"),
-              onTap: (){
-                Navigator.of(context).pushNamed('/browse/jobs/$jobID');
-              },
-            ));
-          });
-        });
-      });
-  }
-
+class _NPreviousJobsTileState extends State<NPreviousJobsTile> {
+  
   @override
   Widget build(BuildContext context) {
-    return new ExpansionTile(
-      title: new Text("Jobs"),
-      children: new List<ListTile>.from(tiles),
+    return new StreamBuilder<QuerySnapshot>(
+      stream: Firestore.instance.collection("jobs")
+                       .where("location", "==", widget.locationRef)
+                       .orderBy("datetime")
+                       .snapshots,
+      builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot){
+        if (!snapshot.hasData){
+          return new ExpansionTile(
+             title: new Text("Jobs"),
+            children: <Widget>[new ListTile(title: new Text("Loading..."))],
+          );
+        }
+        List<Widget> tiles = <Widget>[];
+        DateFormat datefmt = new DateFormat("M/d/y");
+        snapshot.data.documents.forEach((DocumentSnapshot document){
+          tiles.add(
+            new ListTile(
+              title: new Text("${datefmt.format(document["datetime"])} - ${document["name"]}"),
+              onTap: (){
+                Navigator.of(context).push(
+                  new MaterialPageRoute<Null>(
+                    builder: (BuildContext context) => new DataPage('jobs', document)
+                  ),
+                );
+              },
+            ),
+          );
+        });
+        return new ExpansionTile(
+          title: new Text("Jobs"),
+          children: tiles,
+        );
+      },
     );
   }
 }
 
 /// This card shows all the basic info about a location
 class LocationInfoCard extends StatefulWidget {
-  /// The Firebase ID of the location loaded
-  final String locationID;
-  /// The data loaded from Firebase
-  final Map<String, dynamic> locationData;
+  final DocumentSnapshot locationData;
 
-  /// This card shows all the basic info about a location
-  LocationInfoCard(this.locationID, {this.locationData});
-  
+  LocationInfoCard(this.locationData);
+
   @override
   _LocationInfoCardState createState() => new _LocationInfoCardState();
 }
 
 class _LocationInfoCardState extends State<LocationInfoCard> {
-  
-  Map<String, dynamic> locationData;
+  DocumentSnapshot locationData;
   List<Widget> cardLines = <Widget>[];
 
-  void goEdit(BuildContext context){
-    Navigator.of(context).pushNamed('/create/locations/${widget.locationID}').then((dynamic x){
-      if (x is Map){
-        setState((){
-          locationData = x;
-          populateLines();
-        });
-      }
-    });
-  }
-
   Future<Null> goPhotos() async {
-    // Future: This need to be a full popup with add/remove support
+    // TODO: Document this, it's the most complicated one.
     File imageFile = await ImagePicker.pickImage();
-    firebase.uploadPhoto(imageFile).then((String url){
+    firebase.uploadPhoto(imageFile).then((String url) async {
+      Map<String, dynamic> newData = new Map<String, dynamic>.from(locationData.data);
+      if (newData["photos"] == null)
+        newData["photos"] = <Map<String, dynamic>>[];
+      newData["photos"].add(<String, dynamic>{"url": url});
+      DocumentReference reference = Firestore.instance.document(locationData.path);
+      await reference.setData(newData);
+      locationData = await reference.snapshots.first;
       setState((){
-        Map<String, dynamic> newData = new Map<String, dynamic>.from(locationData);
-        if (newData["photos"] != null){
-          newData["photos"].add(url);
-        } else {
-          newData["photos"] = <String>[url];
-        }
-        firebase.sendObject("locations", newData, objID: widget.locationID);
-        locationData = newData;
         populateLines();
       });
     });
   }
 
   void goShare(){
-    String shareString = "${locationData['name']}\n${locationData['address']}";
-    shareString += "\n${locationData['city']}, ${locationData['state']}";
+    String shareString = "${locationData["name"]}\n${locationData["address"]}";
+    shareString += "\n${locationData["city"]}, ${locationData["state"]}";
     share.share(shareString);
   }
 
   void populateLines(){
     cardLines.clear();
     cardLines.add(
-      new Container( // Future: Make this a shrinking title?
+      new Container(
         height: 200.0,
         child: new Stack(
           children: <Widget>[
             new Positioned.fill(
               child: (){
-                List<String> photoList = locationData["photos"];
-                if (photoList != null){
-                  if (photoList.length == 1){
+                List<Map<String, dynamic>> photos = locationData["photos"];
+                if (photos != null){
+                  if (photos.length == 1){
                     return new GestureDetector(
-                      child: new Image.network(photoList[0], fit: BoxFit.fitWidth),
+                      child: new Image.network(photos[0]["url"], fit: BoxFit.fitWidth),
                       onTap: () async {
                         await showDialog(
                           context: context,
                           child: new ZoomableImage(
-                            new NetworkImage(photoList[0]),
+                            new NetworkImage(photos[0]["url"]),
                             scale: 10.0,
                             onTap: (){
                               Navigator.pop(context);
                             },
                           ),
                         );
-                      }
+                      },
                     );
                   } else {
                     return new ListView(
                       scrollDirection: Axis.horizontal,
                       shrinkWrap: true,
-                      children: photoList.map((String url){
+                      children: photos.map((Map<String, dynamic> photo){
                         return new GestureDetector(
-                          child: new Image.network(url, fit: BoxFit.fitHeight),
+                          child: new Image.network(photo["url"], fit: BoxFit.fitHeight),
                           onTap: () async {
-                            print("Why doesn't this work?");
                             await showDialog(
                               context: context,
                               child: new ZoomableImage(
-                                new NetworkImage(url),
+                                new NetworkImage(photo["url"]),
                                 scale: 10.0,
                                 onTap: (){
                                   Navigator.pop(context);
@@ -159,7 +152,7 @@ class _LocationInfoCardState extends State<LocationInfoCard> {
                 } else {
                   return new Image.network(
                     'https://maps.googleapis.com/maps/api/streetview?size=600x600&location=${locationData["address"]}, ${locationData["city"]}, ${locationData["state"]}&key=${api.gmaps}',
-                    fit: BoxFit.fitWidth,
+                    fit: BoxFit.fitWidth
                   );
                 }
               }(),
@@ -168,14 +161,13 @@ class _LocationInfoCardState extends State<LocationInfoCard> {
               left: 8.0,
               bottom: 16.0,
               child: new Text(
-                // Future: Text wrapping.
                 locationData["name"],
                 style: new TextStyle(
                   color: Colors.white,
                   fontSize: 24.0,
-                  fontWeight: FontWeight.bold
-                )
-              )
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
             ),
             new Positioned(
               right: 8.0,
@@ -185,64 +177,69 @@ class _LocationInfoCardState extends State<LocationInfoCard> {
                 iconSize: 36.0,
                 onPressed: goShare,
               ),
-            )
-          ]
-        )
-      )
+            ),
+          ],
+        ),
+      ),
     );
-    String subtitle = "${locationData['city']}, ${locationData['state']}";
+    String cityState = "${locationData["city"]}, ${locationData["state"]}";
     cardLines.add(
       new ListTile(
-        title: new Text(locationData["address"]),
-        subtitle: new Text(subtitle),
+        title: new Text("${locationData["address"]}"),
+        subtitle: new Text(cityState),
         trailing: new Icon(Icons.navigation),
-        onTap: () {
-          url_launcher.launch('google.navigation:q=${locationData["address"]}, $subtitle');
-        }
-      )
+        onTap: (){
+          url_launcher.launch('google.navigation:q=${locationData["address"]}, $cityState');
+        },
+      ),
     );
     if (locationData["contacts"] != null) {
       cardLines.add(new Divider());
-      // `offset` essentially marks where the divider is, and thus, where to insert
-      int offset = cardLines.length;
-      locationData["contacts"].forEach((String contactID) {
-        firebase.getObject("contacts", contactID).then((Map<String, dynamic> contactData){
-          setState((){
-            Widget trailing = (contactData["phoneNumbers"] != null)
-                ? new IconButton(icon: new Icon(Icons.phone),
+      locationData["contacts"].forEach((DocumentReference contact) {
+        cardLines.add(
+          new FutureBuilder<DocumentSnapshot>(
+            future: contact.snapshots.first,
+            builder: (BuildContext context, AsyncSnapshot<DocumentSnapshot> snapshot){
+              if (!snapshot.hasData)
+                return new ListTile(title: new Text("Loading contact..."));
+              DocumentSnapshot contactData = snapshot.data;
+              Widget trailing = (contactData["phoneNumbers"] != null) ?
+                  new IconButton(icon: new Icon(Icons.phone),
                     onPressed: (){ url_launcher.launch('tel:${contactData["phoneNumbers"][0]["number"]}'); })
-                : null;
-            cardLines.insert(offset, new ListTile(
-              title: new Text(contactData["name"]),
-              trailing: trailing,
-              onTap: () {
-                Navigator.of(context).pushNamed('/browse/contacts/$contactID');
-              }
-            ));
-          });
-        });
+                  : null;
+              return new ListTile(
+                title: new Text(contactData["name"]),
+                trailing: trailing,
+                onTap: (){
+                  Navigator.of(context).push(
+                    new MaterialPageRoute<Null>(
+                      builder: (BuildContext context) => new DataPage("contacts", contactData),
+                    ),
+                  );
+                },
+              );
+            },
+          ),
+        );
       });
     }
-    
+
     cardLines.add(new Divider());
-    cardLines.add(new PreviousJobsTile(widget.locationID));
+    //cardLines.add(new PreviousJobsTile(Firestore.instance.document(locationData.path)));
   }
 
   @override
-  void initState() {
+  void initState(){
     super.initState();
     locationData = widget.locationData;
     populateLines();
   }
 
   @override
-  Widget build(BuildContext context){
-    return new Container(
-      padding: const EdgeInsets.fromLTRB(8.0, 28.0, 8.0, 12.0),
-      child: new Card(
-        child: new Column(
-          children: new List<Widget>.from(cardLines),
-        ),
+  Widget build(BuildContext context) {
+    return new Card(
+      child: new Column(
+        children: new List<Widget>.from(cardLines),
       ),
     );
   }

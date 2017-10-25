@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:firebase_firestore/firebase_firestore.dart';
+
 
 /// A detailed card with all the info about a panel package, returned
 /// from Firebase, organized into [ExpansionPanel]s.
-class PackageInfoCard extends StatelessWidget{
+class PackageInfoCard extends StatelessWidget {
 
   /// This info comes direct from the location card's data
-  final Map<String, dynamic> packageData;
+  final DocumentSnapshot packageData;
 
   /// A detailed card with all the info about a panel package, returned
   /// from Firebase, organized into [ExpansionPanel]s.
@@ -106,7 +108,7 @@ class PackageInfoCard extends StatelessWidget{
 
   List<Widget> _getLines(){
     List<Widget> lines = <Widget>[];
-    if (packageData["panel"] != null){
+    if (packageData["panel"] != null) {
       lines.add(new ExpansionTile(
         title: new Text("Panel"),
         children: panelSubList(packageData["panel"], packageData["power"]),
@@ -146,12 +148,9 @@ class PackageInfoCard extends StatelessWidget{
 
   @override
   Widget build(BuildContext build){
-    return new Container(
-      padding: const EdgeInsets.fromLTRB(8.0, 28.0, 8.0, 12.0),
-      child: new Card(
-        child: new Column(
-          children: _getLines(),
-        ),
+    return new Card(
+      child: new Column(
+        children: _getLines(),
       ),
     );
   }
@@ -161,6 +160,8 @@ class PackageSummaryCard extends StatefulWidget{
   final Map<String, dynamic> packageData;
   final Function(Map<String, dynamic>) changeCallback;
   final Function() removeCallback;
+
+  // TODO: Figure out where to put this.
 
   PackageSummaryCard(this.packageData, this.changeCallback, this.removeCallback);
 

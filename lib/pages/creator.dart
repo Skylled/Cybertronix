@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:strings/strings.dart';
 import '../drawer.dart';
-import '../firebase.dart' as firebase;
 import '../cards/creatorCards.dart';
+import 'package:firebase_firestore/firebase_firestore.dart';
 
 class CreatorPage extends StatefulWidget {
   final String collection;
-  final String objID;
+  final DocumentSnapshot snapshot;
 
-  CreatorPage(this.collection, [this.objID]);
+  CreatorPage(this.collection, [this.snapshot]);
 
   @override
   _CreatorPageState createState() => new _CreatorPageState();
@@ -18,45 +18,28 @@ class _CreatorPageState extends State<CreatorPage> {
   List<Widget> children;
   Map<String, dynamic> currentData;
 
+  /// This is a callback, passed to cards to affect this widget's state
   void changeData(Map<String, dynamic> newData){
     List<Map<String, dynamic>> packages = currentData["packages"];
     currentData = newData;
     currentData["packages"] = packages;
   }
 
-  @override
-  void initState(){
-    super.initState();
-    currentData = <String, dynamic>{};
-    if (widget.objID != null){
-      children = <Widget>[
-        new Center(
-          child: new Padding(
-            padding: const EdgeInsets.symmetric(vertical: 8.0),
-            child: new CircularProgressIndicator(
-              value: null,
-            ),
-          ),
-        ),
-      ];
-      firebase.getObject(widget.collection, widget.objID).then((Map<String, dynamic> data){
-        currentData = data;
-        setState((){
-          children.clear();
-          children.add(getCreatorCard(widget.collection, changeData, objID: widget.objID, data: data));
-          if (widget.collection == "locations"){
-            if (data["packages"] != null){
-              data["packages"].forEach((Map<String, Map<String, dynamic>> packageData){
-                //children.add(null); // TODO MAJOR: I need a lot of cards!
-              });
-            }
-          }
-        });
-      });
+  void buildBody(){
+    if (widget.snapshot != null) {
+      currentData = widget.snapshot.data;
+      children = <Widget>[getCreatorCard(widget.collection, changeData)];
+      if (widget.collection == "locations"){
+        if (currentData["packages"] != null){
+          currentData["packages"].forEach((Map<String, Map<String, dynamic>> packageData){
+            //children.add(); // MAJOR: I need a lot of cards here.
+          });
+        }
+      }
     } else {
       children = <Widget>[
         getCreatorCard(widget.collection, changeData),
-        getCreatorCard("contacts", changeData)
+        getCreatorCard("contacts", changeData), // This is a debug line
       ];
       if (widget.collection == "locations"){
         children.add(
@@ -73,10 +56,17 @@ class _CreatorPageState extends State<CreatorPage> {
   }
 
   @override
+  void initState(){
+    super.initState();
+    currentData = <String, dynamic>{};
+    buildBody();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return new Scaffold(
       appBar: new AppBar(
-        title: new Text("${capitalize(widget.collection)} Creator")
+        title: new Text("${capitalize(widget.collection)} Creator"),
       ),
       persistentFooterButtons: <Widget>[
         new FlatButton(
@@ -86,22 +76,27 @@ class _CreatorPageState extends State<CreatorPage> {
         new FlatButton(
           child: new Text("Save & Finish"),
           textColor: Theme.of(context).accentColor,
-          onPressed: (){
-            firebase.sendObject("contacts", currentData, objID: widget.objID);
-            Navigator.pop(context, currentData);
+          onPressed: () async {
+            DocumentReference docRef = widget.snapshot != null ?
+                Firestore.instance.document(widget.snapshot.path) :
+                Firestore.instance.collection(widget.collection).document();
+            await docRef.setData(currentData);
+            DocumentSnapshot newSnapshot = await docRef.snapshots.first;
+            Navigator.pop(context, newSnapshot);
           },
-        ),
+        )
       ],
       drawer: buildDrawer(context, 'creator'),
       body: new WillPopScope(
+        // MAJOR: Don't show the onWillPop if popping from Save & Finish
         onWillPop: () async {
           await showDialog<bool>(
             context: context,
             child: new SimpleDialog(
-              title: new Text("Are you sure you'd like to close? Your changes will not be saved."),
+              title: new Text("Your changes have not been saved.\nAre you sure you'd like to leave this page?"),
               children: <Widget>[
                 new SimpleDialogOption(
-                  onPressed: (){ Navigator.pop(context, true); },
+                  onPressed: () { Navigator.pop(context, true); },
                   child: new Text("Yes"),
                 ),
                 new SimpleDialogOption(
@@ -109,7 +104,7 @@ class _CreatorPageState extends State<CreatorPage> {
                   child: new Text("No"),
                 ),
               ],
-            ),
+            )
           );
         },
         child: new ListView(

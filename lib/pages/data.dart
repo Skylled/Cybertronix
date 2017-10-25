@@ -1,48 +1,48 @@
 import 'package:flutter/material.dart';
+import 'package:firebase_firestore/firebase_firestore.dart';
 import '../drawer.dart';
-import '../firebase.dart' as firebase;
 import '../cards/documentCards.dart';
 import '../cards/document/package.dart';
+import 'creator.dart';
 
 class DataPage extends StatefulWidget {
   final String collection;
-  final String objID;
+  final DocumentSnapshot document;
 
-  DataPage(this.collection, this.objID);
+  DataPage(this.collection, this.document);
 
   @override
   _DataPageState createState() => new _DataPageState();
 }
 
 class _DataPageState extends State<DataPage> {
+  DocumentSnapshot document;
   List<Widget> children;
+
+  void buildChildren(){
+    children.clear();
+    children.add(getDocumentCard(widget.collection, document));
+    if (widget.collection == "locations"){
+      if (document["packages"] != null){
+        document["packages"].forEach((DocumentReference packageRef){
+          // TODO: FutureBuilder
+          packageRef.snapshots.single.then((DocumentSnapshot packageData){
+            setState((){
+              // TODO: Consider using the summary card here.
+              children.add(new PackageInfoCard(packageData));
+            });
+          });
+        });
+      }
+    }
+  }
 
   @override
   void initState(){
     super.initState();
-    children = <Widget>[
-      new Center(
-        child: new Padding(
-          padding: const EdgeInsets.symmetric(vertical: 8.0),
-          child: new CircularProgressIndicator(
-            value: null,
-          ),
-        ),
-      ),
-    ];
-    firebase.getObject(widget.collection, widget.objID).then((Map<String, dynamic> data){
-      setState((){
-        children.clear();
-        children.add(getDocumentCard(widget.collection, widget.objID, data: data));
-        if (widget.collection == "locations"){
-          if (data["packages"] != null){
-            data["packages"].forEach((Map<String, dynamic> packageData){
-              children.add(new PackageInfoCard(packageData));
-            });
-          }
-        }
-      });
-    });
+    document = widget.document;
+    children = <Widget>[];
+    buildChildren();
   }
 
   @override
@@ -66,8 +66,15 @@ class _DataPageState extends State<DataPage> {
           new FlatButton(
             child: new Text("Edit info"),
             onPressed: (){
-              Navigator.of(context).pushNamed('/create/${widget.collection}/${widget.objID}');
-              // TODO: Refresh.
+              Navigator.of(context).push(
+                new MaterialPageRoute<DocumentSnapshot>(
+                  builder: (BuildContext context) => new CreatorPage(widget.collection)
+                ),
+              ).then((DocumentSnapshot newSnapshot){
+                setState((){
+                  buildChildren();
+                });
+              });
             },
           )
         );

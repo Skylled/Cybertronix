@@ -1,100 +1,89 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'dart:async';
+import 'package:firebase_firestore/firebase_firestore.dart';
 import '../drawer.dart';
-import '../firebase.dart' as firebase;
 
 /// A two week summary page of upcoming jobs
 /// 
 /// Something of a to-do list, organized by date and time.
-/// See [getAgendaData] for the data format it uses.
 class AgendaPage extends StatefulWidget {
   @override
-  _AgendaPageState createState() => new _AgendaPageState();
+  _NAgendaPageState createState() => new _NAgendaPageState();
 }
 
-class _AgendaPageState extends State<AgendaPage> {
-  List<Widget> agenda = <Widget>[];
-  
-
-  Widget buildAppBar(){
-    return new AppBar(
-      title: new Text('Your Agenda'),
-    );
-  }
-  
-  Widget buildFloatingActionButton() {
-    return new FloatingActionButton(
-      tooltip: 'Add todo job',
-      child: new Icon(Icons.add),
-      onPressed: () async {
-        await Navigator.of(context).pushNamed('/create/jobs');
-        await buildAgenda();
-      }
-    );
-  }
-
-  Future<Null> buildAgenda() async {
-    agenda = <Widget>[]; // Always start from fresh.
-    firebase.getAgendaData().then((Map<String, Map<String, Map<String, dynamic>>> value) {
-      value.forEach((String day, Map<String, Map<String, dynamic>> jobs) {
-        DateTime date = DateTime.parse(day);
-        DateFormat formatter = new DateFormat('EEEE, MMMM d');
-        String txt = formatter.format(date);
-        List<Widget> subJobs = <Widget>[];
-        if (jobs.length == 0) {
-          setState((){
-            subJobs.add(new ListTile(
-              title: new Text("No jobs scheduled.")
-            ));
-          });
-        } else {
-          jobs.forEach((String id, Map<String, dynamic> job) {
-            DateTime jdt = DateTime.parse(job["datetime"]);
-            DateFormat time = new DateFormat.jm();
-            setState((){
-              subJobs.add(new ListTile(
-                title: new Text('${time.format(jdt)}, ${job["name"]}'),
-                onTap: () async {
-                  await Navigator.pushNamed(context, '/browse/jobs/$id');
-                  await buildAgenda();
-                }
-              ));
-            });
-          });
-        }
-        setState((){
-          agenda.add(new ExpansionTile(
-            title: new Text(txt),
-            leading: new CircleAvatar(child: new Text(jobs.length.toString())),
-            children: subJobs
-          ));
-        });
-      });
-    });
-  }
-
-  @override
-  void initState(){
-    super.initState();
-    buildAgenda();
-  }
-
+class _NAgendaPageState extends State<AgendaPage> {
   @override
   Widget build(BuildContext context) {
+    DateTime now = new DateTime.now();
+    DateTime today = new DateTime(now.year, now.month, now.day);
+    DateTime twoweeks = new DateTime(now.year, now.month, now.day + 14);
+
     return new Scaffold(
-      appBar: buildAppBar(),
-      floatingActionButton: buildFloatingActionButton(),
+      appBar: new AppBar(
+        title: new Text('Your Agenda'),
+      ),
+      floatingActionButton: new FloatingActionButton(
+        tooltip: 'Add todo job',
+        child: new Icon(Icons.add),
+        onPressed: () async {
+          await Navigator.of(context).pushNamed('/create/jobs');
+          // TODO: Refresh
+        },
+      ),
       drawer: buildDrawer(context, 'agenda'),
-      body: new Center(
-        child: new RefreshIndicator(
-          onRefresh: () async {
-            await buildAgenda();
-          },
-          child: new ListView(
-            children: new List<Widget>.from(agenda)
-          ),
-        ),
+      body: new StreamBuilder<QuerySnapshot>(
+        stream: Firestore.instance.collection("jobs")
+                                  .where("datetime", ">=", today)
+                                  .where("datetime", "<", twoweeks)
+                                  .orderBy("datetime").snapshots,
+        builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot){
+          if (!snapshot.hasData) return new Text("Loading...");
+          Map<String, List<Widget>> agendaData = new Map<String, dynamic>();
+          for (int i = 0; i < 14; i++){
+            DateTime newDate = new DateTime(today.year, today.month, today.day + i);
+            agendaData[newDate.toIso8601String().substring(0, 10)] = new List<Widget>();
+          }
+          DateFormat formatter = new DateFormat('EEEE, MMMM d');
+          DateFormat time = new DateFormat.jm();
+          snapshot.data.documents.forEach((DocumentSnapshot document){
+            DateTime dt = document["datetime"];
+            agendaData[dt.toIso8601String().substring(0, 10)].add(
+              new ListTile(
+                title: new Text("${time.format(dt)}, ${document["name"]}"),
+                onTap: () async {
+                  // TODO: Push page
+                },
+              ),
+            );
+            /// Plan B
+            /// 
+            /// 15 streams and builders for each day.
+            /// Agenda is a list of StreamBuilders
+
+            /// Create a map of dates to list<widget>
+            /// 
+            /// iterate list of documents, creating widgets,
+            /// putting them into appropriate list at index of map
+            /// 
+            /// Create list of ExpansionTiles.
+          });
+          List<Widget> agendaTiles = <Widget>[];
+          agendaData.forEach((String datestring, List<Widget> sublist){
+            agendaTiles.add(
+              new ExpansionTile(
+                title: new Text(formatter.format(DateTime.parse(datestring))),
+                leading: new CircleAvatar(
+                  child: new Text(sublist.length.toString()),
+                ),
+                children: sublist.isNotEmpty ? sublist :
+                  <Widget>[new ListTile(title: new Text("No jobs scheduled."),)],
+              ),
+            );
+          });
+          return new ListView(
+            children: agendaTiles,
+          );
+        },
       ),
     );
   }

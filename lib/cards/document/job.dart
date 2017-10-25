@@ -5,21 +5,18 @@ import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart' as url_launcher;
 import 'package:image_picker/image_picker.dart';
 import 'package:zoomable_image/zoomable_image.dart';
+import 'package:firebase_firestore/firebase_firestore.dart';
+
+import '../../pages/data.dart';
 
 import '../../firebase.dart' as firebase;
 import '../../api.dart' as api;
 
 /// A Material Card with a job's info
-/// 
-/// Usually used with [showDialog]
 class JobInfoCard extends StatefulWidget {
-  /// The job's ID in Firebase
-  final String jobID;
-  /// The job data stored in Firebase
-  final Map<String, dynamic> jobData;
+  final DocumentSnapshot jobData;
 
-  /// A Material Card with a job's info
-  JobInfoCard(this.jobID, {this.jobData});
+  JobInfoCard(this.jobData);
 
   @override
   _JobInfoCardState createState() => new _JobInfoCardState();
@@ -27,77 +24,27 @@ class JobInfoCard extends StatefulWidget {
 
 class _JobInfoCardState extends State<JobInfoCard> {
   List<Widget> cardLines = <Widget>[];
-  Map<String, dynamic> jobData;
-  Map<String, dynamic> locationData;
-  Map<String, Map<String, dynamic>> userData;
-  Map<String, Map<String, dynamic>> contactData;
+  DocumentSnapshot jobData;
 
-  void goEdit(BuildContext context) {
-    Navigator.of(context).pushNamed('/create/jobs/${widget.jobID}').then((dynamic x){
-      if (x is Map){
-        jobData = x;
-        List<Future<dynamic>> futures = <Future<dynamic>>[getLocationData(), getContactData(), getUserData()];
-        Future.wait(futures).then((List<dynamic> results){
-          locationData = results[0];
-          contactData = results[1];
-          userData = results[2];
-          setState((){ populateLines(); });
-        });
-      }
-    });
-  }
-
-  // TODO MAJOR: The dialog does not refresh well.
-  // Also, the image does not seem to show up in the view unless exited and re-opened.
-  // Could have something to do with the upload speed. Will test in release build on wifi.
   Future<Null> goPhotos() async {
     File imageFile = await ImagePicker.pickImage();
-    String uploadCollection;
-    if (locationData != null){
-      uploadCollection = await showDialog<String>(
-        context: context,
-        child: new SimpleDialog(
-          title: new Text("Is this picture job-specific or about the location in general?"),
-          children: <Widget>[
-            new SimpleDialogOption(
-              onPressed: (){ Navigator.pop(context, "jobs"); },
-              child: new Text("Job"),
-            ),
-            new SimpleDialogOption(
-              onPressed: (){ Navigator.pop(context, "locations"); },
-              child: new Text("Location"),
-            ),
-          ],
-        ),
-      );
-    } else {
-      uploadCollection = "jobs";
-    }
-    firebase.uploadPhoto(imageFile).then((String url){
+    firebase.uploadPhoto(imageFile).then((String url) async {
+      DocumentReference location = jobData["location"];
+      Map<String, dynamic> photoData = <String, dynamic>{"job": Firestore.instance.document(jobData.path), "url": url};
+      DocumentSnapshot locationSnapshot = await location.snapshots.first;
+      Map<String, dynamic> locationData = locationSnapshot.data;
+      if (locationData["photos"] == null)
+        locationData["photos"] = <Map<String, dynamic>>[];
+      locationData["photos"].add(photoData);
+      await location.setData(locationData);
       setState((){
-        Map<String, dynamic> finish(Map<String, dynamic> input){
-          Map<String, dynamic> newData = new Map<String, dynamic>.from(input);
-          if (newData["photos"] != null){
-            newData["photos"].add(url);
-          } else {
-            newData["photos"] = <String>[url];
-          }
-          return newData;
-        }
-
-        if (uploadCollection == "jobs"){
-          jobData = finish(jobData);
-          firebase.sendObject("jobs", jobData, objID: widget.jobID);
-        } else {
-          locationData = finish(locationData);
-          firebase.sendObject("locations", locationData, objID: jobData["location"]);
-        }
         populateLines();
       });
     });
   }
 
-  void populateLines (){
+  void populateLines(){
+    // TODO: Fill with StreamBuilders, instead of awaiting futures.
     cardLines.clear();
     DateFormat formatter = new DateFormat("h:mm a, EEEE, MMMM d");
     cardLines.add(
@@ -106,71 +53,49 @@ class _JobInfoCardState extends State<JobInfoCard> {
         child: new Stack(
           children: <Widget>[
             new Positioned.fill(
-              child: (){
-                List<String> photos = <String>[];
-                
-                if (jobData["photos"] != null) {
-                  photos.addAll(jobData["photos"]);
-                }
-                if (locationData != null && locationData["photos"] != null) {
-                  photos.addAll(locationData["photos"]);
-                }
-                
-                if (photos.length < 1) {
-                  if (locationData != null &&
-                       (locationData["address"] != null &&
-                        locationData["city"] != null &&
-                        locationData["state"] != null)
-                      ){
-                        return new Image.network(
-                          'https://maps.googleapis.com/maps/api/streetview?size=600x600&location=${locationData["address"]}, ${locationData["city"]}, ${locationData["state"]}&key=${api.gmaps}',
-                          fit: BoxFit.fitWidth,
-                        );
-                      }
-                  return new GestureDetector(
-                    child: new Image.asset('assets/placeholder.jpg', fit: BoxFit.fitWidth),
-                    onTap: goPhotos
-                  );
-                } else if (photos.length == 1) {
-                  return new GestureDetector(
-                    child: new Image.network(photos[0], fit: BoxFit.fitWidth),
-                    onTap: () async {
-                      await showDialog(
-                        context: context,
-                        child: new ZoomableImage(
-                          new NetworkImage(photos[0]),
-                          scale: 10.0,
-                          onTap: (){
-                            Navigator.pop(context);
-                          },
-                        ),
-                      );
-                    }
-                  );
-                } else {
-                  return new ListView(
-                    scrollDirection: Axis.horizontal,
-                    shrinkWrap: true,
-                    children: photos.map((String url){
-                      return new GestureDetector(
-                        child: new Image.network(url, fit: BoxFit.fitHeight),
-                        onTap: () async {
-                          await showDialog(
-                            context: context,
-                            child: new ZoomableImage(
-                              new NetworkImage(url),
-                              scale: 10.0,
-                              onTap: (){
-                                Navigator.pop(context);
-                              },
-                            ),
+              child: jobData["location"] == null ?
+                new Icon(Icons.album) :
+                new StreamBuilder<DocumentSnapshot>(
+                  stream: Firestore.instance.document(jobData["location"]).snapshots,
+                  builder: (BuildContext context, AsyncSnapshot<DocumentSnapshot> snapshot){
+                    if (!snapshot.hasData)
+                      return new Icon(Icons.photo_album);
+                    DocumentSnapshot location = snapshot.data;
+                    if (location["photos"] != null){
+                      // TODO: Consider reorganization of photos
+                      // Photo{"url": String, "job": DocumentReference}
+                      return new ListView(
+                        scrollDirection: Axis.horizontal,
+                        shrinkWrap: true,
+                        children: snapshot.data["photos"].map((String url){
+                          return new GestureDetector(
+                            child: new Image.network(url, fit: BoxFit.fitHeight),
+                            onTap: () async {
+                              await showDialog(
+                                context: context,
+                                child: new ZoomableImage(
+                                  new NetworkImage(url),
+                                  scale: 10.0,
+                                  onTap:(){
+                                    Navigator.pop(context);
+                                  }
+                                ),
+                              );
+                            },
                           );
-                        }
+                        }).toList(),
                       );
-                    }).toList(),
-                  );
-                }
-              }(),
+                    } else if ((location["address"] != null) &&
+                               (location["city"] != null) &&
+                               (location["state"] != null)){
+                      return new Image.network(
+                        'https://maps.googleapis.com/maps/api/streetview?size=600x600&location=${location["address"]}, ${location["city"]}, ${location["state"]}&key=${api.gmaps}'
+                      );
+                    } else {
+                      return new Icon(Icons.photo_album);
+                    }
+                  }
+                ),
             ),
             new Positioned(
               left: 8.0,
@@ -188,109 +113,103 @@ class _JobInfoCardState extends State<JobInfoCard> {
         ),
       ),
     );
-    if (jobData["datetime"] != null ){
+
+    if (jobData["datetime"] != null){
       cardLines.add(
         new ListTile(
-            leading: new Icon(Icons.access_time),
-            title:
-                new Text(formatter.format(DateTime.parse(jobData["datetime"])))),
+          leading: new Icon(Icons.access_time),
+          title: new Text(formatter.format(jobData["datetime"])),
+        ),
       );
     }
-
-    if (locationData != null) {
-      String address =
-        '${locationData["address"]}, ${locationData["city"]}, ${locationData["state"]}';
+    if (jobData["location"] != null){
       cardLines.add(
-        new ListTile(
-          title: new Text(locationData["name"]),
-          subtitle: new Text(address),
-          trailing: new IconButton(
-            icon: new Icon(Icons.navigation),
-            onPressed: () {
-              url_launcher.launch('google.navigation:q=$address');
-            },
-          ),
-          onTap: () {
-            Navigator.of(context).pushNamed('/browse/locations/${jobData["location"]}');
+        new StreamBuilder<DocumentSnapshot>(
+          stream: Firestore.instance.document(jobData["location"]).snapshots,
+          builder: (BuildContext context, AsyncSnapshot<DocumentSnapshot> snapshot){
+            if (!snapshot.hasData){
+              return new Divider(); // TODO: Consider other widgets.
+            }
+            DocumentSnapshot location = snapshot.data;
+            String fullAddress =
+              '${location["address"]}, ${location["city"]}, ${location["state"]}';
+            return new ListTile(
+              title: new Text(location["name"]),
+              subtitle: new Text(fullAddress),
+              trailing: new IconButton(
+                icon: new Icon(Icons.navigation),
+                onPressed: () {
+                  url_launcher.launch('google.navigation:q=$fullAddress');
+                },
+              ),
+              onTap: (){
+                Navigator.of(context).push(
+                  new MaterialPageRoute<Null>(
+                    builder: (BuildContext context) => new DataPage('locations', location)
+                  )
+                );
+              }
+            );
+          },
+        ),
+      );
+    }
+    cardLines.add(new Divider());
+    if (jobData["contacts"] != null){
+      cardLines.add(
+        new StreamBuilder<QuerySnapshot>(
+          stream: Firestore.instance.collection(jobData["contacts"]).snapshots,
+          builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot){
+            if (!snapshot.hasData)
+              return new Divider();
+            return new Column(
+              children: snapshot.data.documents.map((DocumentSnapshot contact){
+                Widget trailing = (contact["phoneNumbers"] != null) ?
+                                    new IconButton(
+                                      icon: new Icon(Icons.phone),
+                                      onPressed: (){
+                                        url_launcher.launch('tel:${contact["phoneNumbers"][0]["number"]}');
+                                      })
+                                    : null;
+                return new ListTile(
+                  title: new Text(contact["name"]),
+                  trailing: trailing,
+                  onTap: (){
+                    Navigator.of(context).push(
+                      new MaterialPageRoute<Null>(
+                        builder: (BuildContext context) => new DataPage('contacts', contact),
+                      ),
+                    );
+                  },
+                );
+              }).toList(),
+            );
           },
         ),
       );
     }
 
-    if (contactData != null) {
-      cardLines.add(new Divider());
-      contactData.forEach((String contactID, Map<String, dynamic> contact){
-        Widget trailing = (contact["phoneNumbers"] != null) ?
-                            new IconButton(
-                              icon: new Icon(Icons.phone),
-                              onPressed: (){
-                                url_launcher.launch('tel:${contact["phoneNumbers"][0]["number"]}');
-                              })
-                            : null;
-        cardLines.add(
-          new ListTile(
-            title: new Text(contact["name"]),
-            trailing: trailing,
-            onTap: (){
-              Navigator.of(context).pushNamed('/browse/contacts/$contactID');
-            },
-          )
-        );
-      });
-    }
-
-    if (userData != null) {
-      cardLines.add(new Divider());
-      List<Widget> assigned = <Widget>[];
-      userData.forEach( // TODO: Investigate null user value
-        (String userID, Map<String, dynamic> user){
-          assigned.add(
-            new ListTile(
-              title: new Text("${user["name"]}"),
-              /*onTap: (){
-                showDocumentCard(context, "users", userID);
-              },*/
-            )
-          );
-        }
-      );
-      cardLines.add(new ExpansionTile(
-        title: new Text("Employees assigned"),
-        children: assigned
-      ));
-    }
-  }
-
-  Future<Map<String, Map<String, dynamic>>> getUserData() async {
     if (jobData["users"] != null){
-      Map<String, Map<String, dynamic>> users = new Map<String, Map<String, dynamic>>();
-      for (String userID in jobData["users"].keys){
-        users[userID] = await firebase.getObject("users", userID);
-      }
-      return users;
-    } else {
-      return null;
-    }
-  }
-  // Map<contactID, <key, value>>
-  Future<Map<String, Map<String, dynamic>>> getContactData() async {
-    if (jobData["contacts"] != null) {
-      Map<String, Map<String, dynamic>> contacts = new Map<String, Map<String, dynamic>>();
-      for (String contactID in jobData["contacts"]){
-        // Future: Thread better, using Future.wait
-        contacts[contactID] = await firebase.getObject("contacts", contactID);
-      }
-      return contacts;
-    } else {
-      return null;
-    }
-  }
-
-  Future<Map<String, dynamic>> getLocationData() async {
-    if (jobData["location"] != null){
-      return await firebase.getObject("locations", jobData["location"]);
-    } else {
-      return null;
+      cardLines.add(
+        new StreamBuilder<QuerySnapshot>(
+          stream: Firestore.instance.collection(jobData["users"]).snapshots,
+          builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot){
+            if (!snapshot.hasData)
+              return new Divider();
+            return new ExpansionTile(
+              title: new Text("Employees assigned"),
+              children: snapshot.data.documents.map((DocumentSnapshot user){
+                return new ListTile(
+                  title: new Text(user["name"]),
+                  onTap: (){
+                    // TODO: Push a user card
+                  }
+                );
+              }).toList()
+            );
+          }
+        ),
+      );
     }
   }
 
@@ -298,23 +217,14 @@ class _JobInfoCardState extends State<JobInfoCard> {
   void initState(){
     super.initState();
     jobData = widget.jobData;
-    List<Future<dynamic>> futures = <Future<dynamic>>[getLocationData(), getContactData(), getUserData()];
-    Future.wait(futures).then((List<dynamic> results){
-      locationData = results[0];
-      contactData = results[1];
-      userData = results[2];
-      setState((){ populateLines(); });
-    });
+    populateLines();
   }
 
   @override
   Widget build(BuildContext context) {
-    return new Container(
-      padding: const EdgeInsets.fromLTRB(8.0, 28.0, 8.0, 12.0),
-      child: new Card(
-        child: new Column(
-          children: new List<Widget>.from(cardLines),
-        ),
+    return new Card(
+      child: new Column(
+        children: new List<Widget>.from(cardLines),
       ),
     );
   }
