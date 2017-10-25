@@ -27,7 +27,6 @@ class _NAgendaPageState extends State<AgendaPage> {
         child: new Icon(Icons.add),
         onPressed: () async {
           await Navigator.of(context).pushNamed('/create/jobs');
-          // TODO: Refresh
         },
       ),
       drawer: buildDrawer(context, 'agenda'),

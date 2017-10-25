@@ -3,7 +3,6 @@ import 'pages/agenda.dart';
 import 'pages/browser.dart';
 import 'pages/collection.dart';
 import 'pages/creator.dart';
-import 'pages/data.dart';
 import 'pages/login.dart';
 
 // Upcoming features
@@ -39,7 +38,7 @@ class _CybertronixAppState extends State<CybertronixApp> {
         builder: (BuildContext context) => new CollectionPage(path[2])
       );
     } else if (path[1] == "create") {
-      return new MaterialPageRoute<Map<String, dynamic>>(
+      return new MaterialPageRoute<Null>(
         settings: settings,
         builder: (BuildContext context) => new CreatorPage(path[2]),
         fullscreenDialog: true,

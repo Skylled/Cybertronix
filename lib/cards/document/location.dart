@@ -197,8 +197,8 @@ class _LocationInfoCardState extends State<LocationInfoCard> {
       cardLines.add(new Divider());
       locationData["contacts"].forEach((DocumentReference contact) {
         cardLines.add(
-          new FutureBuilder<DocumentSnapshot>(
-            future: contact.snapshots.first,
+          new StreamBuilder<DocumentSnapshot>(
+            stream: contact.snapshots,
             builder: (BuildContext context, AsyncSnapshot<DocumentSnapshot> snapshot){
               if (!snapshot.hasData)
                 return new ListTile(title: new Text("Loading contact..."));

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:strings/strings.dart';
 import 'package:firebase_firestore/firebase_firestore.dart';
+import 'package:intl/intl.dart';
 import '../drawer.dart';
 
 /// This is a page that lists all items in a collection,
@@ -41,7 +42,7 @@ class _SelectorPageState extends State<SelectorPage>{
     return new FloatingActionButton(
       child: new Icon(Icons.add),
       onPressed: (){
-        Navigator.of(context).pushNamed('/create/${widget.collection}}').then((Map<String, dynamic> res){
+        Navigator.of(context).pushNamed('/create/${widget.collection}}').then((DocumentSnapshot res){
           if (res != null) { // If CreatorPage popped with data
             debugPrint("Got data from CreatorPage");
             debugPrint(res.toString());
@@ -91,6 +92,28 @@ class _SelectorPageState extends State<SelectorPage>{
             }).toList(),
           );
         },
+      ),
+    );
+  }
+}
+
+class _JobLeadIcon extends StatelessWidget{
+  final DocumentSnapshot jobData;
+
+  _JobLeadIcon(this.jobData);
+
+  Widget build(BuildContext context){
+    DateFormat month = new DateFormat.MMMM();
+    DateFormat day = new DateFormat.d();
+    DateTime dt = jobData["datetime"];
+    // TODO: Make sure datetime db objects become datetime dart objects
+    return new Padding(
+      padding: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 4.0),
+      child: new Column(
+        children: <Widget>[
+          new Text(month.format(dt).substring(0, 3)),
+          new Text(day.format(dt)),
+        ],
       ),
     );
   }

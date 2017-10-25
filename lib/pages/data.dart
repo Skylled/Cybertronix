@@ -25,13 +25,15 @@ class _DataPageState extends State<DataPage> {
     if (widget.collection == "locations"){
       if (document["packages"] != null){
         document["packages"].forEach((DocumentReference packageRef){
-          // TODO: FutureBuilder
-          packageRef.snapshots.single.then((DocumentSnapshot packageData){
-            setState((){
-              // TODO: Consider using the summary card here.
-              children.add(new PackageInfoCard(packageData));
-            });
-          });
+          children.add(
+            new StreamBuilder<DocumentSnapshot>(
+              stream: packageRef.snapshots,
+              builder: (BuildContext context, AsyncSnapshot<DocumentSnapshot> snapshot){
+                if (!snapshot.hasData) return new Text("Loading...");
+                return new PackageInfoCard(snapshot.data);
+              },
+            ),
+          );
         });
       }
     }
@@ -67,14 +69,10 @@ class _DataPageState extends State<DataPage> {
             child: new Text("Edit info"),
             onPressed: (){
               Navigator.of(context).push(
-                new MaterialPageRoute<DocumentSnapshot>(
+                new MaterialPageRoute<Null>(
                   builder: (BuildContext context) => new CreatorPage(widget.collection)
                 ),
-              ).then((DocumentSnapshot newSnapshot){
-                setState((){
-                  buildChildren();
-                });
-              });
+              );
             },
           )
         );
