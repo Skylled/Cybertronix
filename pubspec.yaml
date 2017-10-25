@@ -17,6 +17,7 @@ dependencies:
   firebase_storage:
   firebase_database:
   firebase_firestore:
+    path: ../firebase_firestore/
   meta: ^1.0.5
   path:
   zoomable_image:
