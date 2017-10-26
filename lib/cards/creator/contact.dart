@@ -7,13 +7,11 @@ import 'components.dart';
 class ContactCreatorCard extends StatefulWidget {
   /// The data of an existing contact to be edited (Optional)
   final Map<String, dynamic> contactData;
-  /// The ID of an existing contact to edit (Optional)
-  final String contactID;
   
   final Function(Map<String, dynamic>) changeData;
 
   /// Creates a Contact creator/editor in a Card
-  ContactCreatorCard(this.changeData, {Map<String, dynamic> contactData, this.contactID}):
+  ContactCreatorCard(this.changeData, {Map<String, dynamic> contactData}):
     this.contactData = contactData ?? <String, dynamic>{};
 
   @override

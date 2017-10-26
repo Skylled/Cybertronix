@@ -8,13 +8,11 @@ import 'components.dart';
 class LocationCreatorCard extends StatefulWidget {
   /// The data of an existing Location to be edited (Optional)
   final Map<String, dynamic> locationData;
-  /// The ID of an existing Location to edit (Optional)
-  final String locationID;
 
   final Function(Map<String, dynamic>) changeData;
 
   /// Creates a Location creator/editor in a Card
-  LocationCreatorCard(this.changeData, {Map<String, dynamic> locationData, this.locationID}):
+  LocationCreatorCard(this.changeData, {Map<String, dynamic> locationData}):
     this.locationData = locationData ?? <String, dynamic>{};
   
   @override
@@ -25,6 +23,7 @@ class _LocationCreatorCardState extends State<LocationCreatorCard> {
   List<CreatorItem<dynamic>> _items;
   Map<String, dynamic> currentData;
 
+  @override
   void initState(){
     super.initState();
     currentData = widget.locationData != null ? new Map<String, dynamic>.from(widget.locationData) : <String, dynamic> {};

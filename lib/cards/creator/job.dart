@@ -9,14 +9,11 @@ import 'components.dart';
 class JobCreatorCard extends StatefulWidget {
   /// The data of an existing job to be edited (Optional)
   final Map<String, dynamic> jobData;
-  /// The ID of an existing job to edit (Optional)
-  final String jobID;
 
   final Function(Map<String, dynamic>) changeData;
 
   /// Creates a job creator/editor in a Card
-  JobCreatorCard(this.changeData, {Map<String, dynamic> jobData, String jobID}):
-    this.jobID = jobID,
+  JobCreatorCard(this.changeData, {Map<String, dynamic> jobData}):
     this.jobData = jobData ?? <String, dynamic>{};
 
   @override
