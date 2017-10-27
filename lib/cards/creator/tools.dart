@@ -4,6 +4,7 @@ import 'package:firebase_firestore/firebase_firestore.dart';
 import '../../pages/selector.dart';
 
 /// Takes a [DateTime] and replaces its time with one from a [TimeOfDay]
+/// When Dart 2.0 rolls around, I can replace this with [DateTime.with]
 DateTime replaceTimeOfDay(DateTime dt, TimeOfDay tod){
   return new DateTime(
     dt.year,
@@ -24,46 +25,6 @@ DateTime replaceDate(DateTime original, DateTime newdt){
     original.hour,
     original.minute
   );
-}
-
-/// AsyncContactChip creates a [Chip] that displays "Loading..." until
-/// the provided [Future] returns.
-/// In this instance, the text it changes to is the Map's `name` property.
-/// But it can be easily modified for other uses.
-/// I love this little snippet for some reason.
-class AsyncChip extends StatefulWidget {
-  final Future<Map<String, dynamic>> contactData;
-  final VoidCallback onDeleted;
-
-  /// Takes a [Future] Contact and a [VoidCallback] and creates
-  /// a [Chip] that when the Future returns will read the Contact's
-  /// name.
-  AsyncChip(this.contactData, this.onDeleted);
-
-  @override
-  _AsyncChipState createState() => new _AsyncChipState();
-}
-
-class _AsyncChipState extends State<AsyncChip>{
-  String label;
-  @override
-  void initState() {
-    super.initState();
-    label = "Loading...";
-    widget.contactData.then((Map<String, dynamic> data){
-      setState((){
-        label = data["name"];
-      });
-    });
-  }
-
-  @override
-  Widget build(BuildContext context){
-    return new Chip(
-      label: new Text(label),
-      onDeleted: widget.onDeleted
-    );
-  }
 }
 
 /// Open a [SelectorPage] to pick an object.

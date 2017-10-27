@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../components.dart';
+import '../tools.dart';
 
 class DieselPanelCreatorCard extends StatefulWidget {
   final Map<String, dynamic> initialData;

@@ -2,7 +2,7 @@ import 'package:intl/intl.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_firestore/firebase_firestore.dart';
 import '../../firebase.dart' as firebase;
-import 'components.dart';
+import 'tools.dart';
 
 /// This [Card] opens in a dialog, and lets you create a 
 /// new job, or, if fed in data and an ID, edit an existing job.

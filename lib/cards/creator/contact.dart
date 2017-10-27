@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'components.dart';
+import 'tools.dart';
 
 /// This [Card] opens in a dialog, and lets you create a 
 /// new contact, or, if fed in data and an ID, edit an existing

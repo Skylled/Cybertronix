@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_firestore/firebase_firestore.dart';
-import 'components.dart';
+import 'tools.dart';
 
 /// This [Card] opens in a dialog, and lets you create a 
 /// new Location, or, if fed in data and an ID, edit an existing
