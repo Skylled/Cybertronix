@@ -17,6 +17,7 @@ class CreatorPage extends StatefulWidget {
 class _CreatorPageState extends State<CreatorPage> {
   List<Widget> children;
   Map<String, dynamic> currentData;
+  bool saved = false;
 
   /// This is a callback, passed to cards to affect this widget's state
   void changeData(Map<String, dynamic> newData){
@@ -82,15 +83,16 @@ class _CreatorPageState extends State<CreatorPage> {
                 Firestore.instance.collection(widget.collection).document();
             await docRef.setData(currentData);
             DocumentSnapshot newSnapshot = await docRef.snapshots.first;
+            saved = true;
             Navigator.pop(context, newSnapshot);
           },
         )
       ],
       drawer: buildDrawer(context, 'creator'),
       body: new WillPopScope(
-        // MAJOR: Don't show the onWillPop if popping from Save & Finish
         onWillPop: () async {
-          await showDialog<bool>(
+          if (saved) return true; // Don't show the dialog on Save & Quit
+          return await showDialog<bool>(
             context: context,
             child: new SimpleDialog(
               title: new Text("Your changes have not been saved.\nAre you sure you'd like to leave this page?"),
