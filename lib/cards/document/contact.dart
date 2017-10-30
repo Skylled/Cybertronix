@@ -27,9 +27,8 @@ class _ContactInfoCardState extends State<ContactInfoCard> {
     firebase.uploadPhoto(imageFile).then((String url) async {
       Map<String, dynamic> newData = new Map<String, dynamic>.from(contactData.data);
       newData["photo"] = url;
-      DocumentReference reference = Firestore.instance.document(contactData.path);
-      await reference.setData(newData);
-      contactData = await reference.snapshots.first;
+      await contactData.reference.setData(newData);
+      contactData = await contactData.reference.snapshots.first;
       setState((){
         populateLines();
       });
@@ -48,6 +47,7 @@ class _ContactInfoCardState extends State<ContactInfoCard> {
     share.share(shareString);
   }
 
+  // TODO: Refactor to StreamBuilder
   void populateLines(){
     Color color;
     cardLines.clear();

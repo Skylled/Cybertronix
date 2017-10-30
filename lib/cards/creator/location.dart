@@ -239,9 +239,8 @@ class _LocationCreatorCardState extends State<LocationCreatorCard> {
                             context: context,
                             collection: "contacts",
                           );
-                          DocumentReference chosenRef = Firestore.instance.document(chosen.path);
-                          if (chosen != null && !field.value.contains(chosenRef)){
-                            field.onChanged(addContact(field.value, chosenRef));
+                          if (chosen != null && !field.value.contains(chosen.reference)){
+                            field.onChanged(addContact(field.value, chosen.reference));
                           }
                         }
                       ));

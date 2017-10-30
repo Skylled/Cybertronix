@@ -219,11 +219,10 @@ class _JobCreatorCardState extends State<JobCreatorCard> {
                                 collection: "locations",
                                 initialObjects: <DocumentReference>[field.value],
                               );
-                              DocumentReference chosenRef = Firestore.instance.document(chosen.path);
-                              if (chosen != null && chosenRef != field.value){
+                              if (chosen != null && chosen.reference != field.value){
                                 debugPrint("Chosen was okay.");
                                 tempName = chosen["name"];
-                                field.onChanged(chosenRef);
+                                field.onChanged(chosen.reference);
                               } else {
                                 debugPrint("Chosen was not okay!");
                               }
@@ -286,10 +285,9 @@ class _JobCreatorCardState extends State<JobCreatorCard> {
                                 collection: "customers",
                                 initialObjects: <DocumentReference>[field.value],
                               );
-                              DocumentReference chosenRef = Firestore.instance.document(chosen.path);
-                              if (chosen != null && chosenRef != field.value){
+                              if (chosen != null && chosen.reference != field.value){
                                 tempName = chosen["name"];
-                                field.onChanged(chosen["id"]);
+                                field.onChanged(chosen.reference);
                               }
                             },
                           ),
@@ -349,9 +347,8 @@ class _JobCreatorCardState extends State<JobCreatorCard> {
                                   collection: "contacts",
                                   initialObjects: field.value,
                                 );
-                                DocumentReference chosenRef = Firestore.instance.document(chosen.path);
-                                if (chosen != null && !field.value.contains(chosenRef)){
-                                  field.onChanged(addObj(field.value, chosenRef));
+                                if (chosen != null && !field.value.contains(chosen.reference)){
+                                  field.onChanged(addObj(field.value, chosen.reference));
                                 }
                               },
                             ),

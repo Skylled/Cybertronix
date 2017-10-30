@@ -84,9 +84,8 @@ class _LocationInfoCardState extends State<LocationInfoCard> {
       if (newData["photos"] == null)
         newData["photos"] = <Map<String, dynamic>>[];
       newData["photos"].add(<String, dynamic>{"url": url});
-      DocumentReference reference = Firestore.instance.document(locationData.path);
-      await reference.setData(newData);
-      locationData = await reference.snapshots.first;
+      await locationData.reference.setData(newData);
+      locationData = await locationData.reference.snapshots.first;
       setState((){
         populateLines();
       });

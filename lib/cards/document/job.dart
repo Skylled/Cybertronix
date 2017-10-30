@@ -30,7 +30,7 @@ class _JobInfoCardState extends State<JobInfoCard> {
     File imageFile = await ImagePicker.pickImage();
     firebase.uploadPhoto(imageFile).then((String url) async {
       DocumentReference location = jobData["location"];
-      Map<String, dynamic> photoData = <String, dynamic>{"job": Firestore.instance.document(jobData.path), "url": url};
+      Map<String, dynamic> photoData = <String, dynamic>{"job": jobData.reference, "url": url};
       DocumentSnapshot locationSnapshot = await location.snapshots.first;
       Map<String, dynamic> locationData = locationSnapshot.data;
       if (locationData["photos"] == null)
