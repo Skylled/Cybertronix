@@ -33,14 +33,20 @@ class _CreatorPageState extends State<CreatorPage> {
       if (widget.collection == "locations"){
         if (currentData["packages"] != null){
           currentData["packages"].forEach((Map<String, Map<String, dynamic>> packageData){
-            //children.add(); // MAJOR: I need a lot of cards here.
+            children.add(
+              new PackageSummaryCard(
+                packageData,
+                changeData,
+                (){ currentData["packages"].remove(packageData); },
+              ),
+            );
           });
         }
+        // TODO: "Add a package" option here.
       }
     } else {
       children = <Widget>[
-        getCreatorCard(widget.collection, changeData),
-        getCreatorCard("contacts", changeData), // This is a debug line
+        getCreatorCard(widget.collection, changeData)
       ];
       if (widget.collection == "locations"){
         children.add(
@@ -49,6 +55,8 @@ class _CreatorPageState extends State<CreatorPage> {
             trailing: new Icon(Icons.add),
             onTap: (){
               // TODO: Hook into power selection.
+              // TODO: MAJOR: I need to refresh this page to add a summary card, to reflect the change made.
+              // setState((){ children.add( new PackageSummaryCard() ); });
             },
           ),
         );
@@ -79,7 +87,7 @@ class _CreatorPageState extends State<CreatorPage> {
           textColor: Theme.of(context).accentColor,
           onPressed: () async {
             DocumentReference docRef = widget.snapshot != null ?
-                Firestore.instance.document(widget.snapshot.path) :
+                widget.snapshot.reference :
                 Firestore.instance.collection(widget.collection).document();
             await docRef.setData(currentData);
             DocumentSnapshot newSnapshot = await docRef.snapshots.first;
@@ -111,6 +119,97 @@ class _CreatorPageState extends State<CreatorPage> {
         },
         child: new ListView(
           children: new List<Widget>.from(children),
+        ),
+      ),
+    );
+  }
+}
+
+class PackageSummaryCard extends StatefulWidget{
+  final Map<String, dynamic> packageData;
+  final Function(Map<String, dynamic>) changeData;
+  final Function() removeCallback;
+
+  // TODO: Figure out where to put this.
+
+  PackageSummaryCard(this.packageData, this.changeData, this.removeCallback);
+
+  @override
+  _PackageSummaryCardState createState() => new _PackageSummaryCardState();
+}
+
+class _PackageSummaryCardState extends State<PackageSummaryCard>{
+  Map<String, dynamic> packageData;
+
+  @override
+  void initState(){
+    super.initState();
+    packageData = widget.packageData;
+  }
+
+  List<Widget> _getLines(){
+    List<Widget> lines = <Widget>[];
+    if (packageData["panel"] != null){
+      lines.add(new ListTile(
+        title: new Text("${packageData["panel"]["manufacturer"]} ${packageData["power"]}")
+      ));
+      if (packageData["power"] == "Electric" && packageData["tswitch" != null]){
+        lines.add(new ListTile(
+          title: new Text("with Transfer Switch")
+        ));
+      }
+    }
+    if (packageData["motor"] != null){
+      lines.add(new ListTile(
+        title: new Text("${packageData["motor"]["manufacturer"]} ${packageData["power"] == "Diesel" ? "Engine" : "Motor"}"),
+      ));
+    }
+    if (packageData["pump"] != null){
+      lines.add(new ListTile(
+        title: new Text("${packageData["pump"]["manufacturer"]}")
+      ));
+    }
+    if (packageData["jockeypanel"] != null){
+      lines.add(new ListTile(
+        title: new Text("${packageData["jockeypanel"]["manufacturer"]} Jockey")
+      ));
+    }
+    if (packageData["jockeypump"] != null){
+      lines.add(new ListTile(
+        title: new Text("${packageData["jockeypump"]["manufacturer"]} Jockey Pump")
+      ));
+    }
+    lines.add(new ButtonBar(
+      children: <Widget>[
+        new FlatButton(
+          child: new Text("Remove"),
+          onPressed: () {
+            // TODO: Popup Confirmation
+            // TODO: Dismiss the card
+            // Future: Animation to dismiss would be cool!
+            // TODO: Remove the package from the location.
+          },
+        ),
+        new FlatButton(
+          child: new Text("Edit"),
+          onPressed: () async {
+            // TODO: Navigator.Push a package editor route
+            //await Navigator.push(context, new MaterialPageRoute());
+          },
+        )
+      ],
+    ));
+    return lines;
+  }
+
+  @override
+  Widget build(BuildContext build){
+    return new Container(
+      padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 12.0),
+      child: new Card(
+        child: new Column(
+          children: _getLines()
+          // TODO: Buttons!
         ),
       ),
     );
