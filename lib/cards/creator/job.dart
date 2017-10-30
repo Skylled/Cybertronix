@@ -1,7 +1,6 @@
 import 'package:intl/intl.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_firestore/firebase_firestore.dart';
-import '../../firebase.dart' as firebase;
 import 'tools.dart';
 
 /// This [Card] opens in a dialog, and lets you create a 
@@ -47,14 +46,17 @@ class _JobCreatorCardState extends State<JobCreatorCard> {
     // TODO: MAJOR: Refactor here!
     super.initState();
     currentData = widget.jobData != null ? new Map<String, dynamic>.from(widget.jobData) : <String, dynamic>{};
-    if (currentData["location"] != null){
-      firebase.getObject("locations", currentData["location"]).then((Map<String, dynamic> data){
-        locationName = data["name"];
+    DocumentReference locationRef = currentData["location"];
+    DocumentReference customerRef = currentData["customer"];
+    if (locationRef != null){
+      locationRef.snapshots.first.then((DocumentSnapshot snapshot){
+        // TODO: Might need a setState here.
+        locationName = snapshot["name"];
       });
     }
-    if (currentData["customer"] != null){
-      firebase.getObject("customers", currentData["customer"]).then((Map<String, dynamic> data){
-        customerName = data["name"];
+    if (customerRef != null){
+      customerRef.snapshots.first.then((DocumentSnapshot snapshot){
+        customerName = snapshot["name"];
       });
     }
     _items = getJobItems();

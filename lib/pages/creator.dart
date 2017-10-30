@@ -103,6 +103,7 @@ class _CreatorPageState extends State<CreatorPage> {
           return await showDialog<bool>(
             context: context,
             child: new SimpleDialog(
+              // TODO: This dialog is kinda uggo. Adjust text sizes maybe?
               title: new Text("Your changes have not been saved.\nAre you sure you'd like to leave this page?"),
               children: <Widget>[
                 new SimpleDialogOption(

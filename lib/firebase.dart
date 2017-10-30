@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'dart:io';
-import 'package:firebase_database/firebase_database.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
@@ -76,12 +75,4 @@ Future<bool> ensureLoggedIn() async {
     firebaseMessaging.subscribeToTopic(fUser.uid);
     return true;
   }
-}
-
-Map<String, DatabaseReference> _refs;
-
-/// Retrieve a specific object from a [category] by its [id].
-Future<Map<String, dynamic>> getObject(String category, String id) async {
-  DataSnapshot snap = await _refs[category].child(id).once();
-  return snap.value;
 }
