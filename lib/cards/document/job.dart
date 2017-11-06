@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart' as url_launcher;
 import 'package:image_picker/image_picker.dart';
 import 'package:zoomable_image/zoomable_image.dart';
-import 'package:firebase_firestore/firebase_firestore.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 import '../../pages/data.dart';
 
@@ -44,7 +44,6 @@ class _JobInfoCardState extends State<JobInfoCard> {
   }
 
   void populateLines(){
-    // TODO: Fill with StreamBuilders, instead of awaiting futures.
     cardLines.clear();
     DateFormat formatter = new DateFormat("h:mm a, EEEE, MMMM d");
     cardLines.add(

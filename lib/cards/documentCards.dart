@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:firebase_firestore/firebase_firestore.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'document/job.dart';
 import 'document/contact.dart';
 import 'document/location.dart';

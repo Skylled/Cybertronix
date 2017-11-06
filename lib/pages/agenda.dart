@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:firebase_firestore/firebase_firestore.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import '../drawer.dart';
 
 /// A two week summary page of upcoming jobs
@@ -32,8 +32,7 @@ class _NAgendaPageState extends State<AgendaPage> {
       drawer: buildDrawer(context, 'agenda'),
       body: new StreamBuilder<QuerySnapshot>(
         stream: Firestore.instance.collection("jobs")
-                                  .where("datetime", ">=", today)
-                                  .where("datetime", "<", twoweeks)
+                                  .where("datetime", isGreaterThanOrEqualTo: today, isLessThan: twoweeks)
                                   .orderBy("datetime").snapshots,
         builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot){
           if (!snapshot.hasData) return new Text("Loading...");

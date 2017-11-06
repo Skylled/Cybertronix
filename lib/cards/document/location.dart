@@ -6,7 +6,7 @@ import 'package:share/share.dart' as share;
 import 'package:intl/intl.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:zoomable_image/zoomable_image.dart';
-import 'package:firebase_firestore/firebase_firestore.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import '../../firebase.dart' as firebase;
 import '../../api.dart' as api;
 import '../../pages/data.dart';
@@ -27,7 +27,7 @@ class _NPreviousJobsTileState extends State<NPreviousJobsTile> {
   Widget build(BuildContext context) {
     return new StreamBuilder<QuerySnapshot>(
       stream: Firestore.instance.collection("jobs")
-                       .where("location", "==", widget.locationRef)
+                       .where("location", isEqualTo: widget.locationRef)
                        .orderBy("datetime")
                        .snapshots,
       builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot){

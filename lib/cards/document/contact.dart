@@ -5,7 +5,7 @@ import 'package:url_launcher/url_launcher.dart' as url_launcher;
 import 'package:share/share.dart' as share;
 import 'package:image_picker/image_picker.dart';
 import 'package:zoomable_image/zoomable_image.dart';
-import 'package:firebase_firestore/firebase_firestore.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import '../../firebase.dart' as firebase;
 
 /// A Material Card with a contact's info
@@ -47,7 +47,6 @@ class _ContactInfoCardState extends State<ContactInfoCard> {
     share.share(shareString);
   }
 
-  // TODO: Refactor to StreamBuilder
   void populateLines(){
     Color color;
     cardLines.clear();

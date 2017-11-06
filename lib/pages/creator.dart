@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:strings/strings.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import '../drawer.dart';
 import '../cards/creatorCards.dart';
-import 'package:firebase_firestore/firebase_firestore.dart';
 
 class CreatorPage extends StatefulWidget {
   final String collection;
@@ -131,8 +131,6 @@ class PackageSummaryCard extends StatefulWidget{
   final Function(Map<String, dynamic>) changeData;
   final Function() removeCallback;
 
-  // TODO: Figure out where to put this.
-
   PackageSummaryCard(this.packageData, this.changeData, this.removeCallback);
 
   @override
@@ -210,7 +208,6 @@ class _PackageSummaryCardState extends State<PackageSummaryCard>{
       child: new Card(
         child: new Column(
           children: _getLines()
-          // TODO: Buttons!
         ),
       ),
     );

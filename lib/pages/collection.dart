@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:strings/strings.dart';
 import 'package:intl/intl.dart';
-import 'package:firebase_firestore/firebase_firestore.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import '../drawer.dart';
 import '../pages/data.dart';
 

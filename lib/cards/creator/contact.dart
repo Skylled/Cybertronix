@@ -228,7 +228,6 @@ class _ContactCreatorCardState extends State<ContactCreatorCard> {
                   child: new Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 16.0),
                     child: new TextFormField(
-                      // TODO: New lines only show when typed on?
                       maxLines: null,
                       controller: item.textController,
                       decoration: new InputDecoration(

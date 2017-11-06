@@ -15,8 +15,8 @@ dependencies:
   firebase_auth:
   firebase_messaging:
   firebase_storage:
-  firebase_firestore:
-    path: ../firebase_firestore/
+  cloud_firestore:
+    path: ../cloud_firestore/
   path:
   zoomable_image:
   strings:

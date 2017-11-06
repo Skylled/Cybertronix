@@ -1,6 +1,6 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
-import 'package:firebase_firestore/firebase_firestore.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import '../../pages/selector.dart';
 
 /// Takes a [DateTime] and replaces its time with one from a [TimeOfDay]

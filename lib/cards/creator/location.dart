@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:firebase_firestore/firebase_firestore.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'tools.dart';
 
 /// This [Card] opens in a dialog, and lets you create a 
