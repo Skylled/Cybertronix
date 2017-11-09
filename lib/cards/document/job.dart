@@ -13,18 +13,10 @@ import '../../firebase.dart' as firebase;
 import '../../api.dart' as api;
 
 /// A Material Card with a job's info
-class JobInfoCard extends StatefulWidget {
+class JobInfoCard extends StatelessWidget {
   final DocumentSnapshot jobData;
 
   JobInfoCard(this.jobData);
-
-  @override
-  _JobInfoCardState createState() => new _JobInfoCardState();
-}
-
-class _JobInfoCardState extends State<JobInfoCard> {
-  List<Widget> cardLines = <Widget>[];
-  DocumentSnapshot jobData;
 
   Future<Null> goPhotos() async {
     File imageFile = await ImagePicker.pickImage();
@@ -37,16 +29,13 @@ class _JobInfoCardState extends State<JobInfoCard> {
         locationData["photos"] = <Map<String, dynamic>>[];
       locationData["photos"].add(photoData);
       await location.setData(locationData);
-      setState((){
-        populateLines();
-      });
     });
   }
 
-  void populateLines(){
-    cardLines.clear();
+  List<Widget> buildChildren(BuildContext context){
+    List<Widget> children = <Widget>[];
     DateFormat formatter = new DateFormat("h:mm a, EEEE, MMMM d");
-    cardLines.add(
+    children.add(
       new Container(
         height: 200.0,
         child: new Stack(
@@ -114,7 +103,7 @@ class _JobInfoCardState extends State<JobInfoCard> {
     );
 
     if (jobData["datetime"] != null){
-      cardLines.add(
+      children.add(
         new ListTile(
           leading: new Icon(Icons.access_time),
           title: new Text(formatter.format(jobData["datetime"])),
@@ -122,7 +111,7 @@ class _JobInfoCardState extends State<JobInfoCard> {
       );
     }
     if (jobData["location"] != null){
-      cardLines.add(
+      children.add(
         new StreamBuilder<DocumentSnapshot>(
           stream: Firestore.instance.document(jobData["location"]).snapshots,
           builder: (BuildContext context, AsyncSnapshot<DocumentSnapshot> snapshot){
@@ -153,9 +142,9 @@ class _JobInfoCardState extends State<JobInfoCard> {
         ),
       );
     }
-    cardLines.add(new Divider());
+    children.add(new Divider());
     if (jobData["contacts"] != null){
-      cardLines.add(
+      children.add(
         new StreamBuilder<QuerySnapshot>(
           stream: Firestore.instance.collection(jobData["contacts"]).snapshots,
           builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot){
@@ -189,7 +178,7 @@ class _JobInfoCardState extends State<JobInfoCard> {
     }
 
     if (jobData["users"] != null){
-      cardLines.add(
+      children.add(
         new StreamBuilder<QuerySnapshot>(
           stream: Firestore.instance.collection(jobData["users"]).snapshots,
           builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot){
@@ -210,20 +199,14 @@ class _JobInfoCardState extends State<JobInfoCard> {
         ),
       );
     }
-  }
-
-  @override
-  void initState(){
-    super.initState();
-    jobData = widget.jobData;
-    populateLines();
+    return children;
   }
 
   @override
   Widget build(BuildContext context) {
     return new Card(
       child: new Column(
-        children: new List<Widget>.from(cardLines),
+        children: buildChildren(context),
       ),
     );
   }
