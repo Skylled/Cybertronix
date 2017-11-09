@@ -7,7 +7,8 @@ import '../cards/creatorCards.dart';
 class PackageCreatorPage extends StatefulWidget {
   final Map<String, dynamic> initialData;
 
-  PackageCreatorPage(this.initialData);
+  PackageCreatorPage({Map<String, dynamic> initialData}):
+    this.initialData = initialData ?? <String, dynamic>{};
 
   @override
   _PackageCreatorPageState createState() => new _PackageCreatorPageState();
@@ -57,7 +58,7 @@ class _PackageCreatorPageState extends State<PackageCreatorPage> {
             onPressed: (){ Navigator.pop(context); },
           ),
           new FlatButton(
-            child: new Text("Save & Finish"),
+            child: new Text("Finish"),
             textColor: Theme.of(context).accentColor,
             onPressed: (){
               saved = true;
