@@ -9,18 +9,10 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import '../../firebase.dart' as firebase;
 
 /// A Material Card with a contact's info
-class ContactInfoCard extends StatefulWidget {
+class ContactInfoCard extends StatelessWidget {
   final DocumentSnapshot contactData;
 
   ContactInfoCard(this.contactData);
-
-  @override
-  _ContactInfoCardState createState() => new _ContactInfoCardState();
-}
-
-class _ContactInfoCardState extends State<ContactInfoCard> {
-  List<Widget> cardLines = <Widget>[];
-  DocumentSnapshot contactData;
 
   Future<Null> goPhotos() async {
     File imageFile = await ImagePicker.pickImage();
@@ -28,10 +20,6 @@ class _ContactInfoCardState extends State<ContactInfoCard> {
       Map<String, dynamic> newData = new Map<String, dynamic>.from(contactData.data);
       newData["photo"] = url;
       await contactData.reference.setData(newData);
-      contactData = await contactData.reference.snapshots.first;
-      setState((){
-        populateLines();
-      });
     });
   }
 
@@ -47,10 +35,10 @@ class _ContactInfoCardState extends State<ContactInfoCard> {
     share.share(shareString);
   }
 
-  void populateLines(){
+  List<Widget> buildChildren(BuildContext context){
     Color color;
-    cardLines.clear();
-    cardLines.add(
+    List<Widget> children = <Widget>[];
+    children.add(
       new Container( // Future: Make this a sliver
         height: 200.0,
         child: new Stack(
@@ -109,17 +97,17 @@ class _ContactInfoCardState extends State<ContactInfoCard> {
       ),
     );
     if (contactData["company"] != null){
-      cardLines.add(
+      children.add(
         new ListTile(
           leading: new Icon(Icons.business),
           title: new Text(contactData["company"]),
         ),
       );
     }
-    cardLines.add(new Divider());
+    children.add(new Divider());
     if (contactData["phoneNumbers"] != null){
       contactData["phoneNumbers"].forEach((Map<String, String> phone){
-        cardLines.add(
+        children.add(
           new ListTile(
             leading: (){
               if (phone["type"] == "Cell")
@@ -150,7 +138,7 @@ class _ContactInfoCardState extends State<ContactInfoCard> {
       });
     }
     if (contactData["email"] != null){
-      cardLines.add(
+      children.add(
         new ListTile(
           title: new Text(contactData["email"]),
           trailing: new IconButton(
@@ -162,20 +150,14 @@ class _ContactInfoCardState extends State<ContactInfoCard> {
         ),
       );
     }
-  }
-
-  @override
-  void initState(){
-    super.initState();
-    contactData = widget.contactData;
-    populateLines();
+    return children;
   }
 
   @override
   Widget build(BuildContext context) {
     return new Card(
       child: new Column(
-        children: new List<Widget>.from(cardLines)
+        children: buildChildren(context),
       ),
     );
   }
