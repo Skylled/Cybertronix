@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 
 
 /// A detailed card with all the info about a panel package, returned
@@ -7,7 +6,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 class PackageInfoCard extends StatelessWidget {
 
   /// This info comes direct from the location card's data
-  final DocumentSnapshot packageData;
+  final Map<String, dynamic> packageData;
 
   /// A detailed card with all the info about a panel package, returned
   /// from Firebase, organized into [ExpansionPanel]s.
