@@ -40,7 +40,7 @@ Drawer buildDrawer(BuildContext context, String currentPage) {
         ),
         new ListTile(
           leading: new Icon(Icons.widgets),
-          selected: ((currentPage == "browse")|| (currentPage == "collection")),
+          selected: ((currentPage == "browse")|| (currentPage == "document")),
           title: new Text("Data Browser"),
           onTap: goBrowse
         )

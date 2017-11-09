@@ -46,7 +46,7 @@ class _NPreviousJobsTileState extends State<NPreviousJobsTile> {
               onTap: (){
                 Navigator.of(context).push(
                   new MaterialPageRoute<Null>(
-                    builder: (BuildContext context) => new DataPage('jobs', document)
+                    builder: (BuildContext context) => new DataPage('jobs', document.reference)
                   ),
                 );
               },
@@ -212,7 +212,7 @@ class _LocationInfoCardState extends State<LocationInfoCard> {
                 onTap: (){
                   Navigator.of(context).push(
                     new MaterialPageRoute<Null>(
-                      builder: (BuildContext context) => new DataPage("contacts", contactData),
+                      builder: (BuildContext context) => new DataPage("contacts", contact),
                     ),
                   );
                 },

@@ -87,7 +87,7 @@ class DocumentListView extends StatelessWidget {
               onTap: (){
                 Navigator.of(context).push(
                   new MaterialPageRoute<Null>(
-                    builder: (BuildContext context) => new DataPage(collection, document)
+                    builder: (BuildContext context) => new DataPage(collection, document.reference)
                   )
                 );
               },

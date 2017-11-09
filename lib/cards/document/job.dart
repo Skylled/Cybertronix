@@ -144,7 +144,7 @@ class _JobInfoCardState extends State<JobInfoCard> {
               onTap: (){
                 Navigator.of(context).push(
                   new MaterialPageRoute<Null>(
-                    builder: (BuildContext context) => new DataPage('locations', location)
+                    builder: (BuildContext context) => new DataPage('locations', location.reference)
                   )
                 );
               }
@@ -176,7 +176,7 @@ class _JobInfoCardState extends State<JobInfoCard> {
                   onTap: (){
                     Navigator.of(context).push(
                       new MaterialPageRoute<Null>(
-                        builder: (BuildContext context) => new DataPage('contacts', contact),
+                        builder: (BuildContext context) => new DataPage('contacts', contact.reference),
                       ),
                     );
                   },
