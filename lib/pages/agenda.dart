@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import '../drawer.dart';
+import 'data.dart';
 
 /// A two week summary page of upcoming jobs
 /// 
@@ -49,7 +50,11 @@ class _NAgendaPageState extends State<AgendaPage> {
               new ListTile(
                 title: new Text("${time.format(dt)}, ${document["name"]}"),
                 onTap: () async {
-                  // TODO: Push page
+                  await Navigator.of(context).push(
+                    new MaterialPageRoute<Null>(
+                      builder: (BuildContext context) => new DataPage('jobs', document.reference),
+                    ),
+                  );
                 },
               ),
             );
