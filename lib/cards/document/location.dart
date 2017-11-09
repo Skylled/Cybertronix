@@ -63,32 +63,19 @@ class _NPreviousJobsTileState extends State<NPreviousJobsTile> {
 }
 
 /// This card shows all the basic info about a location
-class LocationInfoCard extends StatefulWidget {
+class LocationInfoCard extends StatelessWidget {
   final DocumentSnapshot locationData;
 
   LocationInfoCard(this.locationData);
 
-  @override
-  _LocationInfoCardState createState() => new _LocationInfoCardState();
-}
-
-class _LocationInfoCardState extends State<LocationInfoCard> {
-  DocumentSnapshot locationData;
-  List<Widget> cardLines = <Widget>[];
-
   Future<Null> goPhotos() async {
-    // TODO: Document this, it's the most complicated one.
-    File imageFile = await ImagePicker.pickImage();
-    firebase.uploadPhoto(imageFile).then((String url) async {
-      Map<String, dynamic> newData = new Map<String, dynamic>.from(locationData.data);
+    File imageFile = await ImagePicker.pickImage(); // Have the user pick an image
+    firebase.uploadPhoto(imageFile).then((String url) async { // When finished uploading the picture..
+      Map<String, dynamic> newData = new Map<String, dynamic>.from(locationData.data); // Make a copy of the snapshot data
       if (newData["photos"] == null)
         newData["photos"] = <Map<String, dynamic>>[];
-      newData["photos"].add(<String, dynamic>{"url": url});
-      await locationData.reference.setData(newData);
-      locationData = await locationData.reference.snapshots.first;
-      setState((){
-        populateLines();
-      });
+      newData["photos"].add(<String, dynamic>{"url": url}); // Slap the photo data into a list.
+      await locationData.reference.setData(newData); // Upload the changes
     });
   }
 
@@ -98,9 +85,9 @@ class _LocationInfoCardState extends State<LocationInfoCard> {
     share.share(shareString);
   }
 
-  void populateLines(){
-    cardLines.clear();
-    cardLines.add(
+  List<Widget> buildChildren(BuildContext context){
+    List<Widget> children = <Widget>[];
+    children.add(
       new Container(
         height: 200.0,
         child: new Stack(
@@ -182,7 +169,7 @@ class _LocationInfoCardState extends State<LocationInfoCard> {
       ),
     );
     String cityState = "${locationData["city"]}, ${locationData["state"]}";
-    cardLines.add(
+    children.add(
       new ListTile(
         title: new Text("${locationData["address"]}"),
         subtitle: new Text(cityState),
@@ -192,10 +179,11 @@ class _LocationInfoCardState extends State<LocationInfoCard> {
         },
       ),
     );
+
     if (locationData["contacts"] != null) {
-      cardLines.add(new Divider());
+      children.add(new Divider());
       locationData["contacts"].forEach((DocumentReference contact) {
-        cardLines.add(
+        children.add(
           new StreamBuilder<DocumentSnapshot>(
             stream: contact.snapshots,
             builder: (BuildContext context, AsyncSnapshot<DocumentSnapshot> snapshot){
@@ -223,22 +211,15 @@ class _LocationInfoCardState extends State<LocationInfoCard> {
       });
     }
 
-    cardLines.add(new Divider());
-    //cardLines.add(new PreviousJobsTile(Firestore.instance.document(locationData.path)));
+    children.add(new Divider());
+    //children.add(new PreviousJobsTile(Firestore.instance.document(locationData.path)));
+    return children;
   }
 
-  @override
-  void initState(){
-    super.initState();
-    locationData = widget.locationData;
-    populateLines();
-  }
-
-  @override
   Widget build(BuildContext context) {
     return new Card(
       child: new Column(
-        children: new List<Widget>.from(cardLines),
+        children: buildChildren(context),
       ),
     );
   }

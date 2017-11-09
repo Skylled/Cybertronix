@@ -6,6 +6,8 @@ import 'document/location.dart';
 
 // Future: Customer
 
+// TODO: MAJOR: None of the InfoCards should need to be Stateful because the StreamBuilder should rebuild them all!
+
 Widget getDocumentCard(String collection, DocumentSnapshot document){
   switch(collection) {
     case 'jobs':
