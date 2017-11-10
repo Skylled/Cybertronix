@@ -177,7 +177,7 @@ class JobInfoCard extends StatelessWidget {
       );
     }
 
-    if (jobData["users"] != null){
+    /* if (jobData["users"] != null){
       children.add(
         new StreamBuilder<QuerySnapshot>(
           stream: Firestore.instance.collection(jobData["users"]).snapshots,
@@ -190,7 +190,7 @@ class JobInfoCard extends StatelessWidget {
                 return new ListTile(
                   title: new Text(user["name"]),
                   onTap: (){
-                    // TODO: Push a user card
+                    // Push a user card
                   }
                 );
               }).toList()
@@ -198,7 +198,7 @@ class JobInfoCard extends StatelessWidget {
           }
         ),
       );
-    }
+    } */
     return children;
   }
 
