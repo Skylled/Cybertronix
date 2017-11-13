@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
 import '../tools.dart';
 
+// TODO: Come back and check on the need for ?? ''
+
 List<String> manufacturers = <String>[
   "Tornatech", "Metron", "Firetrol",
   "Master Controls", "Cutler-Hammer",
-  "Joselyn Clark", "Hubbell", "Sylvania"
+  "Joselyn Clark", "Patterson", "Hubbell",
+  "Sylvania",
 ];
 
 class DieselPanelCreatorCard extends StatefulWidget {
@@ -277,6 +280,7 @@ class _DieselPanelCreatorCardState extends State<DieselPanelCreatorCard> {
                   child: new Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 16.0),
                     child: new TextFormField(
+                      keyboardType: TextInputType.number,
                       controller: item.textController,
                       decoration: new InputDecoration(
                         hintText: item.hint,
@@ -318,6 +322,7 @@ class _DieselPanelCreatorCardState extends State<DieselPanelCreatorCard> {
                   child: new Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 16.0),
                     child: new TextFormField(
+                      keyboardType: TextInputType.number,
                       controller: item.textController,
                       decoration: new InputDecoration(
                         hintText: item.hint,
@@ -340,6 +345,7 @@ class _DieselPanelCreatorCardState extends State<DieselPanelCreatorCard> {
       // Automatic Stop
       new CreatorItem<String>( // Enclosure
         name: "Enclosure",
+        hint: "NEMA 4X",
         value: widget.initialData["enclosure"] ?? '',
         valueToString: (String value) => value,
         builder: (CreatorItem<String> item){
@@ -427,7 +433,6 @@ class _ElectricPanelCreatorCardState extends State<ElectricPanelCreatorCard> {
 
   List<CreatorItem<dynamic>> getPanelItems(){
     return <CreatorItem<dynamic>>[
-      // TODO: Fill in!
       new CreatorItem<String>( // Manufacturer
         name: "Manufacturer",
         value: widget.initialData["manufacturer"],
@@ -556,7 +561,7 @@ class _ElectricPanelCreatorCardState extends State<ElectricPanelCreatorCard> {
           );
         },
       ),
-      // AC Voltage
+      // TODO: AC Voltage
       // Future: Consider an enum?
       new CreatorItem<String>( // Phase [Single, Three]
         name: "Phase",
@@ -680,6 +685,7 @@ class _ElectricPanelCreatorCardState extends State<ElectricPanelCreatorCard> {
                   child: new Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 16.0),
                     child: new TextFormField(
+                      keyboardType: TextInputType.number,
                       controller: item.textController,
                       decoration: new InputDecoration(
                         hintText: item.hint,
@@ -721,6 +727,7 @@ class _ElectricPanelCreatorCardState extends State<ElectricPanelCreatorCard> {
                   child: new Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 16.0),
                     child: new TextFormField(
+                      keyboardType: TextInputType.number,
                       controller: item.textController,
                       decoration: new InputDecoration(
                         hintText: item.hint,
@@ -743,6 +750,7 @@ class _ElectricPanelCreatorCardState extends State<ElectricPanelCreatorCard> {
       // Automatic Stop
       new CreatorItem<String>( // Enclosure
         name: "Enclosure",
+        hint: "NEMA 4X",
         value: widget.initialData["enclosure"] ?? '',
         valueToString: (String value) => value,
         builder: (CreatorItem<String> item){
@@ -830,7 +838,6 @@ class _TransferSwitchCreatorCardState extends State<TransferSwitchCreatorCard> {
 
   List<CreatorItem<dynamic>> getPanelItems(){
     return <CreatorItem<dynamic>>[
-      // TODO: Fill in!
       new CreatorItem<String>( // Manufacturer
         name: "Manufacturer",
         value: widget.initialData["manufacturer"],
