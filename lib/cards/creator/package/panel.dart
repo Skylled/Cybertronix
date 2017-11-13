@@ -23,9 +23,87 @@ class _DieselPanelCreatorCardState extends State<DieselPanelCreatorCard> {
 
   List<CreatorItem<dynamic>> getPanelItems(){
     return <CreatorItem<dynamic>>[
+      // TODO: Fill in!
       // Manufacturer
-      // Model #
-      // Serial #
+      new CreatorItem<String>( // Model #
+        name: "Model #",
+        value: widget.initialData["model"] ?? '',
+        hint: "(FD4-J)",
+        valueToString: (String value) => value,
+        builder: (CreatorItem<String> item){
+          void close(){
+            setState((){
+              item.isExpanded = false;
+            });
+          }
+
+          return new Form(
+            child: new Builder(
+              builder: (BuildContext context){
+                return new CollapsibleBody(
+                  margin: const EdgeInsets.symmetric(horizontal: 16.0),
+                  onSave: () { Form.of(context).save(); close(); },
+                  onCancel: () { Form.of(context).reset(); close(); },
+                  child: new Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                    child: new TextFormField(
+                      controller: item.textController,
+                      decoration: new InputDecoration(
+                        hintText: item.hint,
+                        labelText: item.name,
+                      ),
+                      onSaved: (String value){
+                        item.value = value;
+                        currentData['model'] = value;
+                        widget.changeData('panel', currentData);
+                      },
+                    ),
+                  ),
+                );
+              },
+            ),
+          );
+        },
+      ),
+      new CreatorItem<String>( // Serial #
+        name: "Serial #",
+        value: widget.initialData["serial"] ?? '',
+        valueToString: (String value) => value,
+        builder: (CreatorItem<String> item){
+          void close(){
+            setState((){
+              item.isExpanded = false;
+            });
+          }
+
+          return new Form(
+            child: new Builder(
+              builder: (BuildContext context){
+                return new CollapsibleBody(
+                  margin: const EdgeInsets.symmetric(horizontal: 16.0),
+                  onSave: () { Form.of(context).save(); close(); },
+                  onCancel: () { Form.of(context).reset(); close(); },
+                  child: new Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                    child: new TextFormField(
+                      controller: item.textController,
+                      decoration: new InputDecoration(
+                        hintText: item.hint,
+                        labelText: item.name,
+                      ),
+                      onSaved: (String value){
+                        item.value = value;
+                        currentData['serial'] = value;
+                        widget.changeData('panel', currentData);
+                      },
+                    ),
+                  ),
+                );
+              },
+            ),
+          );
+        },
+      ),
       // Charger AC voltage
       // Engine DC voltage
       // Start pressure
@@ -81,6 +159,7 @@ class _ElectricPanelCreatorCardState extends State<ElectricPanelCreatorCard> {
 
   List<CreatorItem<dynamic>> getPanelItems(){
     return <CreatorItem<dynamic>>[
+      // TODO: Fill in!
       // Manufacturer
       // Model #
       // Serial #
@@ -140,7 +219,7 @@ class _TransferSwitchCreatorCardState extends State<TransferSwitchCreatorCard> {
 
   List<CreatorItem<dynamic>> getPanelItems(){
     return <CreatorItem<dynamic>>[
-      
+      // TODO: Fill in!
     ];
   }
 

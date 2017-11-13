@@ -23,7 +23,7 @@ class _DieselMotorCreatorCardState extends State<DieselMotorCreatorCard> {
 
   List<CreatorItem<dynamic>> getMotorItems(){
     return <CreatorItem<dynamic>>[
-      
+      // TODO: Fill in!
     ];
   }
 
@@ -74,7 +74,7 @@ class _ElectricMotorCreatorCardState extends State<ElectricMotorCreatorCard> {
 
   List<CreatorItem<dynamic>> getMotorItems(){
     return <CreatorItem<dynamic>>[
-      
+      // TODO: Fill in!
     ];
   }
 
