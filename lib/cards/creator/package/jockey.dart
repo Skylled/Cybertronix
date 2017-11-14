@@ -32,9 +32,9 @@ class _JockeyPumpCreatorCardState extends State<JockeyPumpCreatorCard> {
     return <CreatorItem<dynamic>>[
       new CreatorItem<String>( // Manufacturer
         name: "Manufacturer",
-        value: widget.initialData["manufacturer"],
+        value: widget.initialData["manufacturer"] ?? '',
         hint: "Grunfos",
-        valueToString: (String value) => value ?? "Select a manufacturer",
+        valueToString: (String value) => value,
         builder: (CreatorItem<String> item){
           void close(){
             setState((){
@@ -51,25 +51,16 @@ class _JockeyPumpCreatorCardState extends State<JockeyPumpCreatorCard> {
                   onCancel: () { Form.of(context).reset(); close(); },
                   child: new Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                    child: new FormField<String>(
+                    child: new TextFormField(
+                      controller: item.textController,
+                      decoration: new InputDecoration(
+                        hintText: item.hint,
+                        labelText: item.name,
+                      ),
                       onSaved: (String value){
                         item.value = value;
                         currentData['manufacturer'] = value;
                         widget.changeData('jockeypump', currentData);
-                      },
-                      builder: (FormFieldState<String> field){
-                        return new DropdownButton<String>(
-                          value: item.value,
-                          items: manufacturers.map((String manufacturer){
-                            return new DropdownMenuItem<String>(
-                              value: manufacturer,
-                              child: new Text(manufacturer),
-                            );
-                          }).toList(),
-                          onChanged: (String value){
-                            field.onChanged(value);
-                          },
-                        );
                       },
                     ),
                   ),
