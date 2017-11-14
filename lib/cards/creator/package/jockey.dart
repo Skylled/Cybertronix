@@ -1,6 +1,13 @@
 import 'package:flutter/material.dart';
 import '../tools.dart';
 
+List<String> manufacturers = <String>[
+  "Tornatech", "Metron", "Firetrol",
+  "Master Controls", "Cutler-Hammer",
+  "Joselyn Clark", "Patterson", "Hubbell",
+  "Sylvania",
+];
+
 class JockeyPumpCreatorCard extends StatefulWidget {
   final Map<String, dynamic> initialData;
   final Function(String, Map<String, dynamic>) changeData;
@@ -23,7 +30,176 @@ class _JockeyPumpCreatorCardState extends State<JockeyPumpCreatorCard> {
 
   List<CreatorItem<dynamic>> getPumpItems(){
     return <CreatorItem<dynamic>>[
-      // TODO: Fill in!
+      new CreatorItem<String>( // Manufacturer
+        name: "Manufacturer",
+        value: widget.initialData["manufacturer"],
+        hint: "Grunfos",
+        valueToString: (String value) => value ?? "Select a manufacturer",
+        builder: (CreatorItem<String> item){
+          void close(){
+            setState((){
+              item.isExpanded = false;
+            });
+          }
+
+          return new Form(
+            child: new Builder(
+              builder: (BuildContext context){
+                return new CollapsibleBody(
+                  margin: const EdgeInsets.symmetric(horizontal: 16.0),
+                  onSave: () { Form.of(context).save(); close(); },
+                  onCancel: () { Form.of(context).reset(); close(); },
+                  child: new Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                    child: new FormField<String>(
+                      onSaved: (String value){
+                        item.value = value;
+                        currentData['manufacturer'] = value;
+                        widget.changeData('jockeypump', currentData);
+                      },
+                      builder: (FormFieldState<String> field){
+                        return new DropdownButton<String>(
+                          value: item.value,
+                          items: manufacturers.map((String manufacturer){
+                            return new DropdownMenuItem<String>(
+                              value: manufacturer,
+                              child: new Text(manufacturer),
+                            );
+                          }).toList(),
+                          onChanged: (String value){
+                            field.onChanged(value);
+                          },
+                        );
+                      },
+                    ),
+                  ),
+                );
+              },
+            ),
+          );
+        }
+      ),
+      new CreatorItem<String>( // Model #
+        name: "Model #",
+        value: widget.initialData["model"] ?? '',
+        hint: "(JP3-460/3/2/2)",
+        valueToString: (String value) => value,
+        builder: (CreatorItem<String> item){
+          void close(){
+            setState((){
+              item.isExpanded = false;
+            });
+          }
+
+          return new Form(
+            child: new Builder(
+              builder: (BuildContext context){
+                return new CollapsibleBody(
+                  margin: const EdgeInsets.symmetric(horizontal: 16.0),
+                  onSave: () { Form.of(context).save(); close(); },
+                  onCancel: () { Form.of(context).reset(); close(); },
+                  child: new Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                    child: new TextFormField(
+                      controller: item.textController,
+                      decoration: new InputDecoration(
+                        hintText: item.hint,
+                        labelText: item.name,
+                      ),
+                      onSaved: (String value){
+                        item.value = value;
+                        currentData['model'] = value;
+                        widget.changeData('jockeypump', currentData);
+                      },
+                    ),
+                  ),
+                );
+              },
+            ),
+          );
+        },
+      ),
+      new CreatorItem<String>( // Serial #
+        name: "Serial #",
+        value: widget.initialData["serial"] ?? '',
+        valueToString: (String value) => value,
+        builder: (CreatorItem<String> item){
+          void close(){
+            setState((){
+              item.isExpanded = false;
+            });
+          }
+
+          return new Form(
+            child: new Builder(
+              builder: (BuildContext context){
+                return new CollapsibleBody(
+                  margin: const EdgeInsets.symmetric(horizontal: 16.0),
+                  onSave: () { Form.of(context).save(); close(); },
+                  onCancel: () { Form.of(context).reset(); close(); },
+                  child: new Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                    child: new TextFormField(
+                      controller: item.textController,
+                      decoration: new InputDecoration(
+                        hintText: item.hint,
+                        labelText: item.name,
+                      ),
+                      onSaved: (String value){
+                        item.value = value;
+                        currentData['serial'] = value;
+                        widget.changeData('jockeypump', currentData);
+                      },
+                    ),
+                  ),
+                );
+              },
+            ),
+          );
+        },
+      ),
+      new CreatorItem<num>( // Horsepower
+        name: "Horsepower",
+        value: widget.initialData["hp"],
+        hint: "(e.g. 1.5 or 10)",
+        valueToString: (num value) => value != null ? value.toString() : '',
+        builder: (CreatorItem<num> item){
+          void close(){
+            setState((){
+              item.isExpanded = false;
+            });
+          }
+
+          return new Form(
+            child: new Builder(
+              builder: (BuildContext context){
+                return new CollapsibleBody(
+                  margin: const EdgeInsets.symmetric(horizontal: 16.0),
+                  onSave: () { Form.of(context).save(); close(); },
+                  onCancel: () { Form.of(context).reset(); close(); },
+                  child: new Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                    child: new TextFormField(
+                      keyboardType: TextInputType.number,
+                      controller: item.textController,
+                      decoration: new InputDecoration(
+                        hintText: item.hint,
+                        labelText: item.name,
+                      ),
+                      onSaved: (String value){
+                        num hp = num.parse(value, (String input) => null);
+                        item.value = hp;
+                        currentData['hp'] = hp;
+                        widget.changeData('jockeypump', currentData);
+                      },
+                    ),
+                  ),
+                );
+              },
+            ),
+          );
+        }
+      ),
     ];
   }
 
@@ -74,7 +250,391 @@ class _JockeyPanelCreatorCardState extends State<JockeyPanelCreatorCard> {
 
   List<CreatorItem<dynamic>> getPanelItems(){
     return <CreatorItem<dynamic>>[
-      // TODO: There's nothing here!
+      new CreatorItem<String>( // Manufacturer
+        name: "Manufacturer",
+        value: widget.initialData["manufacturer"],
+        hint: "Tornatech",
+        valueToString: (String value) => value ?? "Select a manufacturer",
+        builder: (CreatorItem<String> item){
+          void close(){
+            setState((){
+              item.isExpanded = false;
+            });
+          }
+
+          return new Form(
+            child: new Builder(
+              builder: (BuildContext context){
+                return new CollapsibleBody(
+                  margin: const EdgeInsets.symmetric(horizontal: 16.0),
+                  onSave: () { Form.of(context).save(); close(); },
+                  onCancel: () { Form.of(context).reset(); close(); },
+                  child: new Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                    child: new FormField<String>(
+                      onSaved: (String value){
+                        item.value = value;
+                        currentData['manufacturer'] = value;
+                        widget.changeData('jockeypanel', currentData);
+                      },
+                      builder: (FormFieldState<String> field){
+                        return new DropdownButton<String>(
+                          value: item.value,
+                          items: manufacturers.map((String manufacturer){
+                            return new DropdownMenuItem<String>(
+                              value: manufacturer,
+                              child: new Text(manufacturer),
+                            );
+                          }).toList(),
+                          onChanged: (String value){
+                            field.onChanged(value);
+                          },
+                        );
+                      },
+                    ),
+                  ),
+                );
+              },
+            ),
+          );
+        }
+      ),
+      new CreatorItem<String>( // Model #
+        name: "Model #",
+        value: widget.initialData["model"] ?? '',
+        hint: "(JP3-460/3/2/2)",
+        valueToString: (String value) => value,
+        builder: (CreatorItem<String> item){
+          void close(){
+            setState((){
+              item.isExpanded = false;
+            });
+          }
+
+          return new Form(
+            child: new Builder(
+              builder: (BuildContext context){
+                return new CollapsibleBody(
+                  margin: const EdgeInsets.symmetric(horizontal: 16.0),
+                  onSave: () { Form.of(context).save(); close(); },
+                  onCancel: () { Form.of(context).reset(); close(); },
+                  child: new Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                    child: new TextFormField(
+                      controller: item.textController,
+                      decoration: new InputDecoration(
+                        hintText: item.hint,
+                        labelText: item.name,
+                      ),
+                      onSaved: (String value){
+                        item.value = value;
+                        currentData['model'] = value;
+                        widget.changeData('jockeypanel', currentData);
+                      },
+                    ),
+                  ),
+                );
+              },
+            ),
+          );
+        },
+      ),
+      new CreatorItem<String>( // Serial #
+        name: "Serial #",
+        value: widget.initialData["serial"] ?? '',
+        valueToString: (String value) => value,
+        builder: (CreatorItem<String> item){
+          void close(){
+            setState((){
+              item.isExpanded = false;
+            });
+          }
+
+          return new Form(
+            child: new Builder(
+              builder: (BuildContext context){
+                return new CollapsibleBody(
+                  margin: const EdgeInsets.symmetric(horizontal: 16.0),
+                  onSave: () { Form.of(context).save(); close(); },
+                  onCancel: () { Form.of(context).reset(); close(); },
+                  child: new Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                    child: new TextFormField(
+                      controller: item.textController,
+                      decoration: new InputDecoration(
+                        hintText: item.hint,
+                        labelText: item.name,
+                      ),
+                      onSaved: (String value){
+                        item.value = value;
+                        currentData['serial'] = value;
+                        widget.changeData('jockeypanel', currentData);
+                      },
+                    ),
+                  ),
+                );
+              },
+            ),
+          );
+        },
+      ),
+      new CreatorItem<num>( // Horsepower
+        name: "Horsepower",
+        value: widget.initialData["hp"],
+        hint: "(e.g. 1.5 or 10)",
+        valueToString: (num value) => value != null ? value.toString() : '',
+        builder: (CreatorItem<num> item){
+          void close(){
+            setState((){
+              item.isExpanded = false;
+            });
+          }
+
+          return new Form(
+            child: new Builder(
+              builder: (BuildContext context){
+                return new CollapsibleBody(
+                  margin: const EdgeInsets.symmetric(horizontal: 16.0),
+                  onSave: () { Form.of(context).save(); close(); },
+                  onCancel: () { Form.of(context).reset(); close(); },
+                  child: new Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                    child: new TextFormField(
+                      keyboardType: TextInputType.number,
+                      controller: item.textController,
+                      decoration: new InputDecoration(
+                        hintText: item.hint,
+                        labelText: item.name,
+                      ),
+                      onSaved: (String value){
+                        num hp = num.parse(value, (String input) => null);
+                        item.value = hp;
+                        currentData['hp'] = hp;
+                        widget.changeData('jockeypanel', currentData);
+                      },
+                    ),
+                  ),
+                );
+              },
+            ),
+          );
+        }
+      ),
+      new CreatorItem<int>( // AC Volts
+        name: "AC Voltage",
+        value: widget.initialData["volts"],
+        hint: "(e.g. 120 or 208)",
+        valueToString: (int value) => value != null ? value.toString() : '',
+        builder: (CreatorItem<int> item){
+          void close(){
+            setState((){
+              item.isExpanded = false;
+            });
+          }
+
+          return new Form(
+            child: new Builder(
+              builder: (BuildContext context){
+                return new CollapsibleBody(
+                  margin: const EdgeInsets.symmetric(horizontal: 16.0),
+                  onSave: () { Form.of(context).save(); close(); },
+                  onCancel: () { Form.of(context).reset(); close(); },
+                  child: new Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                    child: new TextFormField(
+                      keyboardType: TextInputType.number,
+                      controller: item.textController,
+                      decoration: new InputDecoration(
+                        hintText: item.hint,
+                        labelText: item.name,
+                      ),
+                      onSaved: (String value){
+                        int volts = int.parse(value, onError: (String input) => null);
+                        item.value = volts;
+                        currentData["volts"] = volts;
+                        widget.changeData('jockeypanel', currentData);
+                      },
+                    ),
+                  ),
+                );
+              },
+            ),
+          );
+        }
+      ),
+      new CreatorItem<String>( // Phase [Single, Three]
+        name: "Phase",
+        value: widget.initialData['phase'] ?? "Three",
+        hint: "Three/Single",
+        valueToString: (String phase) => "$phase phase",
+        builder: (CreatorItem<String> item){
+          void close(){
+            setState((){
+              item.isExpanded = false;
+            });
+          }
+
+          return new Form(
+            child: new Builder(
+              builder: (BuildContext context){
+                return new CollapsibleBody(
+                  margin: const EdgeInsets.symmetric(horizontal: 16.0),
+                  onSave: () { Form.of(context).save(); close(); },
+                  onCancel: () { Form.of(context).reset(); close(); },
+                  child: new Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                    child: new FormField<String>(
+                      onSaved: (String value){
+                        item.value = value;
+                        currentData['phase'] = value;
+                        widget.changeData('jockeypanel', currentData);
+                      },
+                      builder: (FormFieldState<String> field){
+                        return new DropdownButton<String>(
+                          value: item.value,
+                          items: <String>["Three", "Single"].map((String phase){
+                            return new DropdownMenuItem<String>(
+                              value: phase,
+                              child: new Text(phase),
+                            );
+                          }).toList(),
+                          onChanged: (String value){
+                            field.onChanged(value);
+                          },
+                        );
+                      },
+                    ),
+                  ),
+                );
+              },
+            ),
+          );
+        }
+      ),
+      new CreatorItem<int>( // Start pressure
+        name: "Start pressure",
+        value: widget.initialData["start"],
+        hint: "In PSI",
+        valueToString: (int value) => value != null ? value.toString() : "Enter start pressure",
+        builder: (CreatorItem<int> item){
+          void close(){
+            setState((){
+              item.isExpanded = false;
+            });
+          }
+
+          return new Form(
+            child: new Builder(
+              builder: (BuildContext context){
+                return new CollapsibleBody(
+                  margin: const EdgeInsets.symmetric(horizontal: 16.0),
+                  onSave: () { Form.of(context).save(); close(); },
+                  onCancel: () { Form.of(context).reset(); close(); },
+                  child: new Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                    child: new TextFormField(
+                      keyboardType: TextInputType.number,
+                      controller: item.textController,
+                      decoration: new InputDecoration(
+                        hintText: item.hint,
+                        labelText: item.name,
+                      ),
+                      onSaved: (String value){
+                        int pressure = int.parse(value, onError: (String input) => null);
+                        item.value = pressure;
+                        currentData['start'] = pressure;
+                        widget.changeData('jockeypanel', currentData);
+                      },
+                    ),
+                  ),
+                );
+              },
+            ),
+          );
+        }
+      ),
+      new CreatorItem<int>( // Stop pressure
+        name: "Stop pressure",
+        value: widget.initialData["stop"],
+        hint: "In PSI",
+        valueToString: (int value) => value != null ? value.toString() : "Enter stop pressure",
+        builder: (CreatorItem<int> item){
+          void close(){
+            setState((){
+              item.isExpanded = false;
+            });
+          }
+
+          return new Form(
+            child: new Builder(
+              builder: (BuildContext context){
+                return new CollapsibleBody(
+                  margin: const EdgeInsets.symmetric(horizontal: 16.0),
+                  onSave: () { Form.of(context).save(); close(); },
+                  onCancel: () { Form.of(context).reset(); close(); },
+                  child: new Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                    child: new TextFormField(
+                      keyboardType: TextInputType.number,
+                      controller: item.textController,
+                      decoration: new InputDecoration(
+                        hintText: item.hint,
+                        labelText: item.name,
+                      ),
+                      onSaved: (String value){
+                        int pressure = int.parse(value, onError: (String input) => null);
+                        item.value = pressure;
+                        currentData['stop'] = pressure;
+                        widget.changeData('jockeypanel', currentData);
+                      },
+                    ),
+                  ),
+                );
+              },
+            ),
+          );
+        }
+      ),
+      new CreatorItem<String>( // Enclosure
+        name: "Enclosure",
+        hint: "NEMA 4X",
+        value: widget.initialData["enclosure"] ?? '',
+        valueToString: (String value) => value,
+        builder: (CreatorItem<String> item){
+          void close(){
+            setState((){
+              item.isExpanded = false;
+            });
+          }
+
+          return new Form(
+            child: new Builder(
+              builder: (BuildContext context){
+                return new CollapsibleBody(
+                  margin: const EdgeInsets.symmetric(horizontal: 16.0),
+                  onSave: () { Form.of(context).save(); close(); },
+                  onCancel: () { Form.of(context).reset(); close(); },
+                  child: new Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                    child: new TextFormField(
+                      controller: item.textController,
+                      decoration: new InputDecoration(
+                        hintText: item.hint,
+                        labelText: item.name,
+                      ),
+                      onSaved: (String value){
+                        item.value = value;
+                        currentData["enclosure"] = value;
+                        widget.changeData('jockeypanel', currentData);
+                      },
+                    ),
+                  ),
+                );
+              },
+            ),
+          );
+        }
+      ),
     ];
   }
 

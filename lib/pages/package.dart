@@ -19,6 +19,7 @@ class _PackageCreatorPageState extends State<PackageCreatorPage> {
   Map<String, dynamic> currentData;
   bool saved = false;
 
+  // TODO: Find a way to add tswitch to the mix.
   List<String> components = <String>["panel", "pump", "motor", "jockeypanel", "jockeypump"];
 
   void changeData(String component, Map<String, dynamic> newData){

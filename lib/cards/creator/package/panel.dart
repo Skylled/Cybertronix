@@ -561,7 +561,48 @@ class _ElectricPanelCreatorCardState extends State<ElectricPanelCreatorCard> {
           );
         },
       ),
-      // TODO: AC Voltage
+      new CreatorItem<int>( // AC Volts
+        name: "AC Voltage",
+        value: widget.initialData["volts"],
+        hint: "(e.g. 208 or 480)",
+        valueToString: (int value) => value != null ? value.toString() : '',
+        builder: (CreatorItem<int> item){
+          void close(){
+            setState((){
+              item.isExpanded = false;
+            });
+          }
+
+          return new Form(
+            child: new Builder(
+              builder: (BuildContext context){
+                return new CollapsibleBody(
+                  margin: const EdgeInsets.symmetric(horizontal: 16.0),
+                  onSave: () { Form.of(context).save(); close(); },
+                  onCancel: () { Form.of(context).reset(); close(); },
+                  child: new Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                    child: new TextFormField(
+                      keyboardType: TextInputType.number,
+                      controller: item.textController,
+                      decoration: new InputDecoration(
+                        hintText: item.hint,
+                        labelText: item.name,
+                      ),
+                      onSaved: (String value){
+                        int volts = int.parse(value, onError: (String input) => null);
+                        item.value = volts;
+                        currentData["volts"] = volts;
+                        widget.changeData('panel', currentData);
+                      },
+                    ),
+                  ),
+                );
+              },
+            ),
+          );
+        }
+      ),
       // Future: Consider an enum?
       new CreatorItem<String>( // Phase [Single, Three]
         name: "Phase",
