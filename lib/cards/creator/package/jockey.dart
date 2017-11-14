@@ -73,7 +73,6 @@ class _JockeyPumpCreatorCardState extends State<JockeyPumpCreatorCard> {
       new CreatorItem<String>( // Model #
         name: "Model #",
         value: widget.initialData["model"] ?? '',
-        hint: "(JP3-460/3/2/2)",
         valueToString: (String value) => value,
         builder: (CreatorItem<String> item){
           void close(){
