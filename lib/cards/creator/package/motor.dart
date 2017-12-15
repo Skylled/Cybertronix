@@ -372,7 +372,6 @@ class _ElectricMotorCreatorCardState extends State<ElectricMotorCreatorCard> {
 
   List<CreatorItem<dynamic>> getMotorItems(){
     return <CreatorItem<dynamic>>[
-      // TODO: Fill in!
       new CreatorItem<String>( // Manufacturer
         name: "Manufacturer",
         value: widget.initialData["manufacturer"] ?? '',

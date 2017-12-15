@@ -24,11 +24,6 @@ class CybertronixApp extends StatefulWidget {
 
 class _CybertronixAppState extends State<CybertronixApp> {
 
-  @override
-  void initState() {
-    super.initState();
-  }
-
   Route<dynamic> _getRoute(RouteSettings settings) {
     final List<String> path = settings.name.split('/');
     if (path[0] != '') return null;
