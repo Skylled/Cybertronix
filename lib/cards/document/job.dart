@@ -144,37 +144,38 @@ class JobInfoCard extends StatelessWidget {
     }
     children.add(new Divider());
     if (jobData["contacts"] != null){
-      children.add(
-        new StreamBuilder<QuerySnapshot>(
-          stream: Firestore.instance.collection(jobData["contacts"]).snapshots,
-          builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot){
-            if (!snapshot.hasData)
-              return new Divider();
-            return new Column(
-              children: snapshot.data.documents.map((DocumentSnapshot contact){
-                Widget trailing = (contact["phoneNumbers"] != null) ?
-                                    new IconButton(
-                                      icon: new Icon(Icons.phone),
-                                      onPressed: (){
-                                        url_launcher.launch('tel:${contact["phoneNumbers"][0]["number"]}');
-                                      })
-                                    : null;
-                return new ListTile(
-                  title: new Text(contact["name"]),
-                  trailing: trailing,
-                  onTap: (){
-                    Navigator.of(context).push(
-                      new MaterialPageRoute<Null>(
-                        builder: (BuildContext context) => new DataPage('contacts', contact.reference),
-                      ),
-                    );
-                  },
-                );
-              }).toList(),
-            );
-          },
-        ),
-      );
+      // TODO: Find any other collections that aren't collections.
+      List<DocumentReference> contactList = jobData["contacts"];
+      contactList.forEach((DocumentReference contactRef){
+        children.add(
+          new StreamBuilder<DocumentSnapshot>(
+            stream: Firestore.instance.document(contactRef.path).snapshots,
+            builder: (BuildContext context, AsyncSnapshot<DocumentSnapshot> snapshot){
+              if (!snapshot.hasData)
+                return new Divider();
+              DocumentSnapshot contact = snapshot.data;
+              Widget trailing = (contact["phoneNumbers"] != null) ?
+                  new IconButton(
+                    icon: new Icon(Icons.phone),
+                    onPressed: (){
+                      url_launcher.launch('tel:${contact["phoneNumbers"][0]["number"]}');
+                    })
+                  : null;
+              return new ListTile(
+                title: new Text(contact["name"]),
+                trailing: trailing,
+                onTap: (){
+                  Navigator.of(context).push(
+                    new MaterialPageRoute<Null>(
+                      builder: (BuildContext context) => new DataPage('contacts', contact.reference),
+                    ),
+                  );
+                },
+              );
+            },
+          ),
+        );
+      });
     }
 
     /* if (jobData["users"] != null){
