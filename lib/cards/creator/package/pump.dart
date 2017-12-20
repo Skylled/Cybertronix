@@ -225,7 +225,127 @@ class _PumpCreatorCardState extends State<PumpCreatorCard> {
       ),
       // These next few are a GPM int at a PSI int.
       // TODO: Capacity [GPM] @ [PSI]
-      // TODO: 150% [GPM] @ [PSI]
+      new CreatorItem<int>( // Capacity GPM
+        name: "GPM Capacity",
+        hint: "500, 750, 1500, etc",
+        value: widget.initialData["capacityGPM"],
+        valueToString: (int value) => value != null ? value.toString() : '',
+        builder: (CreatorItem<int> item) {
+          void close(){
+            setState((){
+              item.isExpanded = false;
+            });
+          }
+
+          return new Form(
+            child: new Builder(
+              builder: (BuildContext context){
+                return new CollapsibleBody(
+                  margin: const EdgeInsets.symmetric(horizontal: 16.0),
+                  onSave: () { Form.of(context).save(); close(); },
+                  onCancel: () { Form.of(context).reset(); close(); },
+                  child: new Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                    child: new TextFormField(
+                      keyboardType: TextInputType.number,
+                      controller: item.textController,
+                      decoration: new InputDecoration(
+                        labelText: item.name
+                      ),
+                      onSaved: (String value){
+                        num gpm = int.parse(value, onError: (String input) => null);
+                        item.value = gpm;
+                        currentData['capacityGPM'] = gpm;
+                        widget.changeData('pump', currentData);
+                      },
+                    ),
+                  ),
+                );
+              },
+            ),
+          );
+        }
+      ),
+      new CreatorItem<num>( // Pressure at capacity
+        name: "Pressure at capacity",
+        value: widget.initialData["capacityPSI"],
+        valueToString: (num value) => value != null ? value.toString() : '',
+        builder: (CreatorItem<num> item) {
+          void close(){
+            setState((){
+              item.isExpanded = false;
+            });
+          }
+
+          return new Form(
+            child: new Builder(
+              builder: (BuildContext context){
+                return new CollapsibleBody(
+                  margin: const EdgeInsets.symmetric(horizontal: 16.0),
+                  onSave: () { Form.of(context).save(); close(); },
+                  onCancel: () { Form.of(context).reset(); close(); },
+                  child: new Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                    child: new TextFormField(
+                      keyboardType: TextInputType.number,
+                      controller: item.textController,
+                      decoration: new InputDecoration(
+                        labelText: item.name
+                      ),
+                      onSaved: (String value){
+                        num psi = num.parse(value, (String input) => null);
+                        item.value = psi;
+                        currentData['capacityPSI'] = psi;
+                        widget.changeData('pump', currentData);
+                      },
+                    ),
+                  ),
+                );
+              },
+            ),
+          );
+        }
+      ),
+      new CreatorItem<num>( // Pressure at 150%
+        name: "Pressure at 150%",
+        value: widget.initialData["150PSI"],
+        valueToString: (num value) => value != null ? value.toString() : '',
+        builder: (CreatorItem<num> item) {
+          void close(){
+            setState((){
+              item.isExpanded = false;
+            });
+          }
+
+          return new Form(
+            child: new Builder(
+              builder: (BuildContext context){
+                return new CollapsibleBody(
+                  margin: const EdgeInsets.symmetric(horizontal: 16.0),
+                  onSave: () { Form.of(context).save(); close(); },
+                  onCancel: () { Form.of(context).reset(); close(); },
+                  child: new Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                    child: new TextFormField(
+                      keyboardType: TextInputType.number,
+                      controller: item.textController,
+                      decoration: new InputDecoration(
+                        labelText: item.name
+                      ),
+                      onSaved: (String value){
+                        num psi = num.parse(value, (String input) => null);
+                        item.value = psi;
+                        currentData['150PSI'] = psi;
+                        widget.changeData('pump', currentData);
+                      },
+                    ),
+                  ),
+                );
+              },
+            ),
+          );
+        }
+      ),
     ];
   }
 
