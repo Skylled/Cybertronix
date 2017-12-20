@@ -13,6 +13,7 @@ import 'pages/login.dart';
 // TODO: I need to make sure I verify required fields.
 
 // Wishlist
+// Future: Use assertions anywhere that I receive data from Firestore.
 // Future: I'd like CollectionCards to pop up from the bottom, maybe.
 // Future: Generate CreatorCard boilerplate from a JSON or something.
 

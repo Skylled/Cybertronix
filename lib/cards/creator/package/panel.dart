@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import '../tools.dart';
 
-// TODO: Come back and check on the need for ?? ''
+// Future: Come back and check on the need for ?? ''
 
 List<String> manufacturers = <String>[
   "Tornatech", "Metron", "Firetrol",

@@ -144,7 +144,6 @@ class JobInfoCard extends StatelessWidget {
     }
     children.add(new Divider());
     if (jobData["contacts"] != null){
-      // TODO: Find any other collections that aren't collections.
       List<DocumentReference> contactList = jobData["contacts"];
       contactList.forEach((DocumentReference contactRef){
         children.add(
@@ -177,29 +176,7 @@ class JobInfoCard extends StatelessWidget {
         );
       });
     }
-
-    /* if (jobData["users"] != null){
-      children.add(
-        new StreamBuilder<QuerySnapshot>(
-          stream: Firestore.instance.collection(jobData["users"]).snapshots,
-          builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot){
-            if (!snapshot.hasData)
-              return new Divider();
-            return new ExpansionTile(
-              title: new Text("Employees assigned"),
-              children: snapshot.data.documents.map((DocumentSnapshot user){
-                return new ListTile(
-                  title: new Text(user["name"]),
-                  onTap: (){
-                    // Push a user card
-                  }
-                );
-              }).toList()
-            );
-          }
-        ),
-      );
-    } */
+    // Future: Users
     return children;
   }
 
