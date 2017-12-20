@@ -190,9 +190,9 @@ class LocationInfoCard extends StatelessWidget {
               if (!snapshot.hasData)
                 return new ListTile(title: new Text("Loading contact..."));
               DocumentSnapshot contactData = snapshot.data;
-              Widget trailing = (contactData["phoneNumbers"] != null) ?
+              Widget trailing = (contactData["phone"] != null) ?
                   new IconButton(icon: new Icon(Icons.phone),
-                    onPressed: (){ url_launcher.launch('tel:${contactData["phoneNumbers"][0]["number"]}'); })
+                    onPressed: (){ url_launcher.launch('tel:${contactData["phone"]}'); })
                   : null;
               return new ListTile(
                 title: new Text(contactData["name"]),

@@ -119,10 +119,10 @@ class _ContactCreatorCardState extends State<ContactCreatorCard> {
         }
       ),
       // [{"number": "555-555-5555", "type": "Cell"},]
-      new CreatorItem<String>(
+      new CreatorItem<String>( // Phone number
         name: "Phone number",
-        value: widget.contactData["phoneNumbers"] != null ?
-               widget.contactData["phoneNumbers"][0]["number"] : "",
+        value: widget.contactData["phone"] != null ?
+               widget.contactData["phone"] : "",
         hint: "555-555-5555",
         valueToString: (String value) => value,
         builder: (CreatorItem<String> item){
@@ -150,11 +150,7 @@ class _ContactCreatorCardState extends State<ContactCreatorCard> {
                         ),
                         onSaved: (String value){
                           item.value = value;
-                          if (currentData['phoneNumbers'] == null){
-                            currentData['phoneNumbers'] = <Map<String, String>>[<String, String>{"type": "Cell", "number": value}];
-                          } else {
-                            currentData['phoneNumbers'][0]["number"] = value;
-                          }
+                          currentData["phone"] = value;
                           widget.changeData(currentData);
                         }
                       )

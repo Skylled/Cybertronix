@@ -25,10 +25,8 @@ class ContactInfoCard extends StatelessWidget {
 
   void goShare(){
     String shareString = "${contactData["name"]}";
-    if (contactData["phoneNumbers"] != null){
-      contactData["phoneNumbers"].forEach((Map<String, String> phone){
-        shareString += "\n${phone["type"]}: ${phone["number"]}";
-      });
+    if (contactData["phone"] != null){
+      shareString += "\n${contactData["phone"]}";
     }
     if (contactData["email"] != null)
       shareString += "\n${contactData["email"]}";
@@ -105,37 +103,28 @@ class ContactInfoCard extends StatelessWidget {
       );
     }
     children.add(new Divider());
-    if (contactData["phoneNumbers"] != null){
-      contactData["phoneNumbers"].forEach((Map<String, String> phone){
-        children.add(
-          new ListTile(
-            leading: (){
-              if (phone["type"] == "Cell")
-                return new Icon(Icons.phone_android);
-              if (phone["type"] == "Office")
-                return new Icon(Icons.work);
-              return null;
-            }(),
-            title: new Text(phone["number"]),
-            trailing: new Row(
-              children: <Widget>[
-                new IconButton(
-                  icon: new Icon(Icons.message),
-                  onPressed: (){
-                    url_launcher.launch('sms:${phone["number"]}');
-                  },
-                ),
-                new IconButton(
-                  icon: new Icon(Icons.call),
-                  onPressed: (){
-                    url_launcher.launch('tel:${phone["number"]}');
-                  },
-                ),
-              ],
-            ),
+    if (contactData["phone"] != null){
+      children.add(
+        new ListTile(
+          title: new Text(contactData["phone"]),
+          trailing: new Row(
+            children: <Widget>[
+              new IconButton(
+                icon: new Icon(Icons.message),
+                onPressed: (){
+                  url_launcher.launch('sms:${contactData["phone"]}');
+                },
+              ),
+              new IconButton(
+                icon: new Icon(Icons.call),
+                onPressed: (){
+                  url_launcher.launch('tel:${contactData["phone"]}');
+                },
+              ),
+            ],
           ),
-        );
-      });
+        ),
+      );
     }
     if (contactData["email"] != null){
       children.add(

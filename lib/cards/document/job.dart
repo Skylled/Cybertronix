@@ -50,7 +50,7 @@ class JobInfoCard extends StatelessWidget {
                       return new Icon(Icons.photo_album);
                     DocumentSnapshot location = snapshot.data;
                     if (location["photos"] != null){
-                      // TODO: Consider reorganization of photos
+                      // Future: Consider reorganization of photos
                       // Photo{"url": String, "job": DocumentReference}
                       return new ListView(
                         scrollDirection: Axis.horizontal,
@@ -116,7 +116,7 @@ class JobInfoCard extends StatelessWidget {
           stream: Firestore.instance.document(jobData["location"]).snapshots,
           builder: (BuildContext context, AsyncSnapshot<DocumentSnapshot> snapshot){
             if (!snapshot.hasData){
-              return new Divider(); // TODO: Consider other widgets.
+              return new Divider(); // Future: Consider other widgets.
             }
             DocumentSnapshot location = snapshot.data;
             String fullAddress =
@@ -154,11 +154,11 @@ class JobInfoCard extends StatelessWidget {
               if (!snapshot.hasData)
                 return new Divider();
               DocumentSnapshot contact = snapshot.data;
-              Widget trailing = (contact["phoneNumbers"] != null) ?
+              Widget trailing = (contact["phone"] != null) ?
                   new IconButton(
                     icon: new Icon(Icons.phone),
                     onPressed: (){
-                      url_launcher.launch('tel:${contact["phoneNumbers"][0]["number"]}');
+                      url_launcher.launch('tel:${contact["phone"]}');
                     })
                   : null;
               return new ListTile(
