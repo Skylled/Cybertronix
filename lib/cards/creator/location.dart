@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import '../../firebase.dart' as firebase;
-import 'components.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'tools.dart';
 
 /// This [Card] opens in a dialog, and lets you create a 
 /// new Location, or, if fed in data and an ID, edit an existing
@@ -8,13 +8,11 @@ import 'components.dart';
 class LocationCreatorCard extends StatefulWidget {
   /// The data of an existing Location to be edited (Optional)
   final Map<String, dynamic> locationData;
-  /// The ID of an existing Location to edit (Optional)
-  final String locationID;
 
   final Function(Map<String, dynamic>) changeData;
 
   /// Creates a Location creator/editor in a Card
-  LocationCreatorCard(this.changeData, {Map<String, dynamic> locationData, this.locationID}):
+  LocationCreatorCard(this.changeData, {Map<String, dynamic> locationData}):
     this.locationData = locationData ?? <String, dynamic>{};
   
   @override
@@ -25,6 +23,7 @@ class _LocationCreatorCardState extends State<LocationCreatorCard> {
   List<CreatorItem<dynamic>> _items;
   Map<String, dynamic> currentData;
 
+  @override
   void initState(){
     super.initState();
     currentData = widget.locationData != null ? new Map<String, dynamic>.from(widget.locationData) : <String, dynamic> {};
@@ -81,11 +80,16 @@ class _LocationCreatorCardState extends State<LocationCreatorCard> {
                                 "state": widget.locationData['state']},
         hint: "The street address for the location",
         valueToString: (Map<String, String> addressInfo){
-          if (addressInfo["address"] == null || addressInfo["city"] == null || addressInfo["state"] == null){
-            return "Please enter a complete address";
-          } else {
-            return "${addressInfo["address"]}, ${addressInfo["city"]}, ${addressInfo["state"]}";
-          }
+          String addressString = "";
+          if (addressInfo["address"] != null)
+            addressString += (addressInfo["address"] + ", ");
+          if (addressInfo["city"] != null)
+            addressString += (addressInfo["city"] + ", ");
+          if (addressInfo["state"] != null)
+            addressString += addressInfo["state"];
+          if (addressString == "")
+            return "";
+          return addressString;
         },
         builder: (CreatorItem<Map<String, String>> item){
           void close(){
@@ -170,25 +174,25 @@ class _LocationCreatorCardState extends State<LocationCreatorCard> {
           );
         }
       ),
-      new CreatorItem<List<String>>( // Contacts
+      new CreatorItem<List<DocumentReference>>( // Contacts
         name: "Contacts",
-        value: widget.locationData["contacts"] ?? <String>[],
+        value: widget.locationData["contacts"] ?? <DocumentReference>[],
         hint: "Who is involved with this job?",
-        valueToString: (List<String> value) => value.length.toString(),
-        builder: (CreatorItem<List<String>> item){
+        valueToString: (List<DocumentReference> value) => value.length.toString(),
+        builder: (CreatorItem<List<DocumentReference>> item){
           void close() {
             setState((){
               item.isExpanded = false;
             });
           }
-          List<String> removeContact(List<String> conList, String contactID){
-            List<String> updated = new List<String>.from(conList);
+          List<DocumentReference> removeContact(List<DocumentReference> conList, DocumentReference contactID){
+            List<DocumentReference> updated = new List<DocumentReference>.from(conList);
             updated.remove(contactID);
             return updated;
           }
           
-          List<String> addContact(List<String> conList, String contactID){
-            List<String> updated = new List<String>.from(conList);
+          List<DocumentReference> addContact(List<DocumentReference> conList, DocumentReference contactID){
+            List<DocumentReference> updated = new List<DocumentReference>.from(conList);
             updated.add(contactID);
             return updated;
           }
@@ -199,33 +203,49 @@ class _LocationCreatorCardState extends State<LocationCreatorCard> {
                 return new CollapsibleBody(
                   onSave: () { Form.of(context).save(); close(); },
                   onCancel: () { Form.of(context).reset(); close(); },
-                  child: new FormField<List<String>>(
+                  child: new FormField<List<DocumentReference>>(
                     initialValue: item.value,
-                    onSaved: (List<String> value) {
+                    onSaved: (List<DocumentReference> value) {
                       item.value = value;
                       currentData["contacts"] = value;
                       widget.changeData(currentData);
                     },
-                    builder: (FormFieldState<List<String>> field){
+                    builder: (FormFieldState<List<DocumentReference>> field){
                       Column col =  new Column(
                         mainAxisSize: MainAxisSize.min,
                         crossAxisAlignment: CrossAxisAlignment.end,
-                        children: field.value.map((String contactID){
-                          return new AsyncChip(firebase.getObject("contacts", contactID), (){
+                        children: field.value.map((DocumentReference contactID){
+                          void onDeleted(){
                             field.onChanged(removeContact(field.value, contactID));
-                          });
+                          }
+                          return new StreamBuilder<DocumentSnapshot>(
+                            stream: contactID.snapshots,
+                            builder: (BuildContext context, AsyncSnapshot<DocumentSnapshot> snapshot){
+                              if (!snapshot.hasData){
+                                return new Chip(
+                                  label: new Text("Loading..."),
+                                  onDeleted: onDeleted,
+                                );
+                              }
+
+                              return new Chip(
+                                label: new Text(snapshot.data["name"]),
+                                onDeleted: onDeleted,
+                              );
+                            },
+                          );
                         }).toList()
                       );
                       col.children.insert(0, new ListTile(
                         title: new Text("Add a contact"),
                         trailing: new Icon(Icons.add),
                         onTap: () async {
-                          Map<String, dynamic> chosen = await pickFromCategory(
+                          DocumentSnapshot chosen = await pickFromCollection(
                             context: context,
-                            category: "contacts",
+                            collection: "contacts",
                           );
-                          if (chosen != null && !field.value.contains(chosen["id"])){
-                            field.onChanged(addContact(field.value, chosen["id"]));
+                          if (chosen != null && !field.value.contains(chosen.reference)){
+                            field.onChanged(addContact(field.value, chosen.reference));
                           }
                         }
                       ));

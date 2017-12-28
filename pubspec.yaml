@@ -7,15 +7,21 @@ dependencies:
   url_launcher: ^0.4.1
   http: '>=0.11.3+12'
   path_provider:
+  intl:
   image_picker:
   image:
   share:
+  # TODO: Use these until all plugins update to pub.
   google_sign_in:
+    path: ../google_sign_in/
   firebase_auth:
+    path: ../firebase_auth/
   firebase_messaging:
+    path: ../firebase_messaging/
   firebase_storage:
-  firebase_database:
-  meta: ^1.0.5
+    path: ../firebase_storage/
+  cloud_firestore:
+    path: ../cloud_firestore/
   path:
   zoomable_image:
   strings:

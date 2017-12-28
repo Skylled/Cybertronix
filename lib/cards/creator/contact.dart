@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'components.dart';
+import 'tools.dart';
 
 /// This [Card] opens in a dialog, and lets you create a 
 /// new contact, or, if fed in data and an ID, edit an existing
@@ -7,13 +7,11 @@ import 'components.dart';
 class ContactCreatorCard extends StatefulWidget {
   /// The data of an existing contact to be edited (Optional)
   final Map<String, dynamic> contactData;
-  /// The ID of an existing contact to edit (Optional)
-  final String contactID;
   
   final Function(Map<String, dynamic>) changeData;
 
   /// Creates a Contact creator/editor in a Card
-  ContactCreatorCard(this.changeData, {Map<String, dynamic> contactData, this.contactID}):
+  ContactCreatorCard(this.changeData, {Map<String, dynamic> contactData}):
     this.contactData = contactData ?? <String, dynamic>{};
 
   @override
@@ -121,10 +119,10 @@ class _ContactCreatorCardState extends State<ContactCreatorCard> {
         }
       ),
       // [{"number": "555-555-5555", "type": "Cell"},]
-      new CreatorItem<String>(
+      new CreatorItem<String>( // Phone number
         name: "Phone number",
-        value: widget.contactData["phoneNumbers"] != null ?
-               widget.contactData["phoneNumbers"][0]["number"] : "",
+        value: widget.contactData["phone"] != null ?
+               widget.contactData["phone"] : "",
         hint: "555-555-5555",
         valueToString: (String value) => value,
         builder: (CreatorItem<String> item){
@@ -152,11 +150,7 @@ class _ContactCreatorCardState extends State<ContactCreatorCard> {
                         ),
                         onSaved: (String value){
                           item.value = value;
-                          if (currentData['phoneNumbers'] == null){
-                            currentData['phoneNumbers'] = <Map<String, String>>[<String, String>{"type": "Cell", "number": value}];
-                          } else {
-                            currentData['phoneNumbers'][0]["number"] = value;
-                          }
+                          currentData["phone"] = value;
                           widget.changeData(currentData);
                         }
                       )
@@ -230,7 +224,6 @@ class _ContactCreatorCardState extends State<ContactCreatorCard> {
                   child: new Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 16.0),
                     child: new TextFormField(
-                      // TODO: Check if "Done" or "Enter" is shown.
                       maxLines: null,
                       controller: item.textController,
                       decoration: new InputDecoration(

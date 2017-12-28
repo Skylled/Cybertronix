@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 
+
 /// A detailed card with all the info about a panel package, returned
 /// from Firebase, organized into [ExpansionPanel]s.
-class PackageInfoCard extends StatelessWidget{
+class PackageInfoCard extends StatelessWidget {
 
   /// This info comes direct from the location card's data
   final Map<String, dynamic> packageData;
@@ -106,7 +107,7 @@ class PackageInfoCard extends StatelessWidget{
 
   List<Widget> _getLines(){
     List<Widget> lines = <Widget>[];
-    if (packageData["panel"] != null){
+    if (packageData["panel"] != null) {
       lines.add(new ExpansionTile(
         title: new Text("Panel"),
         children: panelSubList(packageData["panel"], packageData["power"]),
@@ -118,16 +119,16 @@ class PackageInfoCard extends StatelessWidget{
         children: _tswitchSubList(packageData["tswitch"]),
       ));
     }
-    if (packageData["pump"] != null){
-      lines.add(new ExpansionTile(
-        title: new Text("Pump"),
-        children: _pumpSubList(packageData["pump"]),
-      ));
-    }
     if (packageData["motor"] != null){
       lines.add(new ExpansionTile(
         title: new Text("Motor"),
         children: _motorSubList(packageData["motor"], packageData["power"]),
+      ));
+    }
+    if (packageData["pump"] != null){
+      lines.add(new ExpansionTile(
+        title: new Text("Pump"),
+        children: _pumpSubList(packageData["pump"]),
       ));
     }
     if (packageData["jockeypanel"] != null){
@@ -146,12 +147,9 @@ class PackageInfoCard extends StatelessWidget{
 
   @override
   Widget build(BuildContext build){
-    return new Container(
-      padding: const EdgeInsets.fromLTRB(8.0, 28.0, 8.0, 12.0),
-      child: new Card(
-        child: new Column(
-          children: _getLines(),
-        ),
+    return new Card(
+      child: new Column(
+        children: _getLines(),
       ),
     );
   }

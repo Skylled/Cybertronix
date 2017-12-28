@@ -1,13 +1,25 @@
 import 'package:flutter/material.dart';
-import '../../firebase.dart' as firebase;
 
 class CustomerCreatorCard extends StatefulWidget {
+  final Map<String, dynamic> customerData;
+
+  final Function(Map<String, dynamic>) changeData;
+  
+  CustomerCreatorCard(this.changeData, {Map<String, dynamic> customerData}):
+    this.customerData = customerData ?? <String, dynamic> {};
+
   @override
   _CustomerCreatorCardState createState() => new _CustomerCreatorCardState();
 }
 
 class _CustomerCreatorCardState extends State<CustomerCreatorCard> {
-  String currentName;
+  Map<String, dynamic> currentData;
+
+  @override
+  void initState(){
+    super.initState();
+    currentData = widget.customerData != null ? new Map<String, dynamic>.from(widget.customerData) : <String, dynamic> {};
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -33,31 +45,16 @@ class _CustomerCreatorCardState extends State<CustomerCreatorCard> {
               new Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 8.0),
                 child: new TextField(
+                  controller: new TextEditingController(text: currentData["name"]),
                   decoration: new InputDecoration(
                     hintText: "(e.g. S&S Sprinkler)",
                     labelText: "Company name",
                   ),
                   onChanged: (String value){
-                    currentName = value;
+                    currentData["name"] = value;
+                    widget.changeData(currentData);
                   },
                 ),
-              ),
-              new ButtonBar(
-                children: <Widget>[
-                  new FlatButton(
-                    child: new Text("Cancel"),
-                    onPressed: () { Navigator.pop(context); },
-                  ),
-                  new FlatButton(
-                    child: new Text("Save"),
-                    textColor: Theme.of(context).accentColor,
-                    onPressed: (){
-                      Map<String, String> customer = <String, String>{"name": currentName};
-                      firebase.sendObject("customers", customer);
-                      Navigator.pop(context, customer);
-                    },
-                  )
-                ],
               ),
             ],
           )

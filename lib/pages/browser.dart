@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:strings/strings.dart';
 import '../drawer.dart';
 
-/// A page showing the different categories available to browse
+/// A page showing the different collections available to browse
 /// 
 /// Currently: Jobs, Locations, Customers, Contacts, Annual tests, and Monthly tests
 class BrowserPage extends StatefulWidget {
@@ -22,18 +23,18 @@ class _BrowserPageState extends State<BrowserPage>{
     );
   }
 
-  GridTile buildIconTile(String category, IconData icon){
+  GridTile buildIconTile(String collection, IconData icon){
     return new GridTile(
       child: new Column( 
         children: <Widget>[
           new IconButton(
             icon: new Icon(icon),
             onPressed: () {
-              Navigator.pushNamed(context, '/browse/${category.toLowerCase()}');
+              Navigator.pushNamed(context, '/browse/$collection');
             },
             iconSize: 60.0
           ),
-          new Text(category)
+          new Text(capitalize(collection))
         ]
       ),
     );
@@ -45,12 +46,12 @@ class _BrowserPageState extends State<BrowserPage>{
       crossAxisCount: 2,
       padding: const EdgeInsets.all(4.0),
       children: <GridTile>[
-        buildIconTile("Jobs", Icons.business_center),
-        buildIconTile("Locations", Icons.place),
-        buildIconTile("Customers", Icons.assignment),
-        buildIconTile("Contacts", Icons.contacts),
-        buildIconTile("Annuals", Icons.event),
-        buildIconTile("Monthlies", Icons.calendar_today)
+        buildIconTile("jobs", Icons.business_center),
+        buildIconTile("locations", Icons.place),
+        buildIconTile("customers", Icons.assignment),
+        buildIconTile("contacts", Icons.contacts),
+        buildIconTile("annuals", Icons.event),
+        buildIconTile("monthlies", Icons.calendar_today)
       ]
     );
   }
