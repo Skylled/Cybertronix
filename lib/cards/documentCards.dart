@@ -15,6 +15,10 @@ Widget getDocumentCard(String collection, DocumentSnapshot document){
     case "locations":
       return new LocationInfoCard(document);
     default:
-      return null;
+      return new Card(
+        child: new Center(
+          child: new Text("Not yet implemented"),
+        ),
+      );
   }
 }
