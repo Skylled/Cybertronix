@@ -77,24 +77,8 @@ class _DataPageState extends State<DataPage> {
               List<Widget> children = <Widget>[];
               children.add(getDocumentCard(widget.collection, document));
               if (widget.collection == "locations"){
-                if (document["packages"] != null){
-                  document["packages"].forEach((DocumentReference packageRef){
-                    children.add(
-                      new StreamBuilder<DocumentSnapshot>(
-                        stream: packageRef.snapshots,
-                        builder: (BuildContext context, AsyncSnapshot<DocumentSnapshot> snapshot){
-                          if (!snapshot.hasData) {
-                            return new Card(
-                              child: new Center(
-                                child: new Text("Loading package data..."),
-                              ),
-                            );
-                          }
-                          return new PackageInfoCard(snapshot.data.data);
-                        },
-                      ),
-                    );
-                  });
+                if (document["package"] != null){
+                  children.add(new PackageInfoCard(document["package"]));
                 }
               }
               return children;

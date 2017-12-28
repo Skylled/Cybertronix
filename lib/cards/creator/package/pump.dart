@@ -224,7 +224,6 @@ class _PumpCreatorCardState extends State<PumpCreatorCard> {
         }
       ),
       // These next few are a GPM int at a PSI int.
-      // TODO: Capacity [GPM] @ [PSI]
       new CreatorItem<int>( // Capacity GPM
         name: "GPM Capacity",
         hint: "500, 750, 1500, etc",

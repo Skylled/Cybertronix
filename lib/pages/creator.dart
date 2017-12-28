@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:strings/strings.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package.dart';
 import '../drawer.dart';
 import '../cards/creatorCards.dart';
 
+// TODO: MAJOR: Default field values do not get saved!
+// Option A: Move default values to currentData.
 class CreatorPage extends StatefulWidget {
   final String collection;
   final DocumentSnapshot snapshot;
@@ -21,9 +24,13 @@ class _CreatorPageState extends State<CreatorPage> {
 
   /// This is a callback, passed to cards to affect this widget's state
   void changeData(Map<String, dynamic> newData){
-    List<Map<String, dynamic>> packages = currentData["packages"];
+    Map<String, dynamic> package = currentData["package"];
     currentData = newData;
-    currentData["packages"] = packages;
+    currentData["package"] = package;
+  }
+
+  void changePackage(Map<String, dynamic> newPackage){
+    currentData["package"] = newPackage;
   }
 
   void buildBody(){
@@ -31,35 +38,55 @@ class _CreatorPageState extends State<CreatorPage> {
       currentData = widget.snapshot.data;
       children = <Widget>[getCreatorCard(widget.collection, changeData)];
       if (widget.collection == "locations"){
-        if (currentData["packages"] != null){
-          currentData["packages"].forEach((Map<String, Map<String, dynamic>> packageData){
-            children.add(
-              new PackageSummaryCard(
-                packageData,
-                changeData,
-                (){ currentData["packages"].remove(packageData); },
-              ),
+        if (currentData["package"] != null){
+            Widget packageCard;
+            packageCard = new PackageSummaryCard(
+              currentData["package"],
+              changePackage,
+              (){
+                currentData["package"] = null;
+                children.remove(packageCard);
+              },
             );
-          });
+            children.add(packageCard);
         }
-        // TODO: "Add a package" option here.
       }
     } else {
       children = <Widget>[
         getCreatorCard(widget.collection, changeData)
       ];
       if (widget.collection == "locations"){
-        children.add(
-          new ListTile(
-            title: new Text("Add a package"),
-            trailing: new Icon(Icons.add),
-            onTap: (){
-              // TODO: Hook into power selection.
-              // TODO: MAJOR: I need to refresh this page to add a summary card, to reflect the change made.
-              // setState((){ children.add( new PackageSummaryCard() ); });
-            },
-          ),
+        Widget newPackageTile;
+        newPackageTile = new ListTile(
+          title: new Text("Add a package"),
+          trailing: new Icon(Icons.add),
+          onTap: (){
+            // TODO: MAJOR: Hook into power selection.
+            Navigator.of(context).push(
+              new MaterialPageRoute<Map<String, dynamic>>(
+                builder: (BuildContext context) => new PackageCreatorPage()
+              ),
+            ).then((Map<String, dynamic> packageData) {
+              currentData["package"] = packageData;
+              setState(() {
+                Widget card;
+                card = new PackageSummaryCard(
+                  packageData,
+                  changePackage,
+                  (){
+                    setState((){
+                      currentData["package"] = null;
+                      children.remove(card);
+                    });
+                  }
+                );
+                children.insert(1, card);
+                children.remove(newPackageTile);
+              });
+            });
+          },
         );
+        children.add(newPackageTile);
       }
     }
   }
@@ -184,16 +211,21 @@ class _PackageSummaryCardState extends State<PackageSummaryCard>{
           child: new Text("Remove"),
           onPressed: () {
             // TODO: Popup Confirmation
-            // TODO: Dismiss the card
+            widget.removeCallback();
             // Future: Animation to dismiss would be cool!
-            // TODO: Remove the package from the location.
+            // Remember your training, Luke.
           },
         ),
         new FlatButton(
           child: new Text("Edit"),
-          onPressed: () async {
-            // TODO: Navigator.Push a package editor route
-            //await Navigator.push(context, new MaterialPageRoute());
+          onPressed: () {
+            setState(() async {
+              packageData = await Navigator.push(context, new MaterialPageRoute<Map<String, dynamic>>(
+                builder: (BuildContext context) => new PackageCreatorPage(initialData: packageData),
+              ));
+              widget.changeData(packageData);
+              _getLines();
+            });
           },
         )
       ],
