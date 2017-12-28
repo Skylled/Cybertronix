@@ -45,7 +45,7 @@ class _JobCreatorCardState extends State<JobCreatorCard> {
   void initState(){
     // TODO: MAJOR: Refactor here!
     super.initState();
-    currentData = widget.jobData != null ? new Map<String, dynamic>.from(widget.jobData) : <String, dynamic>{};
+    currentData = widget.jobData != null ? new Map<String, dynamic>.from(widget.jobData) : <String, dynamic>{"datetime": new DateTime.now()};
     DocumentReference locationRef = currentData["location"];
     DocumentReference customerRef = currentData["customer"];
     if (locationRef != null){
@@ -305,7 +305,7 @@ class _JobCreatorCardState extends State<JobCreatorCard> {
       ),
       new CreatorItem<List<DocumentReference>>( // Contacts
         name: "Contacts",
-        value: widget.jobData['contacts'] ?? <String>[],
+        value: widget.jobData['contacts'] ?? <DocumentReference>[],
         hint: "Who is involved with this job?",
         valueToString: (List<DocumentReference> value) {
           if (value != null){

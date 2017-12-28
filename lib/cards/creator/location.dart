@@ -80,11 +80,16 @@ class _LocationCreatorCardState extends State<LocationCreatorCard> {
                                 "state": widget.locationData['state']},
         hint: "The street address for the location",
         valueToString: (Map<String, String> addressInfo){
-          if (addressInfo["address"] == null || addressInfo["city"] == null || addressInfo["state"] == null){
-            return "Please enter a complete address";
-          } else {
-            return "${addressInfo["address"]}, ${addressInfo["city"]}, ${addressInfo["state"]}";
-          }
+          String addressString = "";
+          if (addressInfo["address"] != null)
+            addressString += (addressInfo["address"] + ", ");
+          if (addressInfo["city"] != null)
+            addressString += (addressInfo["city"] + ", ");
+          if (addressInfo["state"] != null)
+            addressString += addressInfo["state"];
+          if (addressString == "")
+            return "";
+          return addressString;
         },
         builder: (CreatorItem<Map<String, String>> item){
           void close(){
@@ -171,7 +176,7 @@ class _LocationCreatorCardState extends State<LocationCreatorCard> {
       ),
       new CreatorItem<List<DocumentReference>>( // Contacts
         name: "Contacts",
-        value: widget.locationData["contacts"] ?? <String>[],
+        value: widget.locationData["contacts"] ?? <DocumentReference>[],
         hint: "Who is involved with this job?",
         valueToString: (List<DocumentReference> value) => value.length.toString(),
         builder: (CreatorItem<List<DocumentReference>> item){

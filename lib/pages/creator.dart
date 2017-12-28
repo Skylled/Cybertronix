@@ -5,8 +5,6 @@ import 'package.dart';
 import '../drawer.dart';
 import '../cards/creatorCards.dart';
 
-// TODO: MAJOR: Default field values do not get saved!
-// Option A: Move default values to currentData.
 class CreatorPage extends StatefulWidget {
   final String collection;
   final DocumentSnapshot snapshot;
