@@ -8,7 +8,7 @@ import 'tools.dart';
 class LocationCreatorCard extends StatefulWidget {
   /// The data of an existing Location to be edited (Optional)
   final Map<String, dynamic> locationData;
-
+  /// The containing page's callback to change data
   final Function(Map<String, dynamic>) changeData;
 
   /// Creates a Location creator/editor in a Card

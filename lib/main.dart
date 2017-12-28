@@ -34,7 +34,7 @@ class _CybertronixAppState extends State<CybertronixApp> {
         builder: (BuildContext context) => new CollectionPage(path[2])
       );
     } else if (path[1] == "create") {
-      return new MaterialPageRoute<Null>(
+      return new MaterialPageRoute<DocumentSnapshot>(
         settings: settings,
         builder: (BuildContext context) => new CreatorPage(path[2]),
         fullscreenDialog: true,

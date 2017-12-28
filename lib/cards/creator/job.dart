@@ -8,7 +8,8 @@ import 'tools.dart';
 class JobCreatorCard extends StatefulWidget {
   /// The data of an existing job to be edited (Optional)
   final Map<String, dynamic> jobData;
-
+  
+  /// The containing page's callback to change data
   final Function(Map<String, dynamic>) changeData;
 
   /// Creates a job creator/editor in a Card
@@ -43,20 +44,23 @@ class _JobCreatorCardState extends State<JobCreatorCard> {
   }
 
   void initState(){
-    // TODO: MAJOR: Refactor here!
+    // TODO: Remember why I want to: Refactor here!
     super.initState();
     currentData = widget.jobData != null ? new Map<String, dynamic>.from(widget.jobData) : <String, dynamic>{"datetime": new DateTime.now()};
     DocumentReference locationRef = currentData["location"];
     DocumentReference customerRef = currentData["customer"];
     if (locationRef != null){
       locationRef.snapshots.first.then((DocumentSnapshot snapshot){
-        // TODO: Might need a setState here.
-        locationName = snapshot["name"];
+        setState(() {
+          locationName = snapshot["name"];
+        });
       });
     }
     if (customerRef != null){
       customerRef.snapshots.first.then((DocumentSnapshot snapshot){
-        customerName = snapshot["name"];
+        setState(() {
+          customerName = snapshot["name"];
+        });
       });
     }
     _items = getJobItems();
