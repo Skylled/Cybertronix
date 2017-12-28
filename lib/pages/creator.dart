@@ -58,11 +58,26 @@ class _CreatorPageState extends State<CreatorPage> {
         newPackageTile = new ListTile(
           title: new Text("Add a package"),
           trailing: new Icon(Icons.add),
-          onTap: (){
-            // TODO: MAJOR: Hook into power selection.
+          onTap: () async {
+            String power = await showDialog<String>(
+              context: context,
+              barrierDismissible: false,
+              child: new SimpleDialog(
+                title: new Text("Diesel or Electric?"),
+                children: <Widget>[
+                  new SimpleDialogOption(
+                    child: new Text("Diesel"),
+                    onPressed: () => "Diesel",
+                  ),
+                  new SimpleDialogOption(
+                    child: new Text("Electric"),
+                    onPressed: () => "Electric",
+                  ),
+                ],
+              ));
             Navigator.of(context).push(
               new MaterialPageRoute<Map<String, dynamic>>(
-                builder: (BuildContext context) => new PackageCreatorPage()
+                builder: (BuildContext context) => new PackageCreatorPage(initialData: <String, dynamic>{"power" : power})
               ),
             ).then((Map<String, dynamic> packageData) {
               currentData["package"] = packageData;
