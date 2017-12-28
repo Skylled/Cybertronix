@@ -17,7 +17,11 @@ class _DieselMotorCreatorCardState extends State<DieselMotorCreatorCard> {
 
   void initState(){
     super.initState();
-    currentData = widget.initialData != null ? new Map<String, dynamic>.from(widget.initialData) : <String, dynamic>{"ground": "Negative"};
+    currentData = widget.initialData != null ? new Map<String, dynamic>.from(widget.initialData) : <String, dynamic>{};
+    if (currentData["ground"] == null) {
+      currentData["ground"] = "Negative";
+      widget.changeData('motor', currentData);
+    }
     _items = getMotorItems();
   }
 
@@ -366,7 +370,11 @@ class _ElectricMotorCreatorCardState extends State<ElectricMotorCreatorCard> {
 
   void initState(){
     super.initState();
-    currentData = widget.initialData != null ? new Map<String, dynamic>.from(widget.initialData) : <String, dynamic>{"phase": "Three"};
+    currentData = widget.initialData != null ? new Map<String, dynamic>.from(widget.initialData) : <String, dynamic>{};
+    if (currentData["phase"] == null) {
+      currentData["phase"] = "Three";
+      widget.changeData('motor', currentData);
+    }
     _items = getMotorItems();
   }
 

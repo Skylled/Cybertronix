@@ -46,7 +46,11 @@ class _JobCreatorCardState extends State<JobCreatorCard> {
   void initState(){
     // TODO: Remember why I want to: Refactor here!
     super.initState();
-    currentData = widget.jobData != null ? new Map<String, dynamic>.from(widget.jobData) : <String, dynamic>{"datetime": new DateTime.now()};
+    currentData = widget.jobData != null ? new Map<String, dynamic>.from(widget.jobData) : <String, dynamic>{};
+    if (currentData["datetime"] == null) {
+      currentData["datetime"] = new DateTime.now();
+      widget.changeData(currentData);
+    }
     DocumentReference locationRef = currentData["location"];
     DocumentReference customerRef = currentData["customer"];
     if (locationRef != null){
@@ -130,7 +134,7 @@ class _JobCreatorCardState extends State<JobCreatorCard> {
                     initialValue: item.value,
                     onSaved: (DateTime value) {
                       item.value = value;
-                      currentData["datetime"] = value.toIso8601String();
+                      currentData["datetime"] = value;
                       widget.changeData(currentData);
                     },
                     builder: (FormFieldState<DateTime> field){
