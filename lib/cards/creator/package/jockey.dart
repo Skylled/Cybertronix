@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import '../tools.dart';
 
-List<String> manufacturers = <String>[
+List<String> _manufacturers = <String>[
   "Tornatech", "Metron", "Firetrol",
   "Master Controls", "Cutler-Hammer",
   "Joselyn Clark", "Patterson", "Hubbell",
@@ -270,7 +270,7 @@ class _JockeyPanelCreatorCardState extends State<JockeyPanelCreatorCard> {
                       builder: (FormFieldState<String> field){
                         return new DropdownButton<String>(
                           value: item.value,
-                          items: manufacturers.map((String manufacturer){
+                          items: _manufacturers.map((String manufacturer){
                             return new DropdownMenuItem<String>(
                               value: manufacturer,
                               child: new Text(manufacturer),

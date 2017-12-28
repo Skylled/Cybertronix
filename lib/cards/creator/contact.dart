@@ -1,13 +1,12 @@
 import 'package:flutter/material.dart';
 import 'tools.dart';
 
-/// This [Card] opens in a dialog, and lets you create a 
-/// new contact, or, if fed in data and an ID, edit an existing
-/// contact.
+/// This Card opens on the Creator Page, with either no information
+/// or, if provided with [contactData], pre-filled for editing.
 class ContactCreatorCard extends StatefulWidget {
   /// The data of an existing contact to be edited (Optional)
   final Map<String, dynamic> contactData;
-  
+  /// The containing page's callback to change data
   final Function(Map<String, dynamic>) changeData;
 
   /// Creates a Contact creator/editor in a Card

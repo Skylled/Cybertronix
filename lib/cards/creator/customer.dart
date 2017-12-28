@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
 
+/// This simple Card allows for the creation of a new Customer.
 class CustomerCreatorCard extends StatefulWidget {
+  /// The data of the existing Customer to be edited (optional)
   final Map<String, dynamic> customerData;
-
+  /// The containing page's callback to change data
   final Function(Map<String, dynamic>) changeData;
   
+  /// Returns a new Customer Creator card with given data.
   CustomerCreatorCard(this.changeData, {Map<String, dynamic> customerData}):
     this.customerData = customerData ?? <String, dynamic> {};
 
