@@ -68,7 +68,7 @@ class LocationInfoCard extends StatelessWidget {
 
   LocationInfoCard(this.locationData);
 
-  Future<Null> goPhotos() async {
+  Future<Null> _goPhotos() async {
     File imageFile = await ImagePicker.pickImage(); // Have the user pick an image
     firebase.uploadPhoto(imageFile).then((String url) async { // When finished uploading the picture..
       Map<String, dynamic> newData = new Map<String, dynamic>.from(locationData.data); // Make a copy of the snapshot data
@@ -79,13 +79,13 @@ class LocationInfoCard extends StatelessWidget {
     });
   }
 
-  void goShare(){
+  void _goShare(){
     String shareString = "${locationData["name"]}\n${locationData["address"]}";
     shareString += "\n${locationData["city"]}, ${locationData["state"]}";
     share.share(shareString);
   }
 
-  List<Widget> buildChildren(BuildContext context){
+  List<Widget> _buildChildren(BuildContext context){
     List<Widget> children = <Widget>[];
     children.add(
       new Container(
@@ -161,7 +161,7 @@ class LocationInfoCard extends StatelessWidget {
               child: new IconButton(
                 icon: new Icon(Icons.share, color: Colors.white),
                 iconSize: 36.0,
-                onPressed: goShare,
+                onPressed: _goShare,
               ),
             ),
           ],
@@ -219,7 +219,7 @@ class LocationInfoCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return new Card(
       child: new Column(
-        children: buildChildren(context),
+        children: _buildChildren(context),
       ),
     );
   }

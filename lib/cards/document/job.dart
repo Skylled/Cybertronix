@@ -18,7 +18,7 @@ class JobInfoCard extends StatelessWidget {
 
   JobInfoCard(this.jobData);
 
-  Future<Null> goPhotos() async {
+  Future<Null> _goPhotos() async {
     File imageFile = await ImagePicker.pickImage();
     firebase.uploadPhoto(imageFile).then((String url) async {
       DocumentReference location = jobData["location"];
@@ -32,7 +32,7 @@ class JobInfoCard extends StatelessWidget {
     });
   }
 
-  List<Widget> buildChildren(BuildContext context){
+  List<Widget> _buildChildren(BuildContext context){
     List<Widget> children = <Widget>[];
     DateFormat formatter = new DateFormat("h:mm a, EEEE, MMMM d");
     children.add(
@@ -42,12 +42,16 @@ class JobInfoCard extends StatelessWidget {
           children: <Widget>[
             new Positioned.fill(
               child: jobData["location"] == null ?
-                new Icon(Icons.album) :
+                new Icon(Icons.photo_album, size: 64.0) :
                 new StreamBuilder<DocumentSnapshot>(
                   stream: Firestore.instance.document(jobData["location"]).snapshots,
                   builder: (BuildContext context, AsyncSnapshot<DocumentSnapshot> snapshot){
-                    if (!snapshot.hasData)
-                      return new Icon(Icons.photo_album);
+                    if (!snapshot.hasData){
+                      return new InkWell(
+                        child: new Icon(Icons.add_a_photo, size: 64.0),
+                        onTap: _goPhotos,
+                      );
+                    }
                     DocumentSnapshot location = snapshot.data;
                     if (location["photos"] != null){
                       // Future: Consider reorganization of photos
@@ -80,7 +84,10 @@ class JobInfoCard extends StatelessWidget {
                         'https://maps.googleapis.com/maps/api/streetview?size=600x600&location=${location["address"]}, ${location["city"]}, ${location["state"]}&key=${api.gmaps}'
                       );
                     } else {
-                      return new Icon(Icons.photo_album);
+                      return new InkWell(
+                        child: new Icon(Icons.add_a_photo, size: 64.0),
+                        onTap: _goPhotos,
+                      );
                     }
                   }
                 ),
@@ -184,7 +191,7 @@ class JobInfoCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return new Card(
       child: new Column(
-        children: buildChildren(context),
+        children: _buildChildren(context),
       ),
     );
   }

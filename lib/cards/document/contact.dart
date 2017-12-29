@@ -14,7 +14,7 @@ class ContactInfoCard extends StatelessWidget {
 
   ContactInfoCard(this.contactData);
 
-  Future<Null> goPhotos() async {
+  Future<Null> _goPhotos() async {
     File imageFile = await ImagePicker.pickImage();
     firebase.uploadPhoto(imageFile).then((String url) async {
       Map<String, dynamic> newData = new Map<String, dynamic>.from(contactData.data);
@@ -23,7 +23,7 @@ class ContactInfoCard extends StatelessWidget {
     });
   }
 
-  void goShare(){
+  void _goShare(){
     String shareString = "${contactData["name"]}";
     if (contactData["phone"] != null){
       shareString += "\n${contactData["phone"]}";
@@ -33,7 +33,7 @@ class ContactInfoCard extends StatelessWidget {
     share.share(shareString);
   }
 
-  List<Widget> buildChildren(BuildContext context){
+  List<Widget> _buildChildren(BuildContext context){
     Color color;
     List<Widget> children = <Widget>[];
     children.add(
@@ -45,7 +45,7 @@ class ContactInfoCard extends StatelessWidget {
               child: (){
                 if (contactData["photo"] != null){
                   color = Colors.white;
-                  return new GestureDetector(
+                  return new InkWell(
                     child: new Image.network(contactData["photo"], fit: BoxFit.fitWidth),
                     onTap: () async {
                       await showDialog(
@@ -64,7 +64,7 @@ class ContactInfoCard extends StatelessWidget {
                   color = Colors.black;
                   return new IconButton(
                     icon: new Icon(Icons.add_a_photo),
-                    onPressed: goPhotos,
+                    onPressed: _goPhotos,
                   );
                 }
               }()
@@ -87,7 +87,7 @@ class ContactInfoCard extends StatelessWidget {
               child: new IconButton(
                 icon: new Icon(Icons.share, color: color),
                 iconSize: 36.0,
-                onPressed: goShare,
+                onPressed: _goShare,
               ),
             ),
           ],
@@ -146,7 +146,7 @@ class ContactInfoCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return new Card(
       child: new Column(
-        children: buildChildren(context),
+        children: _buildChildren(context),
       ),
     );
   }
