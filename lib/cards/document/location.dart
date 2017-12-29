@@ -1,13 +1,9 @@
-import 'dart:async';
-import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart' as url_launcher;
 import 'package:share/share.dart' as share;
 import 'package:intl/intl.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:zoomable_image/zoomable_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import '../../firebase.dart' as firebase;
 import '../../api.dart' as api;
 import '../../pages/data.dart';
 
@@ -68,17 +64,6 @@ class LocationInfoCard extends StatelessWidget {
 
   LocationInfoCard(this.locationData);
 
-  Future<Null> _goPhotos() async {
-    File imageFile = await ImagePicker.pickImage(); // Have the user pick an image
-    firebase.uploadPhoto(imageFile).then((String url) async { // When finished uploading the picture..
-      Map<String, dynamic> newData = new Map<String, dynamic>.from(locationData.data); // Make a copy of the snapshot data
-      if (newData["photos"] == null)
-        newData["photos"] = <Map<String, dynamic>>[];
-      newData["photos"].add(<String, dynamic>{"url": url}); // Slap the photo data into a list.
-      await locationData.reference.setData(newData); // Upload the changes
-    });
-  }
-
   void _goShare(){
     String shareString = "${locationData["name"]}\n${locationData["address"]}";
     shareString += "\n${locationData["city"]}, ${locationData["state"]}";
@@ -94,51 +79,57 @@ class LocationInfoCard extends StatelessWidget {
           children: <Widget>[
             new Positioned.fill(
               child: (){
-                List<Map<String, dynamic>> photos = locationData["photos"];
-                if (photos != null){
-                  if (photos.length == 1){
-                    return new GestureDetector(
-                      child: new Image.network(photos[0]["url"], fit: BoxFit.fitWidth),
-                      onTap: () async {
-                        await showDialog(
-                          context: context,
-                          child: new ZoomableImage(
-                            new NetworkImage(photos[0]["url"]),
-                            scale: 10.0,
-                            onTap: (){
-                              Navigator.pop(context);
-                            },
-                          ),
-                        );
-                      },
-                    );
-                  } else {
-                    return new ListView(
-                      scrollDirection: Axis.horizontal,
-                      shrinkWrap: true,
-                      children: photos.map((Map<String, dynamic> photo){
-                        return new GestureDetector(
-                          child: new Image.network(photo["url"], fit: BoxFit.fitHeight),
-                          onTap: () async {
-                            await showDialog(
-                              context: context,
-                              child: new ZoomableImage(
-                                new NetworkImage(photo["url"]),
-                                scale: 10.0,
-                                onTap: (){
-                                  Navigator.pop(context);
-                                },
-                              ),
-                            );
+                List<String> photoUrls = <String>[];
+                if ((locationData["photos"] != null) &&
+                    (locationData["photos"].isNotEmpty)) {
+                  locationData["photos"].forEach((Map<String, dynamic> photoData){
+                    photoUrls.add(photoData["url"]);
+                  });
+                }
+                if ((locationData["address"] != null) &&
+                    (locationData["city"] != null) &&
+                    (locationData["state"] != null)) {
+                  photoUrls.add('https://maps.googleapis.com/maps/api/streetview?size=600x600&location=${locationData["address"]}, ${locationData["city"]}, ${locationData["state"]}&key=${api.gmaps}');
+                }
+                if (photoUrls.isEmpty) {
+                  return new Icon(Icons.add_a_photo);
+                } else if (photoUrls.length == 1) {
+                  return new InkWell(
+                    child: new Image.network(photoUrls[0], fit: BoxFit.cover),
+                    onTap: () async {
+                      await showDialog(
+                        context: context,
+                        child: new ZoomableImage(
+                          new NetworkImage(photoUrls[0]),
+                          scale: 10.0,
+                          onTap: (){
+                            Navigator.pop(context);
                           },
-                        );
-                      }).toList(),
-                    );
-                  }
+                        ),
+                      );
+                    },
+                  );
                 } else {
-                  return new Image.network(
-                    'https://maps.googleapis.com/maps/api/streetview?size=600x600&location=${locationData["address"]}, ${locationData["city"]}, ${locationData["state"]}&key=${api.gmaps}',
-                    fit: BoxFit.fitWidth
+                  return new ListView(
+                    scrollDirection: Axis.horizontal,
+                    shrinkWrap: true,
+                    children: photoUrls.map((String url){
+                      return new InkWell(
+                        child: new Image.network(url, fit: BoxFit.fitHeight),
+                        onTap: () async {
+                          await showDialog(
+                            context: context,
+                            child: new ZoomableImage(
+                              new NetworkImage(url),
+                              scale: 10.0,
+                              onTap: (){
+                                Navigator.pop(context);
+                              },
+                            ),
+                          );
+                        },
+                      );
+                    }).toList(),
                   );
                 }
               }(),
@@ -212,7 +203,7 @@ class LocationInfoCard extends StatelessWidget {
     }
 
     children.add(new Divider());
-    //children.add(new PreviousJobsTile(Firestore.instance.document(locationData.path)));
+    children.add(new NPreviousJobsTile(locationData.reference));
     return children;
   }
 

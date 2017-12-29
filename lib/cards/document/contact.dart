@@ -1,27 +1,14 @@
-import 'dart:async';
-import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart' as url_launcher;
 import 'package:share/share.dart' as share;
-import 'package:image_picker/image_picker.dart';
 import 'package:zoomable_image/zoomable_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import '../../firebase.dart' as firebase;
 
 /// A Material Card with a contact's info
 class ContactInfoCard extends StatelessWidget {
   final DocumentSnapshot contactData;
 
   ContactInfoCard(this.contactData);
-
-  Future<Null> _goPhotos() async {
-    File imageFile = await ImagePicker.pickImage();
-    firebase.uploadPhoto(imageFile).then((String url) async {
-      Map<String, dynamic> newData = new Map<String, dynamic>.from(contactData.data);
-      newData["photo"] = url;
-      await contactData.reference.setData(newData);
-    });
-  }
 
   void _goShare(){
     String shareString = "${contactData["name"]}";
@@ -46,12 +33,12 @@ class ContactInfoCard extends StatelessWidget {
                 if (contactData["photo"] != null){
                   color = Colors.white;
                   return new InkWell(
-                    child: new Image.network(contactData["photo"], fit: BoxFit.fitWidth),
+                    child: new Image.network(contactData["photo"]["url"], fit: BoxFit.cover),
                     onTap: () async {
                       await showDialog(
                         context: context,
                         child: new ZoomableImage(
-                          new NetworkImage(contactData["photo"]),
+                          new NetworkImage(contactData["photo"]["url"]),
                           scale: 10.0,
                           onTap: (){
                             Navigator.pop(context);
@@ -62,10 +49,7 @@ class ContactInfoCard extends StatelessWidget {
                   );
                 } else {
                   color = Colors.black;
-                  return new IconButton(
-                    icon: new Icon(Icons.add_a_photo),
-                    onPressed: _goPhotos,
-                  );
+                  return new Icon(Icons.person, size: 64.0);
                 }
               }()
             ),

@@ -1,15 +1,11 @@
-import 'dart:async';
-import 'dart:io';
 import 'package:intl/intl.dart';
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart' as url_launcher;
-import 'package:image_picker/image_picker.dart';
 import 'package:zoomable_image/zoomable_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 import '../../pages/data.dart';
 
-import '../../firebase.dart' as firebase;
 import '../../api.dart' as api;
 
 /// A Material Card with a job's info
@@ -17,20 +13,6 @@ class JobInfoCard extends StatelessWidget {
   final DocumentSnapshot jobData;
 
   JobInfoCard(this.jobData);
-
-  Future<Null> _goPhotos() async {
-    File imageFile = await ImagePicker.pickImage();
-    firebase.uploadPhoto(imageFile).then((String url) async {
-      DocumentReference location = jobData["location"];
-      Map<String, dynamic> photoData = <String, dynamic>{"job": jobData.reference, "url": url};
-      DocumentSnapshot locationSnapshot = await location.snapshots.first;
-      Map<String, dynamic> locationData = locationSnapshot.data;
-      if (locationData["photos"] == null)
-        locationData["photos"] = <Map<String, dynamic>>[];
-      locationData["photos"].add(photoData);
-      await location.setData(locationData);
-    });
-  }
 
   List<Widget> _buildChildren(BuildContext context){
     List<Widget> children = <Widget>[];
@@ -41,56 +23,114 @@ class JobInfoCard extends StatelessWidget {
         child: new Stack(
           children: <Widget>[
             new Positioned.fill(
-              child: jobData["location"] == null ?
-                new Icon(Icons.photo_album, size: 64.0) :
-                new StreamBuilder<DocumentSnapshot>(
-                  stream: Firestore.instance.document(jobData["location"]).snapshots,
-                  builder: (BuildContext context, AsyncSnapshot<DocumentSnapshot> snapshot){
-                    if (!snapshot.hasData){
-                      return new InkWell(
-                        child: new Icon(Icons.add_a_photo, size: 64.0),
-                        onTap: _goPhotos,
-                      );
-                    }
-                    DocumentSnapshot location = snapshot.data;
-                    if (location["photos"] != null){
-                      // Future: Consider reorganization of photos
-                      // Photo{"url": String, "job": DocumentReference}
-                      return new ListView(
-                        scrollDirection: Axis.horizontal,
-                        shrinkWrap: true,
-                        children: snapshot.data["photos"].map((String url){
-                          return new GestureDetector(
-                            child: new Image.network(url, fit: BoxFit.fitHeight),
-                            onTap: () async {
-                              await showDialog(
-                                context: context,
-                                child: new ZoomableImage(
-                                  new NetworkImage(url),
-                                  scale: 10.0,
-                                  onTap:(){
-                                    Navigator.pop(context);
-                                  }
-                                ),
-                              );
-                            },
-                          );
-                        }).toList(),
-                      );
-                    } else if ((location["address"] != null) &&
-                               (location["city"] != null) &&
-                               (location["state"] != null)){
-                      return new Image.network(
-                        'https://maps.googleapis.com/maps/api/streetview?size=600x600&location=${location["address"]}, ${location["city"]}, ${location["state"]}&key=${api.gmaps}'
-                      );
-                    } else {
-                      return new InkWell(
-                        child: new Icon(Icons.add_a_photo, size: 64.0),
-                        onTap: _goPhotos,
-                      );
-                    }
+              child: (){
+                if (jobData["location"] == null) {
+                  if (jobData["photos"] == null || jobData["photos"].length == 0) {
+                    return new Icon(Icons.add_a_photo, size: 64.0);
                   }
-                ),
+                  if (jobData["photos"].length == 1) {
+                    return new GestureDetector(
+                      child: new Image.network(jobData["photos"][0]["url"], fit: BoxFit.cover),
+                      onTap: () async {
+                        await showDialog(
+                          context: context,
+                          child: new ZoomableImage(
+                            new NetworkImage(jobData["photos"][0]["url"]),
+                            scale: 10.0,
+                            onTap:(){
+                              Navigator.pop(context);
+                            }
+                          ),
+                        );
+                      },
+                    );
+                  } else {
+                    return new ListView(
+                      scrollDirection: Axis.horizontal,
+                      shrinkWrap: true,
+                      children: jobData["photos"].map((Map<String, dynamic> photoData){
+                        return new GestureDetector(
+                          child: new Image.network(photoData["url"], fit: BoxFit.fitHeight),
+                          onTap: () async {
+                            await showDialog(
+                              context: context,
+                              child: new ZoomableImage(
+                                new NetworkImage(photoData["url"]),
+                                scale: 10.0,
+                                onTap:(){
+                                  Navigator.pop(context);
+                                }
+                              ),
+                            );
+                          },
+                        );
+                      }).toList(),
+                    );
+                  }
+                } else {
+                  return new StreamBuilder<DocumentSnapshot>(
+                    stream: Firestore.instance.document(jobData["location"]).snapshots,
+                    builder: (BuildContext context, AsyncSnapshot<DocumentSnapshot> snapshot){
+                      if (!snapshot.hasData){
+                        return new Icon(Icons.add_a_photo, size: 64.0);
+                      }
+                      DocumentSnapshot location = snapshot.data;
+                      List<String> photoUrls = <String>[];
+                      if (location["photos"] != null){
+                        location["photos"].forEach((Map<String, dynamic> photoData){
+                          photoUrls.add(photoData["url"]);
+                        });
+                      }
+                      if ((location["address"] != null) &&
+                          (location["city"] != null) &&
+                          (location["state"] != null)) {
+                        photoUrls.add('https://maps.googleapis.com/maps/api/streetview?size=600x600&location=${location["address"]}, ${location["city"]}, ${location["state"]}&key=${api.gmaps}');
+                      }
+                      if (photoUrls.isEmpty) {
+                        return new Icon(Icons.add_a_photo, size: 64.0);
+                      } else if (photoUrls.length == 1) {
+                        return new InkWell(
+                          child: new Image.network(photoUrls[0], fit: BoxFit.cover),
+                          onTap: () async {
+                            await showDialog(
+                              context: context,
+                              child: new ZoomableImage(
+                                new NetworkImage(photoUrls[0]),
+                                scale: 10.0,
+                                onTap:(){
+                                  Navigator.pop(context);
+                                }
+                              ),
+                            );
+                          },
+                        );
+                      } else {
+                        return new ListView(
+                          scrollDirection: Axis.horizontal,
+                          shrinkWrap: true,
+                          children: photoUrls.map((String url){
+                            return new InkWell(
+                              child: new Image.network(url, fit: BoxFit.fitHeight),
+                              onTap: () async {
+                                await showDialog(
+                                  context: context,
+                                  child: new ZoomableImage(
+                                    new NetworkImage(url),
+                                    scale: 10.0,
+                                    onTap:(){
+                                      Navigator.pop(context);
+                                    }
+                                  ),
+                                );
+                              },
+                            );
+                          }).toList(),
+                        );
+                      }
+                    },
+                  );
+                }
+              }(),
             ),
             new Positioned(
               left: 8.0,
