@@ -29,7 +29,7 @@ class JobInfoCard extends StatelessWidget {
                     return new Icon(Icons.add_a_photo, size: 64.0);
                   }
                   if (jobData["photos"].length == 1) {
-                    return new GestureDetector(
+                    return new InkWell(
                       child: new Image.network(jobData["photos"][0]["url"], fit: BoxFit.cover),
                       onTap: () async {
                         await showDialog(
@@ -49,7 +49,7 @@ class JobInfoCard extends StatelessWidget {
                       scrollDirection: Axis.horizontal,
                       shrinkWrap: true,
                       children: jobData["photos"].map((Map<String, dynamic> photoData){
-                        return new GestureDetector(
+                        return new InkWell(
                           child: new Image.network(photoData["url"], fit: BoxFit.fitHeight),
                           onTap: () async {
                             await showDialog(

@@ -52,7 +52,6 @@ class _DataPageState extends State<DataPage> {
                   onPressed: () async {
                     File imageFile = await ImagePicker.pickImage();
                     firebase.uploadPhoto(imageFile).then((String url) async {
-                      // TODO: On job changeData, if location changes, change related photo locations
                       CollectionReference photos = Firestore.instance.collection("photos");
                       Map<String, dynamic> photoData = <String, dynamic>{"url": url, "uploaded": new DateTime.now()};
                       switch (widget.collection){
