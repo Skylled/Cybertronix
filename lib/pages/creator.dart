@@ -1,9 +1,12 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:strings/strings.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package.dart';
 import '../drawer.dart';
 import '../cards/creatorCards.dart';
+
+// TODO: Move from a setData(currentData) model to updateData(changedData) model.
 
 class CreatorPage extends StatefulWidget {
   final String collection;
@@ -19,6 +22,75 @@ class _CreatorPageState extends State<CreatorPage> {
   List<Widget> children;
   Map<String, dynamic> currentData;
   bool saved = false;
+
+  Future<bool> updateJobPhotos() async {
+    if (widget.snapshot != null){
+      if (widget.snapshot["location"] != currentData["location"]){
+        if (currentData["location"] != null){
+          if (widget.snapshot["location"] == null){
+            if (widget.snapshot["photos"] != null){
+              // Transfer from job to location
+              List<Map<String, dynamic>> jobPhotos = widget.snapshot["photos"];
+              DocumentSnapshot newLocation = await currentData["location"].snapshots.first;
+              List<Map<String, dynamic>> locationPhotos = newLocation["photos"] ?? <Map<String, dynamic>>[];
+              locationPhotos.addAll(jobPhotos);
+              QuerySnapshot jobResults = await Firestore.instance.collection("photos").where("job", isEqualTo: widget.snapshot.reference).snapshots.first;
+              jobResults.documents.forEach((DocumentSnapshot document) async {
+                await document.reference.updateData(<String, dynamic>{"location": currentData["location"]});
+              });
+              await currentData["location"].updateData(<String, dynamic>{"photos": locationPhotos});
+              return true;
+            }
+          } else {
+            // Transfer from one location to another.
+            DocumentSnapshot oldLocation = await widget.snapshot["location"].snapshots.first;
+            List<Map<String, dynamic>> oldPhotos = oldLocation["photos"] ?? <Map<String, dynamic>>[];
+            List<Map<String, dynamic>> xferPhotos = <Map<String, dynamic>>[];
+            if (oldPhotos.isNotEmpty) {
+              oldPhotos.removeWhere((Map<String, dynamic> photoData){
+                if (photoData["job"] == widget.snapshot.reference){
+                  xferPhotos.add(photoData);
+                  return true;
+                }
+                return false;
+              });
+              DocumentSnapshot newLocation = await currentData["location"].snapshots.first;
+              if (newLocation["photos"] != null) {
+                xferPhotos.addAll(newLocation["photos"]);
+              }
+              QuerySnapshot photoResults = await Firestore.instance.collection("photos").where("job", isEqualTo: widget.snapshot.reference).snapshots.first;
+              photoResults.documents.forEach((DocumentSnapshot document) async {
+                await document.reference.updateData(<String, dynamic>{"location": currentData["location"]});
+              });
+              await currentData["location"].updateData(<String, dynamic>{"photos": xferPhotos});
+              return true;
+            }
+          }
+        } else {
+          // Future: Logic for if currentData["location"] becomes nullified
+          DocumentSnapshot oldLocation = await widget.snapshot["location"].snapshots.first;
+          List<Map<String, dynamic>> oldPhotos = oldLocation["photos"] ?? <Map<String, dynamic>>[];
+          List<Map<String, dynamic>> xferPhotos = <Map<String, dynamic>>[];
+          if (oldPhotos.isNotEmpty) {
+            oldPhotos.removeWhere((Map<String, dynamic> photoData){
+              if (photoData["job"] == widget.snapshot.reference){
+                xferPhotos.add(photoData);
+                return true;
+              }
+              return false;
+            });
+            QuerySnapshot photoResults = await Firestore.instance.collection("photos").where("job", isEqualTo: widget.snapshot.reference).snapshots.first;
+            photoResults.documents.forEach((DocumentSnapshot document) async {
+              await document.reference.updateData(<String, dynamic>{"location": null});
+            });
+            await widget.snapshot.reference.updateData(<String, dynamic>{"photos": xferPhotos});
+            return true;
+          }
+        }
+      }
+    }
+    return false;
+  }
 
   /// This is a callback, passed to cards to affect this widget's state
   void changeData(Map<String, dynamic> newData){
@@ -126,6 +198,8 @@ class _CreatorPageState extends State<CreatorPage> {
           child: new Text("Save & Finish"),
           textColor: Theme.of(context).accentColor,
           onPressed: () async {
+            if (widget.collection == "jobs")
+              updateJobPhotos();
             DocumentReference docRef = widget.snapshot != null ?
                 widget.snapshot.reference :
                 Firestore.instance.collection(widget.collection).document();
