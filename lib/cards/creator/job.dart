@@ -29,7 +29,7 @@ class _JobCreatorCardState extends State<JobCreatorCard> {
 
   DateFormat datefmt = new DateFormat("EEEE, MMMM d");
   DateFormat timefmt = new DateFormat("h:mm a");
-  DateFormat fullfmt = new DateFormat("h:mm a, EEEE, MMMM d");
+  DateFormat fullfmt = new DateFormat("h:mm a, E, MMM d");
 
   List<DocumentReference> addObj(List<DocumentReference> objList, DocumentReference objID){
     List<DocumentReference> updated = new List<DocumentReference>.from(objList);
@@ -114,7 +114,7 @@ class _JobCreatorCardState extends State<JobCreatorCard> {
       ),
       new CreatorItem<DateTime>( // When
         name: "Date & time",
-        value: widget.jobData["datetime"] != null ? DateTime.parse(widget.jobData["datetime"]) : new DateTime.now(),
+        value: widget.jobData["datetime"] ?? new DateTime.now(), // This line might be unnecessary.
         hint: "When is the job?",
         valueToString: (DateTime dt) => fullfmt.format(dt),
         builder: (CreatorItem<DateTime> item) {
