@@ -69,7 +69,7 @@ class JobInfoCard extends StatelessWidget {
                   }
                 } else {
                   return new StreamBuilder<DocumentSnapshot>(
-                    stream: Firestore.instance.document(jobData["location"]).snapshots,
+                    stream: jobData["location"].snapshots,
                     builder: (BuildContext context, AsyncSnapshot<DocumentSnapshot> snapshot){
                       if (!snapshot.hasData){
                         return new Icon(Icons.add_a_photo, size: 64.0);
@@ -160,7 +160,7 @@ class JobInfoCard extends StatelessWidget {
     if (jobData["location"] != null){
       children.add(
         new StreamBuilder<DocumentSnapshot>(
-          stream: Firestore.instance.document(jobData["location"]).snapshots,
+          stream: jobData["location"].snapshots,
           builder: (BuildContext context, AsyncSnapshot<DocumentSnapshot> snapshot){
             if (!snapshot.hasData){
               return new Divider(); // Future: Consider other widgets.
@@ -195,7 +195,7 @@ class JobInfoCard extends StatelessWidget {
       contactList.forEach((DocumentReference contactRef){
         children.add(
           new StreamBuilder<DocumentSnapshot>(
-            stream: Firestore.instance.document(contactRef.path).snapshots,
+            stream: contactRef.snapshots,
             builder: (BuildContext context, AsyncSnapshot<DocumentSnapshot> snapshot){
               if (!snapshot.hasData)
                 return new Divider();
