@@ -106,7 +106,7 @@ class _CreatorPageState extends State<CreatorPage> {
   void buildBody(){
     if (widget.snapshot != null) {
       currentData = widget.snapshot.data;
-      children = <Widget>[getCreatorCard(widget.collection, changeData)];
+      children = <Widget>[getCreatorCard(widget.collection, changeData, data: currentData)];
       if (widget.collection == "locations"){
         if (currentData["package"] != null){
             Widget packageCard;
