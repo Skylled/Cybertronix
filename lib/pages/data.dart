@@ -95,7 +95,7 @@ class _DataPageState extends State<DataPage> {
                 child: new Text("Edit info"),
                 onPressed: (){
                   Navigator.of(context).push(
-                    new MaterialPageRoute<Null>(
+                    new MaterialPageRoute<DocumentSnapshot>(
                       builder: (BuildContext context) => new CreatorPage(widget.collection, document),
                     ),
                   );
