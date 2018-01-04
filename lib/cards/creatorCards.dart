@@ -19,7 +19,11 @@ Widget getCreatorCard(String collection, Function(Map<String, dynamic>) changeDa
     case "customers":
       return new CustomerCreatorCard(changeData, customerData: data);
     default:
-      return null;
+      return new Card(
+        child: new Center(
+          child: new Text("Creator for [$collection] not yet implemented"),
+        ),
+      );
   }
 }
 
