@@ -8,23 +8,23 @@ import '../../api.dart' as api;
 import '../../pages/data.dart';
 
 
-class NPreviousJobsTile extends StatefulWidget {
+class PreviousJobsTile extends StatefulWidget {
   final DocumentReference locationRef;
 
-  NPreviousJobsTile(this.locationRef);
+  PreviousJobsTile(this.locationRef);
 
   @override
-  _NPreviousJobsTileState createState() => new _NPreviousJobsTileState();
+  _PreviousJobsTileState createState() => new _PreviousJobsTileState();
 }
 
-class _NPreviousJobsTileState extends State<NPreviousJobsTile> {
+class _PreviousJobsTileState extends State<PreviousJobsTile> {
   
   @override
   Widget build(BuildContext context) {
     return new StreamBuilder<QuerySnapshot>(
       stream: Firestore.instance.collection("jobs")
                        .where("location", isEqualTo: widget.locationRef)
-                       .orderBy("datetime")
+                       .orderBy("datetime", descending: true)
                        .snapshots,
       builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot){
         if (!snapshot.hasData){
@@ -203,7 +203,7 @@ class LocationInfoCard extends StatelessWidget {
     }
 
     children.add(new Divider());
-    children.add(new NPreviousJobsTile(locationData.reference));
+    children.add(new PreviousJobsTile(locationData.reference));
     return children;
   }
 
