@@ -7,7 +7,7 @@ Drawer buildDrawer(BuildContext context, String currentPage) {
     if (currentPage == "agenda"){
       Navigator.pop(context);
     } else {
-      Navigator.popAndPushNamed(context, '/');
+      Navigator.popAndPushNamed(context, '/agenda');
     }
   }
 
