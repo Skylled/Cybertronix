@@ -203,7 +203,6 @@ class _JobCreatorCardState extends State<JobCreatorCard> {
           return new Form(
             child: new Builder(
               builder: (BuildContext context) {
-                String tempName;
                 return new CollapsibleBody(
                   onSave: () { Form.of(context).save(); close(); },
                   onCancel: () { Form.of(context).reset(); close(); },
@@ -212,7 +211,6 @@ class _JobCreatorCardState extends State<JobCreatorCard> {
                     onSaved: (DocumentReference value) {
                       item.value = value;
                       currentData["location"] = value;
-                      locationName = tempName;
                       widget.changeData(currentData);
                     },
                     builder: (FormFieldState<DocumentReference> field){
@@ -231,7 +229,7 @@ class _JobCreatorCardState extends State<JobCreatorCard> {
                               );
                               if (chosen != null && chosen.reference != field.value){
                                 debugPrint("Chosen was okay.");
-                                tempName = chosen["name"];
+                                locationName = chosen["name"];
                                 field.onChanged(chosen.reference);
                               } else {
                                 debugPrint("Chosen was not okay!");
