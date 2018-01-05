@@ -17,6 +17,7 @@ class JobInfoCard extends StatelessWidget {
   List<Widget> _buildChildren(BuildContext context){
     List<Widget> children = <Widget>[];
     DateFormat formatter = new DateFormat("h:mm a, EEEE, MMMM d");
+    Color titleColor = Colors.white;
     children.add(
       new Container(
         height: 200.0,
@@ -26,6 +27,7 @@ class JobInfoCard extends StatelessWidget {
               child: (){
                 if (jobData["location"] == null) {
                   if (jobData["photos"] == null || jobData["photos"].length == 0) {
+                    titleColor = Colors.blueGrey;
                     return new Icon(Icons.add_a_photo, size: 64.0);
                   }
                   if (jobData["photos"].length == 1) {
@@ -138,7 +140,7 @@ class JobInfoCard extends StatelessWidget {
               child: new Text(
                 jobData["name"],
                 style: new TextStyle(
-                  color: Colors.white,
+                  color: titleColor,
                   fontSize: 24.0,
                   fontWeight: FontWeight.bold,
                 ),
