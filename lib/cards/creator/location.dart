@@ -22,12 +22,17 @@ class LocationCreatorCard extends StatefulWidget {
 class _LocationCreatorCardState extends State<LocationCreatorCard> {
   List<CreatorItem<dynamic>> _items;
   Map<String, dynamic> currentData;
+  String _address;
+  String _city;
+  String _state;
 
   @override
   void initState(){
     super.initState();
     currentData = widget.locationData != null ? new Map<String, dynamic>.from(widget.locationData) : <String, dynamic> {};
-
+    _address = widget.locationData["address"];
+    _city = widget.locationData["city"];
+    _state = widget.locationData["state"];
     _items = getLocationItems();
   }
 
@@ -101,9 +106,6 @@ class _LocationCreatorCardState extends State<LocationCreatorCard> {
           return new Form(
             child: new Builder(
               builder: (BuildContext context){
-                String _address = widget.locationData["address"];
-                String _city = widget.locationData["city"];
-                String _state = widget.locationData["state"];
                 return new CollapsibleBody(
                   onSave: (){
                     Form.of(context).save();
@@ -158,9 +160,13 @@ class _LocationCreatorCardState extends State<LocationCreatorCard> {
                           new Align(
                             alignment: FractionalOffset.centerRight,
                             child: new DropdownButton<String>(
+                              hint: new Text("State"),
+                              value: _state,
                               items: states,
                               onChanged: (String value){
-                                _state = value;
+                                setState((){
+                                  _state = value;
+                                });
                               },
                             ),
                           ),
