@@ -151,7 +151,8 @@ class _CreatorPageState extends State<CreatorPage> {
               new MaterialPageRoute<Map<String, dynamic>>(
                 builder: (BuildContext context) => new PackageCreatorPage(initialData: <String, dynamic>{"power" : power})
               ),
-            ).then((Map<String, dynamic> packageData) {
+            ).then((Object packageData) {
+              assert (packageData is Map);
               currentData["package"] = packageData;
               setState(() {
                 Widget card;
