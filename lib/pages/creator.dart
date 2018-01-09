@@ -7,6 +7,7 @@ import '../drawer.dart';
 import '../cards/creatorCards.dart';
 
 // TODO: Move from a setData(currentData) model to updateData(changedData) model.
+// TODO: Reset some data points onCancel
 
 class CreatorPage extends StatefulWidget {
   final String collection;

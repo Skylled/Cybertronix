@@ -11,17 +11,12 @@ dependencies:
   image_picker: ^0.2.0
   image:
   share: ^0.3.0
-  # TODO: Use these until all plugins update to pub.
   google_sign_in:
-    path: ../google_sign_in/
   firebase_auth:
-    path: ../firebase_auth/
   firebase_messaging:
-    path: ../firebase_messaging/
   firebase_storage:
-    path: ../firebase_storage/
   cloud_firestore:
-    path: ../cloud_firestore/
+    path: ../../Repos/Skylled/plugins/packages/cloud_firestore/
   path:
   zoomable_image:
   strings:
