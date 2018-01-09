@@ -59,9 +59,11 @@ class DocumentListView extends StatelessWidget {
   @override
   Widget build(BuildContext context){
     String sort;
+    bool descending = false;
     switch (collection){
       case "jobs":
         sort = "datetime";
+        descending = true;
         break;
       default:
         sort = "name";
@@ -69,7 +71,7 @@ class DocumentListView extends StatelessWidget {
     }
 
     return new StreamBuilder<QuerySnapshot>(
-      stream: Firestore.instance.collection(collection).orderBy(sort).snapshots,
+      stream: Firestore.instance.collection(collection).orderBy(sort, descending: descending).snapshots,
       builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
         if (!snapshot.hasData) return new Text("Loading...");
         return new ListView(
