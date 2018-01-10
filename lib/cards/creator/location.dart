@@ -138,7 +138,7 @@ class _LocationCreatorCardState extends State<LocationCreatorCard> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: <Widget>[
                           new TextField(
-                            controller: new TextEditingController(text: field.value["address"]),
+                            controller: new TextEditingController(text: _address),
                             decoration: new InputDecoration(
                               hintText: "(e.g. 1515 Poydras St)",
                               labelText: "Street address"
@@ -148,7 +148,7 @@ class _LocationCreatorCardState extends State<LocationCreatorCard> {
                             },
                           ),
                           new TextField(
-                            controller: new TextEditingController(text: field.value["city"]),
+                            controller: new TextEditingController(text: _city),
                             decoration: new InputDecoration(
                               hintText: "(e.g. New Orleans)",
                               labelText: "City"
