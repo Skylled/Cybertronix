@@ -120,6 +120,54 @@ class _CreatorPageState extends State<CreatorPage> {
               },
             );
             children.add(packageCard);
+        } else {
+          Widget newPackageTile;
+          newPackageTile = new ListTile(
+            title: new Text("Add a package"),
+            trailing: new Icon(Icons.add),
+            onTap: () async {
+              String power = await showDialog<String>(
+                context: context,
+                barrierDismissible: false,
+                child: new SimpleDialog(
+                  title: new Text("Diesel or Electric?"),
+                  children: <Widget>[
+                    new SimpleDialogOption(
+                      child: new Text("Diesel"),
+                      onPressed: () => "Diesel",
+                    ),
+                    new SimpleDialogOption(
+                      child: new Text("Electric"),
+                      onPressed: () => "Electric",
+                    ),
+                  ],
+                ));
+              Navigator.of(context).push(
+                new MaterialPageRoute<Map<String, dynamic>>(
+                  builder: (BuildContext context) => new PackageCreatorPage(initialData: <String, dynamic>{"power" : power})
+                ),
+              ).then((Object packageData) {
+                assert (packageData is Map);
+                currentData["package"] = packageData;
+                setState(() {
+                  Widget card;
+                  card = new PackageSummaryCard(
+                    packageData,
+                    changePackage,
+                    (){
+                      setState((){
+                        currentData["package"] = null;
+                        children.remove(card);
+                      });
+                    }
+                  );
+                  children.insert(1, card);
+                  children.remove(newPackageTile);
+                });
+              });
+            },
+          );
+          children.add(newPackageTile);
         }
       }
     } else {

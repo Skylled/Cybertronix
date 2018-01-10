@@ -23,8 +23,7 @@ class _CollectionPageState extends State<CollectionPage> {
         new IconButton(
           icon: new Icon(Icons.search),
           onPressed: (){
-            // Future: Elastic Search?
-            // TODO: See if FireStore can do a basic name search
+            // Future: Algolia searching
           },
         ),
       ],
