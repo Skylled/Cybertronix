@@ -225,6 +225,22 @@ class JobInfoCard extends StatelessWidget {
         );
       });
     }
+    if (jobData["customer"] != null){
+      children.add(
+        new StreamBuilder<DocumentSnapshot>(
+          stream: jobData["customer"].snapshots,
+          builder: (BuildContext context, AsyncSnapshot<DocumentSnapshot> snapshot){
+            if (!snapshot.hasData)
+              return new Divider();
+            DocumentSnapshot customer = snapshot.data;
+            return new ListTile(
+              leading: new Icon(Icons.business),
+              title: new Text(customer["name"]),
+            );
+          },
+        ),
+      );
+    }
     // Future: Users
     return children;
   }
