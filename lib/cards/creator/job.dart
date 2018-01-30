@@ -264,7 +264,6 @@ class _JobCreatorCardState extends State<JobCreatorCard> {
             });
           }
 
-          String tempName;
           return new Form(
             child: new Builder(
               builder: (BuildContext context) {
@@ -276,7 +275,6 @@ class _JobCreatorCardState extends State<JobCreatorCard> {
                     onSaved: (DocumentReference value){
                       item.value = value;
                       currentData["customer"] = value;
-                      customerName = tempName;
                       widget.changeData(currentData);
                     },
                     builder: (FormFieldState<DocumentReference> field){
@@ -294,7 +292,7 @@ class _JobCreatorCardState extends State<JobCreatorCard> {
                                 initialObjects: <DocumentReference>[field.value],
                               );
                               if (chosen != null && chosen.reference != field.value){
-                                tempName = chosen["name"];
+                                customerName = chosen["name"];
                                 field.onChanged(chosen.reference);
                               }
                             },
