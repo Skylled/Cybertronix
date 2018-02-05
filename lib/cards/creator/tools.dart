@@ -199,7 +199,7 @@ class CreatorItem<T> {
       return new DualHeaderWithHint(
         name: name,
         value: valueToString(value),
-        hint: hint,
+        hint: hint ?? '',
         showHint: isExpanded
       );
     };
