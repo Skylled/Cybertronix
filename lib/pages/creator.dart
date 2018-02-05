@@ -188,36 +188,35 @@ class _CreatorPageState extends State<CreatorPage> {
                 children: <Widget>[
                   new SimpleDialogOption(
                     child: new Text("Diesel"),
-                    onPressed: () => "Diesel",
+                    onPressed: (){ Navigator.pop(context, "Diesel"); },
                   ),
                   new SimpleDialogOption(
                     child: new Text("Electric"),
-                    onPressed: () => "Electric",
+                    onPressed: (){ Navigator.pop(context, "Electric"); },
                   ),
                 ],
               ));
-            Navigator.of(context).push(
+            Object packageData = await Navigator.of(context).push(
               new MaterialPageRoute<Map<String, dynamic>>(
                 builder: (BuildContext context) => new PackageCreatorPage(initialData: <String, dynamic>{"power" : power})
               ),
-            ).then((Object packageData) {
-              assert (packageData is Map);
-              currentData["package"] = packageData;
-              setState(() {
-                Widget card;
-                card = new PackageSummaryCard(
-                  packageData,
-                  changePackage,
-                  (){
-                    setState((){
-                      currentData["package"] = null;
-                      children.remove(card);
-                    });
-                  }
-                );
-                children.insert(1, card);
-                children.remove(newPackageTile);
-              });
+            );
+            assert (packageData is Map<String, dynamic>);
+            currentData["package"] = packageData;
+            setState(() {
+              Widget card;
+              card = new PackageSummaryCard(
+                packageData,
+                changePackage,
+                (){
+                  setState((){
+                    currentData["package"] = null;
+                    children.remove(card);
+                  });
+                }
+              );
+              children.insert(1, card);
+              children.remove(newPackageTile);
             });
           },
         );

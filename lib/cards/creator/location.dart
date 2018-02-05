@@ -183,7 +183,7 @@ class _LocationCreatorCardState extends State<LocationCreatorCard> {
       new CreatorItem<List<DocumentReference>>( // Contacts
         name: "Contacts",
         value: widget.locationData["contacts"] ?? <DocumentReference>[],
-        hint: "Who is involved with this job?",
+        hint: "Who is normally involved with this location?",
         valueToString: (List<DocumentReference> value) => value.length.toString(),
         builder: (CreatorItem<List<DocumentReference>> item){
           void close() {
