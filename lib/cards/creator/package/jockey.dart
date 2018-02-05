@@ -32,7 +32,7 @@ class _JockeyPumpCreatorCardState extends State<JockeyPumpCreatorCard> {
     return <CreatorItem<dynamic>>[
       new CreatorItem<String>( // Manufacturer
         name: "Manufacturer",
-        value: widget.initialData["manufacturer"] ?? '',
+        value: currentData["manufacturer"] ?? '',
         hint: "Grunfos",
         valueToString: (String value) => value,
         builder: (CreatorItem<String> item){
@@ -72,7 +72,7 @@ class _JockeyPumpCreatorCardState extends State<JockeyPumpCreatorCard> {
       ),
       new CreatorItem<String>( // Model #
         name: "Model #",
-        value: widget.initialData["model"] ?? '',
+        value: currentData["model"] ?? '',
         valueToString: (String value) => value,
         builder: (CreatorItem<String> item){
           void close(){
@@ -111,7 +111,7 @@ class _JockeyPumpCreatorCardState extends State<JockeyPumpCreatorCard> {
       ),
       new CreatorItem<String>( // Serial #
         name: "Serial #",
-        value: widget.initialData["serial"] ?? '',
+        value: currentData["serial"] ?? '',
         valueToString: (String value) => value,
         builder: (CreatorItem<String> item){
           void close(){
@@ -150,7 +150,7 @@ class _JockeyPumpCreatorCardState extends State<JockeyPumpCreatorCard> {
       ),
       new CreatorItem<num>( // Horsepower
         name: "Horsepower",
-        value: widget.initialData["hp"],
+        value: currentData["hp"],
         hint: "(e.g. 1.5 or 10)",
         valueToString: (num value) => value != null ? value.toString() : '',
         builder: (CreatorItem<num> item){
@@ -242,7 +242,7 @@ class _JockeyPanelCreatorCardState extends State<JockeyPanelCreatorCard> {
     return <CreatorItem<dynamic>>[
       new CreatorItem<String>( // Manufacturer
         name: "Manufacturer",
-        value: widget.initialData["manufacturer"],
+        value: currentData["manufacturer"],
         hint: "Tornatech",
         valueToString: (String value) => value ?? "Select a manufacturer",
         builder: (CreatorItem<String> item){
@@ -291,7 +291,7 @@ class _JockeyPanelCreatorCardState extends State<JockeyPanelCreatorCard> {
       ),
       new CreatorItem<String>( // Model #
         name: "Model #",
-        value: widget.initialData["model"] ?? '',
+        value: currentData["model"] ?? '',
         hint: "(JP3-460/3/2/2)",
         valueToString: (String value) => value,
         builder: (CreatorItem<String> item){
@@ -331,7 +331,7 @@ class _JockeyPanelCreatorCardState extends State<JockeyPanelCreatorCard> {
       ),
       new CreatorItem<String>( // Serial #
         name: "Serial #",
-        value: widget.initialData["serial"] ?? '',
+        value: currentData["serial"] ?? '',
         valueToString: (String value) => value,
         builder: (CreatorItem<String> item){
           void close(){
@@ -370,7 +370,7 @@ class _JockeyPanelCreatorCardState extends State<JockeyPanelCreatorCard> {
       ),
       new CreatorItem<num>( // Horsepower
         name: "Horsepower",
-        value: widget.initialData["hp"],
+        value: currentData["hp"],
         hint: "(e.g. 1.5 or 10)",
         valueToString: (num value) => value != null ? value.toString() : '',
         builder: (CreatorItem<num> item){
@@ -412,7 +412,7 @@ class _JockeyPanelCreatorCardState extends State<JockeyPanelCreatorCard> {
       ),
       new CreatorItem<int>( // AC Volts
         name: "AC Voltage",
-        value: widget.initialData["volts"],
+        value: currentData["volts"],
         hint: "(e.g. 120 or 208)",
         valueToString: (int value) => value != null ? value.toString() : '',
         builder: (CreatorItem<int> item){
@@ -454,7 +454,7 @@ class _JockeyPanelCreatorCardState extends State<JockeyPanelCreatorCard> {
       ),
       new CreatorItem<String>( // Phase [Single, Three]
         name: "Phase",
-        value: widget.initialData['phase'] ?? "Three",
+        value: currentData['phase'] ?? "Three",
         hint: "Three/Single",
         valueToString: (String phase) => "$phase phase",
         builder: (CreatorItem<String> item){
@@ -503,7 +503,7 @@ class _JockeyPanelCreatorCardState extends State<JockeyPanelCreatorCard> {
       ),
       new CreatorItem<int>( // Start pressure
         name: "Start pressure",
-        value: widget.initialData["start"],
+        value: currentData["start"],
         hint: "In PSI",
         valueToString: (int value) => value != null ? value.toString() : "Enter start pressure",
         builder: (CreatorItem<int> item){
@@ -545,7 +545,7 @@ class _JockeyPanelCreatorCardState extends State<JockeyPanelCreatorCard> {
       ),
       new CreatorItem<int>( // Stop pressure
         name: "Stop pressure",
-        value: widget.initialData["stop"],
+        value: currentData["stop"],
         hint: "In PSI",
         valueToString: (int value) => value != null ? value.toString() : "Enter stop pressure",
         builder: (CreatorItem<int> item){
@@ -588,7 +588,7 @@ class _JockeyPanelCreatorCardState extends State<JockeyPanelCreatorCard> {
       new CreatorItem<String>( // Enclosure
         name: "Enclosure",
         hint: "NEMA 4X",
-        value: widget.initialData["enclosure"] ?? '',
+        value: currentData["enclosure"] ?? '',
         valueToString: (String value) => value,
         builder: (CreatorItem<String> item){
           void close(){

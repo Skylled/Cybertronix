@@ -34,7 +34,7 @@ class _DieselPanelCreatorCardState extends State<DieselPanelCreatorCard> {
     return <CreatorItem<dynamic>>[
       new CreatorItem<String>( // Manufacturer
         name: "Manufacturer",
-        value: widget.initialData["manufacturer"],
+        value: currentData["manufacturer"],
         hint: "Tornatech",
         valueToString: (String value) => value ?? "Select a manufacturer",
         builder: (CreatorItem<String> item){
@@ -83,7 +83,7 @@ class _DieselPanelCreatorCardState extends State<DieselPanelCreatorCard> {
       ),
       new CreatorItem<String>( // Model #
         name: "Model #",
-        value: widget.initialData["model"] ?? '',
+        value: currentData["model"] ?? '',
         hint: "(FD4-J)",
         valueToString: (String value) => value,
         builder: (CreatorItem<String> item){
@@ -123,7 +123,7 @@ class _DieselPanelCreatorCardState extends State<DieselPanelCreatorCard> {
       ),
       new CreatorItem<String>( // Serial #
         name: "Serial #",
-        value: widget.initialData["serial"] ?? '',
+        value: currentData["serial"] ?? '',
         valueToString: (String value) => value,
         builder: (CreatorItem<String> item){
           void close(){
@@ -162,7 +162,7 @@ class _DieselPanelCreatorCardState extends State<DieselPanelCreatorCard> {
       ),
       new CreatorItem<int>( // Charger AC voltage
         name: "Charger voltage",
-        value: widget.initialData['chargervolts'],
+        value: currentData['chargervolts'],
         hint: "120",
         valueToString: (int value) => value != null ? value.toString() : "Select voltage",
         builder: (CreatorItem<int> item){
@@ -211,7 +211,7 @@ class _DieselPanelCreatorCardState extends State<DieselPanelCreatorCard> {
       ),
       new CreatorItem<int>( // Engine DC voltage
         name: "Engine voltage",
-        value: widget.initialData['enginevolts'],
+        value: currentData['enginevolts'],
         hint: "12/24",
         valueToString: (int value) => value != null ? value.toString() : "Select voltage",
         builder: (CreatorItem<int> item){
@@ -260,7 +260,7 @@ class _DieselPanelCreatorCardState extends State<DieselPanelCreatorCard> {
       ),
       new CreatorItem<int>( // Start pressure
         name: "Start pressure",
-        value: widget.initialData["start"],
+        value: currentData["start"],
         hint: "In PSI",
         valueToString: (int value) => value != null ? value.toString() : "Enter start pressure",
         builder: (CreatorItem<int> item){
@@ -302,7 +302,7 @@ class _DieselPanelCreatorCardState extends State<DieselPanelCreatorCard> {
       ),
       new CreatorItem<int>( // Stop pressure
         name: "Stop pressure",
-        value: widget.initialData["stop"],
+        value: currentData["stop"],
         hint: "In PSI",
         valueToString: (int value) => value != null ? value.toString() : "Enter stop pressure",
         builder: (CreatorItem<int> item){
@@ -346,7 +346,7 @@ class _DieselPanelCreatorCardState extends State<DieselPanelCreatorCard> {
       new CreatorItem<String>( // Enclosure
         name: "Enclosure",
         hint: "NEMA 4X",
-        value: widget.initialData["enclosure"] ?? '',
+        value: currentData["enclosure"] ?? '',
         valueToString: (String value) => value,
         builder: (CreatorItem<String> item){
           void close(){
@@ -435,7 +435,7 @@ class _ElectricPanelCreatorCardState extends State<ElectricPanelCreatorCard> {
     return <CreatorItem<dynamic>>[
       new CreatorItem<String>( // Manufacturer
         name: "Manufacturer",
-        value: widget.initialData["manufacturer"],
+        value: currentData["manufacturer"],
         hint: "Tornatech",
         valueToString: (String value) => value ?? "Select a manufacturer",
         builder: (CreatorItem<String> item){
@@ -484,7 +484,7 @@ class _ElectricPanelCreatorCardState extends State<ElectricPanelCreatorCard> {
       ),
       new CreatorItem<String>( // Model #
         name: "Model #",
-        value: widget.initialData["model"] ?? '',
+        value: currentData["model"] ?? '',
         hint: "(FD4-J)",
         valueToString: (String value) => value,
         builder: (CreatorItem<String> item){
@@ -524,7 +524,7 @@ class _ElectricPanelCreatorCardState extends State<ElectricPanelCreatorCard> {
       ),
       new CreatorItem<String>( // Serial #
         name: "Serial #",
-        value: widget.initialData["serial"] ?? '',
+        value: currentData["serial"] ?? '',
         valueToString: (String value) => value,
         builder: (CreatorItem<String> item){
           void close(){
@@ -563,7 +563,7 @@ class _ElectricPanelCreatorCardState extends State<ElectricPanelCreatorCard> {
       ),
       new CreatorItem<int>( // AC Volts
         name: "AC Voltage",
-        value: widget.initialData["volts"],
+        value: currentData["volts"],
         hint: "(e.g. 208 or 480)",
         valueToString: (int value) => value != null ? value.toString() : '',
         builder: (CreatorItem<int> item){
@@ -606,7 +606,7 @@ class _ElectricPanelCreatorCardState extends State<ElectricPanelCreatorCard> {
       // Future: Consider an enum?
       new CreatorItem<String>( // Phase [Single, Three]
         name: "Phase",
-        value: widget.initialData['phase'] ?? "Three",
+        value: currentData['phase'] ?? "Three",
         hint: "Three/Single",
         valueToString: (String phase) => "$phase phase",
         builder: (CreatorItem<String> item){
@@ -655,7 +655,7 @@ class _ElectricPanelCreatorCardState extends State<ElectricPanelCreatorCard> {
       ),
       new CreatorItem<String>( // Starting type
         name: "Starting type",
-        value: widget.initialData["starting"],
+        value: currentData["starting"],
         hint: "Across the Line",
         valueToString: (String value) => value ?? "Select a starting type",
         builder: (CreatorItem<String> item){
@@ -706,7 +706,7 @@ class _ElectricPanelCreatorCardState extends State<ElectricPanelCreatorCard> {
       ),
       new CreatorItem<int>( // Start pressure
         name: "Start pressure",
-        value: widget.initialData["start"],
+        value: currentData["start"],
         hint: "In PSI",
         valueToString: (int value) => value != null ? value.toString() : "Enter start pressure",
         builder: (CreatorItem<int> item){
@@ -748,7 +748,7 @@ class _ElectricPanelCreatorCardState extends State<ElectricPanelCreatorCard> {
       ),
       new CreatorItem<int>( // Stop pressure
         name: "Stop pressure",
-        value: widget.initialData["stop"],
+        value: currentData["stop"],
         hint: "In PSI",
         valueToString: (int value) => value != null ? value.toString() : "Enter stop pressure",
         builder: (CreatorItem<int> item){
@@ -792,7 +792,7 @@ class _ElectricPanelCreatorCardState extends State<ElectricPanelCreatorCard> {
       new CreatorItem<String>( // Enclosure
         name: "Enclosure",
         hint: "NEMA 4X",
-        value: widget.initialData["enclosure"] ?? '',
+        value: currentData["enclosure"] ?? '',
         valueToString: (String value) => value,
         builder: (CreatorItem<String> item){
           void close(){
@@ -881,7 +881,7 @@ class _TransferSwitchCreatorCardState extends State<TransferSwitchCreatorCard> {
     return <CreatorItem<dynamic>>[
       new CreatorItem<String>( // Manufacturer
         name: "Manufacturer",
-        value: widget.initialData["manufacturer"],
+        value: currentData["manufacturer"],
         hint: "Tornatech",
         valueToString: (String value) => value ?? "Select a manufacturer",
         builder: (CreatorItem<String> item){
@@ -930,7 +930,7 @@ class _TransferSwitchCreatorCardState extends State<TransferSwitchCreatorCard> {
       ),
       new CreatorItem<String>( // Model #
         name: "Model #",
-        value: widget.initialData["model"] ?? '',
+        value: currentData["model"] ?? '',
         hint: "(FD4-J)",
         valueToString: (String value) => value,
         builder: (CreatorItem<String> item){
@@ -970,7 +970,7 @@ class _TransferSwitchCreatorCardState extends State<TransferSwitchCreatorCard> {
       ),
       new CreatorItem<String>( // Serial #
         name: "Serial #",
-        value: widget.initialData["serial"] ?? '',
+        value: currentData["serial"] ?? '',
         valueToString: (String value) => value,
         builder: (CreatorItem<String> item){
           void close(){

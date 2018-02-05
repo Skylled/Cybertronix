@@ -29,7 +29,7 @@ class _DieselMotorCreatorCardState extends State<DieselMotorCreatorCard> {
     return <CreatorItem<dynamic>>[
       new CreatorItem<String>( // Manufacturer
         name: "Manufacturer",
-        value: widget.initialData["manufacturer"] ?? '',
+        value: currentData["manufacturer"] ?? '',
         hint: "Clarke",
         valueToString: (String value) => value,
         builder: (CreatorItem<String> item){
@@ -69,7 +69,7 @@ class _DieselMotorCreatorCardState extends State<DieselMotorCreatorCard> {
       ),
       new CreatorItem<String>( // Model #
         name: "Model #",
-        value: widget.initialData["model"] ?? '',
+        value: currentData["model"] ?? '',
         valueToString: (String value) => value,
         builder: (CreatorItem<String> item){
           void close(){
@@ -108,7 +108,7 @@ class _DieselMotorCreatorCardState extends State<DieselMotorCreatorCard> {
       ),
       new CreatorItem<String>( // Serial #
         name: "Serial #",
-        value: widget.initialData["serial"] ?? '',
+        value: currentData["serial"] ?? '',
         valueToString: (String value) => value,
         builder: (CreatorItem<String> item){
           void close(){
@@ -147,7 +147,7 @@ class _DieselMotorCreatorCardState extends State<DieselMotorCreatorCard> {
       ),
       new CreatorItem<int>( // RPM
         name: "RPM",
-        value: widget.initialData["rpm"],
+        value: currentData["rpm"],
         hint: "(e.g. 3400)",
         valueToString: (int value) => value != null ? value.toString() : '',
         builder: (CreatorItem<int> item){
@@ -189,7 +189,7 @@ class _DieselMotorCreatorCardState extends State<DieselMotorCreatorCard> {
       ),
       new CreatorItem<num>( // Horsepower
         name: "Horsepower",
-        value: widget.initialData["hp"],
+        value: currentData["hp"],
         valueToString: (num value) => value != null ? value.toString() : '',
         builder: (CreatorItem<num> item){
           void close(){
@@ -230,7 +230,7 @@ class _DieselMotorCreatorCardState extends State<DieselMotorCreatorCard> {
       ),
       new CreatorItem<int>( // Engine DC voltage
         name: "Battery Voltage",
-        value: widget.initialData['volts'],
+        value: currentData['volts'],
         hint: "12/24",
         valueToString: (int value) => value != null ? value.toString() : "Select voltage",
         builder: (CreatorItem<int> item){
@@ -279,7 +279,7 @@ class _DieselMotorCreatorCardState extends State<DieselMotorCreatorCard> {
       ),
       new CreatorItem<String>( // Grounding
         name: "Grounding",
-        value: widget.initialData['ground'] ?? "Negative",
+        value: currentData['ground'] ?? "Negative",
         hint: "Negative/Positive",
         valueToString: (String ground) => "$ground ground",
         builder: (CreatorItem<String> item){
@@ -382,7 +382,7 @@ class _ElectricMotorCreatorCardState extends State<ElectricMotorCreatorCard> {
     return <CreatorItem<dynamic>>[
       new CreatorItem<String>( // Manufacturer
         name: "Manufacturer",
-        value: widget.initialData["manufacturer"] ?? '',
+        value: currentData["manufacturer"] ?? '',
         hint: "Weg",
         valueToString: (String value) => value,
         builder: (CreatorItem<String> item){
@@ -422,7 +422,7 @@ class _ElectricMotorCreatorCardState extends State<ElectricMotorCreatorCard> {
       ),
       new CreatorItem<String>( // Model #
         name: "Model #",
-        value: widget.initialData["model"] ?? '',
+        value: currentData["model"] ?? '',
         valueToString: (String value) => value,
         builder: (CreatorItem<String> item){
           void close(){
@@ -461,7 +461,7 @@ class _ElectricMotorCreatorCardState extends State<ElectricMotorCreatorCard> {
       ),
       new CreatorItem<String>( // Serial #
         name: "Serial #",
-        value: widget.initialData["serial"] ?? '',
+        value: currentData["serial"] ?? '',
         valueToString: (String value) => value,
         builder: (CreatorItem<String> item){
           void close(){
@@ -500,7 +500,7 @@ class _ElectricMotorCreatorCardState extends State<ElectricMotorCreatorCard> {
       ),
       new CreatorItem<int>( // RPM
         name: "RPM",
-        value: widget.initialData["rpm"],
+        value: currentData["rpm"],
         hint: "(e.g. 3400)",
         valueToString: (int value) => value != null ? value.toString() : '',
         builder: (CreatorItem<int> item){
@@ -542,7 +542,7 @@ class _ElectricMotorCreatorCardState extends State<ElectricMotorCreatorCard> {
       ),
       new CreatorItem<num>( // Horsepower
         name: "Horsepower",
-        value: widget.initialData["hp"],
+        value: currentData["hp"],
         valueToString: (num value) => value != null ? value.toString() : '',
         builder: (CreatorItem<num> item){
           void close(){
@@ -583,7 +583,7 @@ class _ElectricMotorCreatorCardState extends State<ElectricMotorCreatorCard> {
       ),
       new CreatorItem<int>( // AC Volts
         name: "AC Voltage",
-        value: widget.initialData["volts"],
+        value: currentData["volts"],
         hint: "(e.g. 208 or 480)",
         valueToString: (int value) => value != null ? value.toString() : '',
         builder: (CreatorItem<int> item){
@@ -625,7 +625,7 @@ class _ElectricMotorCreatorCardState extends State<ElectricMotorCreatorCard> {
       ),
       new CreatorItem<int>( // Amps
         name: "Amperage",
-        value: widget.initialData["amps"],
+        value: currentData["amps"],
         valueToString: (int value) => value != null ? value.toString() : '',
         builder: (CreatorItem<int> item){
           void close(){
@@ -666,7 +666,7 @@ class _ElectricMotorCreatorCardState extends State<ElectricMotorCreatorCard> {
       ),
       new CreatorItem<String>( // Phase [Single, Three]
         name: "Phase",
-        value: widget.initialData['phase'] ?? "Three",
+        value: currentData['phase'] ?? "Three",
         hint: "Three/Single",
         valueToString: (String phase) => "$phase phase",
         builder: (CreatorItem<String> item){

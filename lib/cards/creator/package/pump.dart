@@ -25,7 +25,7 @@ class _PumpCreatorCardState extends State<PumpCreatorCard> {
     return <CreatorItem<dynamic>>[
       new CreatorItem<String>( // Manufacturer
         name: "Manufacturer",
-        value: widget.initialData["manufacturer"] ?? '',
+        value: currentData["manufacturer"] ?? '',
         hint: "Aurora",
         valueToString: (String value) => value,
         builder: (CreatorItem<String> item){
@@ -65,7 +65,7 @@ class _PumpCreatorCardState extends State<PumpCreatorCard> {
       ),
       new CreatorItem<String>( // Model #
         name: "Model #",
-        value: widget.initialData["model"] ?? '',
+        value: currentData["model"] ?? '',
         valueToString: (String value) => value,
         builder: (CreatorItem<String> item){
           void close(){
@@ -104,7 +104,7 @@ class _PumpCreatorCardState extends State<PumpCreatorCard> {
       ),
       new CreatorItem<String>( // Serial #
         name: "Serial #",
-        value: widget.initialData["serial"] ?? '',
+        value: currentData["serial"] ?? '',
         valueToString: (String value) => value,
         builder: (CreatorItem<String> item){
           void close(){
@@ -143,7 +143,7 @@ class _PumpCreatorCardState extends State<PumpCreatorCard> {
       ),
       new CreatorItem<int>( // RPM
         name: "RPM",
-        value: widget.initialData["rpm"],
+        value: currentData["rpm"],
         hint: "(e.g. 3400)",
         valueToString: (int value) => value != null ? value.toString() : '',
         builder: (CreatorItem<int> item){
@@ -185,7 +185,7 @@ class _PumpCreatorCardState extends State<PumpCreatorCard> {
       ),
       new CreatorItem<num>( // Shutoff pressure
         name: "Shutoff pressure",
-        value: widget.initialData["shutoff"],
+        value: currentData["shutoff"],
         valueToString: (num value) => value != null ? value.toString() : '',
         builder: (CreatorItem<num> item) {
           void close(){
@@ -227,7 +227,7 @@ class _PumpCreatorCardState extends State<PumpCreatorCard> {
       new CreatorItem<int>( // Capacity GPM
         name: "GPM Capacity",
         hint: "500, 750, 1500, etc",
-        value: widget.initialData["capacityGPM"],
+        value: currentData["capacityGPM"],
         valueToString: (int value) => value != null ? value.toString() : '',
         builder: (CreatorItem<int> item) {
           void close(){
@@ -267,7 +267,7 @@ class _PumpCreatorCardState extends State<PumpCreatorCard> {
       ),
       new CreatorItem<num>( // Pressure at capacity
         name: "Pressure at capacity",
-        value: widget.initialData["capacityPSI"],
+        value: currentData["capacityPSI"],
         valueToString: (num value) => value != null ? value.toString() : '',
         builder: (CreatorItem<num> item) {
           void close(){
@@ -307,7 +307,7 @@ class _PumpCreatorCardState extends State<PumpCreatorCard> {
       ),
       new CreatorItem<num>( // Pressure at 150%
         name: "Pressure at 150%",
-        value: widget.initialData["150PSI"],
+        value: currentData["150PSI"],
         valueToString: (num value) => value != null ? value.toString() : '',
         builder: (CreatorItem<num> item) {
           void close(){
