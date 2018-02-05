@@ -91,8 +91,10 @@ class _PackageCreatorPageState extends State<PackageCreatorPage> {
           child: new TabBarView(
             children: components.map((String component){
               return new Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: getComponentCard(component, currentData["power"], changeData),
+                padding: const EdgeInsets.all(4.0),
+                child: new SingleChildScrollView(
+                  child: getComponentCard(component, currentData["power"], changeData),
+                ),
               );
             }).toList(),
           ),
