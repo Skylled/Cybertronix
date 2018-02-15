@@ -653,6 +653,59 @@ class _ElectricPanelCreatorCardState extends State<ElectricPanelCreatorCard> {
           );
         }
       ),
+      new CreatorItem<bool>( // Has Transfer Switch
+        name: "Has Transfer Switch?",
+        value: currentData['hasSwitch'] ?? false,
+        hint: "",
+        valueToString: (bool hasSwitch) => hasSwitch ? "Yes" : "No",
+        builder: (CreatorItem<bool> item){
+          void close(){
+            setState((){
+              item.isExpanded = false;
+            });
+          }
+
+          return new Form(
+            child: new Builder(
+              builder: (BuildContext context){
+                return new CollapsibleBody(
+                  margin: const EdgeInsets.symmetric(horizontal: 16.0),
+                  onSave: () { Form.of(context).save(); close(); },
+                  onCancel: () { Form.of(context).reset(); close(); },
+                  child: new Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                    child: new FormField<bool>(
+                      onSaved: (bool value){
+                        item.value = value;
+                        currentData['hasSwitch'] = value;
+                        widget.changeData('panel', currentData);
+                      },
+                      builder: (FormFieldState<bool> field){
+                        return new DropdownButton<bool>(
+                          value: item.value,
+                          items: <DropdownMenuItem<bool>>[
+                            new DropdownMenuItem<bool>(
+                              value: false,
+                              child: new Text("No"),
+                            ),
+                            new DropdownMenuItem<bool>(
+                              value: true,
+                              child: new Text("Yes"),
+                            ),
+                          ],
+                          onChanged: (bool value){
+                            field.onChanged(value);
+                          },
+                        );
+                      },
+                    ),
+                  ),
+                );
+              },
+            ),
+          );
+        }
+      ),
       new CreatorItem<String>( // Starting type
         name: "Starting type",
         value: currentData["starting"],

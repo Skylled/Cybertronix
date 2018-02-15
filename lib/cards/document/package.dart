@@ -32,6 +32,7 @@ class PackageInfoCard extends StatelessWidget {
     "shutoff": "Shutoff pressure",
     "rated": "Rated pressure",
     "over": "150% pressure",
+    "hasSwitch": "Has Transfer Switch?",
   };
 
   /// This function takes a sub-object from the main Firebase object
@@ -50,7 +51,7 @@ class PackageInfoCard extends StatelessWidget {
     if (power == "Diesel"){
       keyList = <String>["manufacturer", "power", "model", "serial", "chargervolts", "enginevolts", "start", "stop", "enclosure"];
     } else {
-      keyList = <String>["manufacturer", "power", "model", "serial", "hp", "volts", "phase", "starting", "start", "stop", "enclosure"];
+      keyList = <String>["manufacturer", "power", "model", "serial", "hp", "volts", "phase", "hasSwitch", "starting", "start", "stop", "enclosure"];
     }
     return keyList.map((String key){
       if (key == "power"){
