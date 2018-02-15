@@ -108,6 +108,7 @@ class _CreatorPageState extends State<CreatorPage> {
     if (widget.snapshot != null) {
       currentData = widget.snapshot.data;
       children = <Widget>[getCreatorCard(widget.collection, changeData, data: currentData)];
+      // TODO: I need to re-enable multiple packages.
       if (widget.collection == "locations"){
         if (currentData["package"] != null){
             Widget packageCard;
@@ -134,11 +135,15 @@ class _CreatorPageState extends State<CreatorPage> {
                   children: <Widget>[
                     new SimpleDialogOption(
                       child: new Text("Diesel"),
-                      onPressed: () => "Diesel",
+                      onPressed: (){
+                        Navigator.of(context).pop("Diesel");
+                      },
                     ),
                     new SimpleDialogOption(
                       child: new Text("Electric"),
-                      onPressed: () => "Electric",
+                      onPressed: (){
+                        Navigator.of(context).pop("Electric");
+                      },
                     ),
                   ],
                 ));
