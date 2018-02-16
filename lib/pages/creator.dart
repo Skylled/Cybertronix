@@ -320,7 +320,7 @@ class _PackageSummaryCardState extends State<PackageSummaryCard>{
       lines.add(new ListTile(
         title: new Text("${packageData["panel"]["manufacturer"]} ${packageData["power"]}")
       ));
-      if (packageData["power"] == "Electric" && packageData["tswitch" != null]){
+      if (packageData["panel"]["hasSwitch"] == true){
         lines.add(new ListTile(
           title: new Text("with Transfer Switch")
         ));

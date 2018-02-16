@@ -32,8 +32,10 @@ Widget getComponentCard(String component, String power, Function(String, Map<Str
     case "panel":
       if (power == "Diesel"){
         return new DieselPanelCreatorCard(componentData, changeData);
+      } else if (power == "Electric") {
+        return new ElectricPanelCreatorCard(componentData, changeData);
       }
-      return new ElectricPanelCreatorCard(componentData, changeData);
+      return null;
     case "pump":
       return new PumpCreatorCard(componentData, changeData);
     case "motor":
