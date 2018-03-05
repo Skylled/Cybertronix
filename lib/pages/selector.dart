@@ -42,7 +42,7 @@ class _SelectorPageState extends State<SelectorPage>{
     return new FloatingActionButton(
       child: new Icon(Icons.add),
       onPressed: (){
-        Navigator.of(context).pushNamed('/create/${widget.collection}').then((DocumentSnapshot res){
+        Navigator.of(context).pushNamed('/create/${widget.collection}').then((dynamic res){
           if (res != null) { // If CreatorPage popped with data
             debugPrint("Got data from CreatorPage");
             debugPrint(res.toString());
