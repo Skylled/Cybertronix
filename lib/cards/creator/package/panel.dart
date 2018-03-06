@@ -26,7 +26,9 @@ class _DieselPanelCreatorCardState extends State<DieselPanelCreatorCard> {
 
   void initState(){
     super.initState();
-    currentData = widget.initialData != null ? new Map<String, dynamic>.from(widget.initialData) : <String, dynamic>{};
+    currentData = widget.initialData != null ?
+        new Map<String, dynamic>.from(widget.initialData) :
+        <String, dynamic>{"hasSwitch": false};
     _items = getPanelItems();
   }
 
@@ -434,6 +436,7 @@ class _ElectricPanelCreatorCardState extends State<ElectricPanelCreatorCard> {
   List<CreatorItem<dynamic>> getPanelItems(){
     return <CreatorItem<dynamic>>[
       new CreatorItem<String>( // Manufacturer
+        // TODO: Pull drop-down fix from other spots in code
         name: "Manufacturer",
         value: currentData["manufacturer"],
         hint: "Tornatech",
@@ -707,6 +710,7 @@ class _ElectricPanelCreatorCardState extends State<ElectricPanelCreatorCard> {
         }
       ),
       new CreatorItem<String>( // Starting type
+        // TODO: Pull drop-down fix from other spots in code
         name: "Starting type",
         value: currentData["starting"],
         hint: "Across the Line",
