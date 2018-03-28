@@ -130,23 +130,26 @@ class _CreatorPageState extends State<CreatorPage> {
               String power = await showDialog<String>(
                 context: context,
                 barrierDismissible: false,
-                child: new SimpleDialog(
-                  title: new Text("Diesel or Electric?"),
-                  children: <Widget>[
-                    new SimpleDialogOption(
-                      child: new Text("Diesel"),
-                      onPressed: (){
-                        Navigator.of(context).pop("Diesel");
-                      },
-                    ),
-                    new SimpleDialogOption(
-                      child: new Text("Electric"),
-                      onPressed: (){
-                        Navigator.of(context).pop("Electric");
-                      },
-                    ),
-                  ],
-                ));
+                builder: (BuildContext context){
+                  return new SimpleDialog(
+                    title: new Text("Diesel or Electric?"),
+                    children: <Widget>[
+                      new SimpleDialogOption(
+                        child: new Text("Diesel"),
+                        onPressed: (){
+                          Navigator.of(context).pop("Diesel");
+                        },
+                      ),
+                      new SimpleDialogOption(
+                        child: new Text("Electric"),
+                        onPressed: (){
+                          Navigator.of(context).pop("Electric");
+                        },
+                      ),
+                    ],
+                  );
+                }
+              );
               Navigator.of(context).push(
                 new MaterialPageRoute<Map<String, dynamic>>(
                   builder: (BuildContext context) => new PackageCreatorPage(initialData: <String, dynamic>{"power" : power})
@@ -188,19 +191,22 @@ class _CreatorPageState extends State<CreatorPage> {
             String power = await showDialog<String>(
               context: context,
               barrierDismissible: false,
-              child: new SimpleDialog(
-                title: new Text("Diesel or Electric?"),
-                children: <Widget>[
-                  new SimpleDialogOption(
-                    child: new Text("Diesel"),
-                    onPressed: (){ Navigator.pop(context, "Diesel"); },
-                  ),
-                  new SimpleDialogOption(
-                    child: new Text("Electric"),
-                    onPressed: (){ Navigator.pop(context, "Electric"); },
-                  ),
-                ],
-              ));
+              builder: (BuildContext context){
+                return new SimpleDialog(
+                  title: new Text("Diesel or Electric?"),
+                  children: <Widget>[
+                    new SimpleDialogOption(
+                      child: new Text("Diesel"),
+                      onPressed: (){ Navigator.pop(context, "Diesel"); },
+                    ),
+                    new SimpleDialogOption(
+                      child: new Text("Electric"),
+                      onPressed: (){ Navigator.pop(context, "Electric"); },
+                    ),
+                  ],
+                );
+              }
+            );
             Object packageData = await Navigator.of(context).push(
               new MaterialPageRoute<Map<String, dynamic>>(
                 builder: (BuildContext context) => new PackageCreatorPage(initialData: <String, dynamic>{"power" : power})
@@ -270,20 +276,22 @@ class _CreatorPageState extends State<CreatorPage> {
           if (saved) return true; // Don't show the dialog on Save & Quit
           return await showDialog<bool>(
             context: context,
-            child: new SimpleDialog(
-              // TODO: This dialog is kinda uggo. Adjust text sizes maybe?
-              title: new Text("Your changes have not been saved.\nAre you sure you'd like to leave this page?"),
-              children: <Widget>[
-                new SimpleDialogOption(
-                  onPressed: () { Navigator.pop(context, true); },
-                  child: new Text("Yes"),
-                ),
-                new SimpleDialogOption(
-                  onPressed: (){ Navigator.pop(context, false); },
-                  child: new Text("No"),
-                ),
-              ],
-            )
+            builder: (BuildContext context){
+              return new SimpleDialog(
+                // TODO: This dialog is kinda uggo. Adjust text sizes maybe?
+                title: new Text("Your changes have not been saved.\nAre you sure you'd like to leave this page?"),
+                children: <Widget>[
+                  new SimpleDialogOption(
+                    onPressed: () { Navigator.pop(context, true); },
+                    child: new Text("Yes"),
+                  ),
+                  new SimpleDialogOption(
+                    onPressed: (){ Navigator.pop(context, false); },
+                    child: new Text("No"),
+                  ),
+                ],
+              );
+            }
           );
         },
         child: new ListView(

@@ -73,19 +73,21 @@ class _PackageCreatorPageState extends State<PackageCreatorPage> {
             if (saved) return true;
             return await showDialog<bool>(
               context: context,
-              child: new SimpleDialog(
-                title: new Text("Your changes have not been saved.\nAre you sure you'd like to leave this page?"),
-                children: <Widget>[
-                  new SimpleDialogOption(
-                    onPressed: () { Navigator.pop(context, true); },
-                    child: new Text("Yes"),
-                  ),
-                  new SimpleDialogOption(
-                    onPressed: (){ Navigator.pop(context, false); },
-                    child: new Text("No"),
-                  ),
-                ],
-              )
+              builder: (BuildContext context){
+                return new SimpleDialog(
+                  title: new Text("Your changes have not been saved.\nAre you sure you'd like to leave this page?"),
+                  children: <Widget>[
+                    new SimpleDialogOption(
+                      onPressed: () { Navigator.pop(context, true); },
+                      child: new Text("Yes"),
+                    ),
+                    new SimpleDialogOption(
+                      onPressed: (){ Navigator.pop(context, false); },
+                      child: new Text("No"),
+                    ),
+                  ],
+                );
+              }
             );
           },
           child: new TabBarView(

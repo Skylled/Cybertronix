@@ -37,13 +37,15 @@ class ContactInfoCard extends StatelessWidget {
                     onTap: () async {
                       await showDialog(
                         context: context,
-                        child: new ZoomableImage(
-                          new NetworkImage(contactData["photo"]["url"]),
-                          scale: 10.0,
-                          onTap: (){
-                            Navigator.pop(context);
-                          },
-                        ),
+                        builder: (BuildContext context){
+                          return new ZoomableImage(
+                            new NetworkImage(contactData["photo"]["url"]),
+                            scale: 10.0,
+                            onTap: (){
+                              Navigator.pop(context);
+                            },
+                          );
+                        },
                       );
                     },
                   );

@@ -99,13 +99,15 @@ class LocationInfoCard extends StatelessWidget {
                     onTap: () async {
                       await showDialog(
                         context: context,
-                        child: new ZoomableImage(
-                          new NetworkImage(photoUrls[0]),
-                          scale: 10.0,
-                          onTap: (){
-                            Navigator.pop(context);
-                          },
-                        ),
+                        builder: (BuildContext context){
+                          return new ZoomableImage(
+                            new NetworkImage(photoUrls[0]),
+                            scale: 10.0,
+                            onTap: (){
+                              Navigator.pop(context);
+                            },
+                          );
+                        }
                       );
                     },
                   );
@@ -119,13 +121,15 @@ class LocationInfoCard extends StatelessWidget {
                         onTap: () async {
                           await showDialog(
                             context: context,
-                            child: new ZoomableImage(
-                              new NetworkImage(url),
-                              scale: 10.0,
-                              onTap: (){
-                                Navigator.pop(context);
-                              },
-                            ),
+                            builder: (BuildContext context){
+                              return new ZoomableImage(
+                                new NetworkImage(url),
+                                scale: 10.0,
+                                onTap: (){
+                                  Navigator.pop(context);
+                                },
+                              );
+                            }
                           );
                         },
                       );
