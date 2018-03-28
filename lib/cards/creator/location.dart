@@ -222,7 +222,7 @@ class _LocationCreatorCardState extends State<LocationCreatorCard> {
                         crossAxisAlignment: CrossAxisAlignment.end,
                         children: field.value.map((DocumentReference contactID){
                           void onDeleted(){
-                            field.onChanged(removeContact(field.value, contactID));
+                            field.didChange(removeContact(field.value, contactID));
                           }
                           return new StreamBuilder<DocumentSnapshot>(
                             stream: contactID.snapshots,
@@ -251,7 +251,7 @@ class _LocationCreatorCardState extends State<LocationCreatorCard> {
                             collection: "contacts",
                           );
                           if (chosen != null && !field.value.contains(chosen.reference)){
-                            field.onChanged(addContact(field.value, chosen.reference));
+                            field.didChange(addContact(field.value, chosen.reference));
                           }
                         }
                       ));

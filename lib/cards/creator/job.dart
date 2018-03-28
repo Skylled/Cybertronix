@@ -153,7 +153,7 @@ class _JobCreatorCardState extends State<JobCreatorCard> {
                                 lastDate: new DateTime(2068)
                               );
                               if (chosen != null && (chosen.year != field.value.year || chosen.month != field.value.month || chosen.day != field.value.day)){
-                                field.onChanged(replaceDate(field.value, chosen));
+                                field.didChange(replaceDate(field.value, chosen));
                               }
                             }
                           ),
@@ -167,7 +167,7 @@ class _JobCreatorCardState extends State<JobCreatorCard> {
                               );
                               if (chosen != null) {
                                 setState((){
-                                  field.onChanged(replaceTimeOfDay(field.value, chosen));
+                                  field.didChange(replaceTimeOfDay(field.value, chosen));
                                 });
                               }
                             }
@@ -230,7 +230,7 @@ class _JobCreatorCardState extends State<JobCreatorCard> {
                               if (chosen != null && chosen.reference != field.value){
                                 debugPrint("Chosen was okay.");
                                 locationName = chosen["name"];
-                                field.onChanged(chosen.reference);
+                                field.didChange(chosen.reference);
                               } else {
                                 debugPrint("Chosen was not okay!");
                               }
@@ -293,7 +293,7 @@ class _JobCreatorCardState extends State<JobCreatorCard> {
                               );
                               if (chosen != null && chosen.reference != field.value){
                                 customerName = chosen["name"];
-                                field.onChanged(chosen.reference);
+                                field.didChange(chosen.reference);
                               }
                             },
                           ),
@@ -354,7 +354,7 @@ class _JobCreatorCardState extends State<JobCreatorCard> {
                                   initialObjects: field.value,
                                 );
                                 if (chosen != null && !field.value.contains(chosen.reference)){
-                                  field.onChanged(addObj(field.value, chosen.reference));
+                                  field.didChange(addObj(field.value, chosen.reference));
                                 }
                               },
                             ),
@@ -365,7 +365,7 @@ class _JobCreatorCardState extends State<JobCreatorCard> {
                                 stream: contactID.snapshots,
                                 builder: (BuildContext context, AsyncSnapshot<DocumentSnapshot> snapshot){
                                   void onDeleted(){
-                                    field.onChanged(removeObj(field.value, contactID));
+                                    field.didChange(removeObj(field.value, contactID));
                                   }
 
                                   if (!snapshot.hasData) {

@@ -277,7 +277,7 @@ class _JockeyPanelCreatorCardState extends State<JockeyPanelCreatorCard> {
                             );
                           }).toList(),
                           onChanged: (String value){
-                            field.onChanged(value);
+                            field.didChange(value);
                           },
                         );
                       },
@@ -489,7 +489,7 @@ class _JockeyPanelCreatorCardState extends State<JockeyPanelCreatorCard> {
                             );
                           }).toList(),
                           onChanged: (String value){
-                            field.onChanged(value);
+                            field.didChange(value);
                           },
                         );
                       },

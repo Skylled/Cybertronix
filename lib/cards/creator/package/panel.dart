@@ -71,7 +71,7 @@ class _DieselPanelCreatorCardState extends State<DieselPanelCreatorCard> {
                             );
                           }).toList(),
                           onChanged: (String value){
-                            field.onChanged(value);
+                            field.didChange(value);
                           },
                         );
                       },
@@ -199,7 +199,7 @@ class _DieselPanelCreatorCardState extends State<DieselPanelCreatorCard> {
                             );
                           }).toList(),
                           onChanged: (int value){
-                            field.onChanged(value);
+                            field.didChange(value);
                           },
                         );
                       },
@@ -248,7 +248,7 @@ class _DieselPanelCreatorCardState extends State<DieselPanelCreatorCard> {
                             );
                           }).toList(),
                           onChanged: (int value){
-                            field.onChanged(value);
+                            field.didChange(value);
                           },
                         );
                       },
@@ -473,7 +473,7 @@ class _ElectricPanelCreatorCardState extends State<ElectricPanelCreatorCard> {
                             );
                           }).toList(),
                           onChanged: (String value){
-                            field.onChanged(value);
+                            field.didChange(value);
                           },
                         );
                       },
@@ -644,7 +644,7 @@ class _ElectricPanelCreatorCardState extends State<ElectricPanelCreatorCard> {
                             );
                           }).toList(),
                           onChanged: (String value){
-                            field.onChanged(value);
+                            field.didChange(value);
                           },
                         );
                       },
@@ -697,7 +697,7 @@ class _ElectricPanelCreatorCardState extends State<ElectricPanelCreatorCard> {
                             ),
                           ],
                           onChanged: (bool value){
-                            field.onChanged(value);
+                            field.didChange(value);
                           },
                         );
                       },
@@ -749,7 +749,7 @@ class _ElectricPanelCreatorCardState extends State<ElectricPanelCreatorCard> {
                             );
                           }).toList(),
                           onChanged: (String value){
-                            field.onChanged(value);
+                            field.didChange(value);
                           },
                         );
                       },
@@ -973,7 +973,7 @@ class _TransferSwitchCreatorCardState extends State<TransferSwitchCreatorCard> {
                             );
                           }).toList(),
                           onChanged: (String value){
-                            field.onChanged(value);
+                            field.didChange(value);
                           },
                         );
                       },

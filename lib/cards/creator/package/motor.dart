@@ -265,7 +265,7 @@ class _DieselMotorCreatorCardState extends State<DieselMotorCreatorCard> {
                             );
                           }).toList(),
                           onChanged: (int value){
-                            field.onChanged(value);
+                            field.didChange(value);
                           },
                         );
                       },
@@ -314,7 +314,7 @@ class _DieselMotorCreatorCardState extends State<DieselMotorCreatorCard> {
                             );
                           }).toList(),
                           onChanged: (String value){
-                            field.onChanged(value);
+                            field.didChange(value);
                           },
                         );
                       },
@@ -701,7 +701,7 @@ class _ElectricMotorCreatorCardState extends State<ElectricMotorCreatorCard> {
                             );
                           }).toList(),
                           onChanged: (String value){
-                            field.onChanged(value);
+                            field.didChange(value);
                           },
                         );
                       },
