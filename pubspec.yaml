@@ -15,8 +15,7 @@ dependencies:
   firebase_auth:
   firebase_messaging:
   firebase_storage:
-  cloud_firestore:
-    path: ../../Repos/Skylled/plugins/packages/cloud_firestore/
+  cloud_firestore: ^0.3.2
   path:
   zoomable_image:
   strings:
