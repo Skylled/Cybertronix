@@ -46,10 +46,14 @@ This is the detailed view for a given object, displaying the information as best
 Creator Cards are dialogs for the creation of new objects. For the most part, I adapted code from Flutter's [Expansion Panels Demo](https://github.com/flutter/flutter/blob/ae8994860e42c3eff67149282e93be47c07f9f93/examples/flutter_gallery/lib/demo/material/expansion_panels_demo.dart). A better way is probably possible.
 
 # FAQ
+## Why can't I compile?
+
+Open up _api.dart, fill in your key, then rename to api.dart.
+
 ## Why does the app crash on startup?
 
 You need to include `google-services.json` from Firebase to run this app in any capacity.
-Maybe soon I'll spin up a demo Firebase instance and sync it here for demonstration.
+Maybe one day I'll spin up a demo Firebase instance and sync it here for demonstration.
 
 For an idea of how the database is structured, take a look at `Firebase Structure.json`
 
